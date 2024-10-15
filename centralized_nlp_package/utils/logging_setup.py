@@ -4,38 +4,43 @@ from loguru import logger
 from pathlib import Path
 import os, sys
 
-def setup_logging(log_file_path: str = "logs/log_file.log", log_level: str = "INFO") -> None:
-    """
-    Configures Loguru logger.
 
+def setup_logging(log_file_path: str = "logs/log_file.log", env: str  = "dev"):
+    """
+    Set up the Loguru logger with console and file handlers.
+    
     Args:
-        log_level (str): Logging level (e.g., "INFO", "DEBUG").
+        log_file_path (str): Path to the log file. Defaults to "logs/log_file.log".
+        log_level (str): Logging level. Defaults to "INFO".
     """
-    # Ensure the logs directory exists
-    log_directory = Path(log_file_path).parent
-    os.makedirs(log_directory, exist_ok=True)
-
-    # Remove the default logger to prevent duplicate logs
+    # Remove any existing handlers (useful when setting up logging multiple times in tests or notebooks)
     logger.remove()
 
-    # Add a console sink with colored output
+    if env == "prod":
+        log_level = "ERROR"        
+    else:
+        log_level = "DEBUG"
+
+    # Ensure log directory exists
+    log_directory = Path(log_file_path).parent
+    os.makedirs(log_directory, exist_ok=True)
+    
+    # Console Handler
     logger.add(
-        sys.stderr,
+        sys.stdout,
         level=log_level,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level:<10}</level> | <level>{message}</level>",
+        format=(
+            "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
+            "<level>{level:7}</level> | "
+            "<cyan>{file}:{line}</cyan> | "
+            "{message}"
+        ),
         diagnose=True,  # To include detailed information about where the log is coming from
         backtrace=True,  # Provides a backtrace for error messages
         enqueue=True  # Makes the logging calls thread-safe
     )
+        
+    # # File Handler with Rotation and Retention
+    logger.add(log_file_path, level=log_level, format="{time} | {level:10} | {message}", rotation="10 MB", retention="7 days", compression="zip")
+    logger.info("Logging setup completed.")
 
-    # Add a file sink with daily rotation and retention policy
-    logger.add(
-        log_file_path,
-        rotation="1 day",       # Rotate log file daily
-        retention="7 days",     # Keep logs for 7 days
-        level=log_level,
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level:<10} | {message}",
-        diagnose=True, 
-        backtrace=True
-
-    )

@@ -7,13 +7,12 @@ from snowflake.connector import connect
 from typing import Any
 from pathlib import Path
 from loguru import logger
-from centralized_nlp_package.utils.config import config
-from centralized_nlp_package.utils.logging_setup import setup_logging
+from centralized_nlp_package import config
 from cryptography.fernet import Fernet
 from pyspark.sql import SparkSession
 
 
-setup_logging()
+
 
 load_dotenv()
 

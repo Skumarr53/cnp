@@ -1,10 +1,7 @@
-# In your package's __init__.py or utils module
-def show_docs():
-    from IPython.display import IFrame
-    display(IFrame(src='https://yourdocumentationurl.com', width='100%', height='600px'))
+from centralized_nlp_package.utils.config import get_config
 
+# Initialize configuration first
+config = get_config()
 
-# import centralized_nlp_package
-# centralized_nlp_package.show_docs()
-
-# [Click here to access the documentation](https://yourdocumentationurl.com)
+# Now set up logging using the initialized config
+from centralized_nlp_package.utils.logging_setup import setup_logging

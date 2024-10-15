@@ -6,39 +6,36 @@ from pathlib import Path
 import spacy
 import numpy as np
 from loguru import logger
-from centralized_nlp_package.utils.logging_setup import setup_logging
 
-from centralized_nlp_package.utils.config import config
+from centralized_nlp_package import config
 from centralized_nlp_package.utils.exception import FilesNotLoadedException
 # from centralized_nlp_package.preprocessing.text_preprocessing import clean_text 
 
-setup_logging()
 
-
-
-def check_datatype(text_list):
+def check_datatype(text_input: Optional[Union[str, List[str]]]) -> Optional[str]:
     """
-    IF THE TEXT LIST HAS TEXT, PROCESS IT, OTHERWISE OUTPUT NAN
-    
-    Parameters:
-    argument1 (list): list
-   
+    Validates and formats the input text.
+
+    Args:
+        text_input (Optional[Union[str, List[str]]]): The input text or list of texts to validate.
+
     Returns:
-    list:list
-    
+        Optional[str]: Joined text if valid, else None.
     """
-    if (not isinstance(text_list,str) and text_list and ' '.join(text_list).strip(' ')) or (isinstance(text_list,str) and text_list.strip(' ')):
-      #Text input is not and empty string or list
-      if not isinstance(text_list,str):
-        #Text input is a list
-        text = ' '.join(text_list)
-      else:
-        #Text input is a string
-        text = text_list
+    if isinstance(text_input, list):
+        joined_text = ' '.join(text_input).strip()
+    elif isinstance(text_input, str):
+        joined_text = text_input.strip()
     else:
-      text = False
-        
-    return text
+        joined_text = None
+
+    if joined_text:
+        logger.debug("Input text is valid and formatted.")
+        return joined_text
+    else:
+        logger.warning("Input text is invalid or empty.")
+        return None
+
 
 def find_ngrams(input_list: List[str], n: int) -> Iterator[Tuple[str, ...]]:
     """
@@ -120,30 +117,6 @@ def expand_contractions(text):
         text = text.replace(word, contraction_dict[word.lower()])
     return text
 
-def check_datatype(text_input: Optional[Union[str, List[str]]]) -> Optional[str]:
-    """
-    Validates and formats the input text.
-
-    Args:
-        text_input (Optional[Union[str, List[str]]]): The input text or list of texts to validate.
-
-    Returns:
-        Optional[str]: Joined text if valid, else None.
-    """
-    if isinstance(text_input, list):
-        joined_text = ' '.join(text_input).strip()
-    elif isinstance(text_input, str):
-        joined_text = text_input.strip()
-    else:
-        joined_text = None
-
-    if joined_text:
-        logger.debug("Input text is valid and formatted.")
-        return joined_text
-    else:
-        logger.warning("Input text is invalid or empty.")
-        return None
-
 
 def word_tokenizer(text: str, spacy_tokenizer: spacy.Language) -> List[str]:
     """
@@ -185,25 +158,8 @@ def combine_sent(x: int, y: int) -> float:
         return combined_score
 
 
-def _is_complex(word: str) -> bool:
-    """
-    Determines if a word is complex based on syllable count.
 
-    Args:
-        word (str): The word to evaluate.
-        config (Config): Configuration object containing file paths.
-
-    Returns:
-        bool: True if the word is complex, False otherwise.
-    """
-    syllables_path = Path(config.lib_config.paths.model_artifacts.path) / config.lib_config.filenames.syllable_flnm
-    syllables = load_syllable_count(str(syllables_path))
-    syllable_count = syllables.get(word.lower(), 0)
-    is_complex_word = syllable_count > 2
-    logger.debug(f"Word '{word}' has {syllable_count} syllables. Complex: {is_complex_word}")
-    return is_complex_word
-
-def load_syllable_count(file_path: str) -> Dict[str, int]:
+def load_syllable_counts(file_path: str) -> Dict[str, int]:
     """
     Reads a file containing words and their syllable counts, and returns a dictionary.
 

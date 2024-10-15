@@ -3,11 +3,10 @@
 from gensim.models import Word2Vec, Phrases
 from typing import List, Dict, Any
 from loguru import logger
-from centralized_nlp_package.utils.logging_setup import setup_logging
 from pathlib import Path
-from centralized_nlp_package.utils.config import config
+from centralized_nlp_package import config
 
-setup_logging()
+
 
 ## TODO: Topic modelling 
 def train_word2vec(sents: List[List[str]], bigram = False) -> Word2Vec:

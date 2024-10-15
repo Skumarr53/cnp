@@ -5,7 +5,6 @@ from typing import Any, Dict, List
 import hydra
 from typing import Optional
 from omegaconf import DictConfig,OmegaConf, MISSING
-from centralized_nlp_package.utils.logging_setup import setup_logging
 
 @dataclass(frozen=True)
 class PathsConfig:

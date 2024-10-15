@@ -4,12 +4,11 @@ import re
 from typing import List, Tuple, Optional, Union
 import spacy
 from loguru import logger
-from centralized_nlp_package.utils.logging_setup import setup_logging
-from centralized_nlp_package.utils.config import config
+from centralized_nlp_package import config
 from centralized_nlp_package.text_processing.text_utils import check_datatype, expand_contractions, word_tokenizer
 
 
-setup_logging()
+
 
 def initialize_spacy() -> spacy.Language:
     """
@@ -54,15 +53,15 @@ def remove_unwanted_phrases_and_validate(sentence: str) -> Optional[str]:
     """
     logger.debug("Cleaning sentence.")
     # Remove specified phrases
-    for phrase in Config.preprocessing.preprocessing.cleanup_phrases:
+    for phrase in config.lib_config.preprocessing.cleanup_phrases:
         sentence = sentence.replace(phrase, "")
     # Check word count
-    if len(sentence.split()) < Config.preprocessing.preprocessing.min_word_length:
+    if len(sentence.split()) < config.lib_config.preprocessing.min_word_length:
         logger.debug("Sentence below minimum word length. Skipping.")
         return None
     
     # Remove greetings
-    if any(greet in sentence.lower() for greet in Config.preprocessing.preprocessing.greeting_phrases):
+    if any(greet in sentence.lower() for greet in config.lib_config.preprocessing.greeting_phrases):
         logger.debug("Greeting phrase detected. Skipping.")
         return None
 

@@ -6,14 +6,17 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from loguru import logger
-from centralized_nlp_package.utils.logging_setup import setup_logging
-from text_utils import load_list_from_txt, combine_sent, word_tokenizer, find_ngrams
+from centralized_nlp_package.text_processing.text_utils import (load_list_from_txt, 
+                                                                combine_sent, 
+                                                                word_tokenizer, 
+                                                                find_ngrams, 
+                                                                load_syllable_counts)
 from centralized_nlp_package.data_access.snowflake_utils import read_from_snowflake
 from centralized_nlp_package.preprocessing.text_preprocessing import preprocess_text, preprocess_text_list, tokenize_matched_words
-from centralized_nlp_package.utils.config import config
+from centralized_nlp_package import config
 from centralized_nlp_package.utils.exception import FilesNotLoadedException
 
-setup_logging()
+
 
 def load_word_set(filename: str) -> set:
     """
@@ -36,30 +39,6 @@ def load_word_set(filename: str) -> set:
         raise FilesNotLoadedException(filename=filename)
     except Exception as e:
         logger.error(f"Error loading word set from {file_path}: {e}")
-        raise
-
-
-def load_syllable_counts(  filename: str) -> Dict[str, int]:
-    """
-    Loads syllable counts from a specified file in blob storage.
-
-    Args:
-        config (Config): Configuration object.
-        filename (str): Name of the file.
-
-    Returns:
-        Dict[str, int]: Dictionary mapping words to their syllable counts.
-    """
-    file_path =  os.path.join(config.psycholinguistics.model_artifacts_path, filename)
-    try:
-        syllable_counts = load_syllable_counts(file_path)
-        logger.debug(f"Loaded syllable counts from {file_path}.")
-        return syllable_counts
-    except FileNotFoundError:
-        logger.error(f"File not found: {file_path}")
-        raise FilesNotLoadedException(filename=filename)
-    except Exception as e:
-        logger.error(f"Error loading syllable counts from {file_path}: {e}")
         raise
 
 
@@ -713,32 +692,3 @@ def generate_sentence_relevance_score(
             )
     logger.info("Generated sentence relevance scores for all sections.")
     return df
-
-
-def find_nearest_words_with_embeddings(words, model, num_neigh=50, filename=False, regularize=False):
-    alist = {'label': [], 'embed': [], 'match': [], 'sim': []}
-    for topic in set(words['label']):
-        topic_embed = [[word[0], model.wv[word[0]], word[1]] for word in model.wv.most_similar_cosmul(
-            positive=words[words['label'] == topic]['match'].apply(lambda x: [y for y in get_model_ngrams(x, model) if y in model.wv] if x not in model.wv else [x]).sum(),
-            topn=num_neigh
-        )]
-        topic_embed_norm = [[word[0], model.wv[word[0]], word[1]] for word in model.wv.most_similar(
-            positive=words[words['label'] == topic]['match'].apply(lambda x: [y for y in get_model_ngrams(x, model) if y in model.wv] if x not in model.wv else [x]).sum(),
-            topn=num_neigh
-        )]
-
-        alist['label'] += [topic] * num_neigh
-        if regularize:
-            alist['embed'] += [embed[1] for embed in topic_embed]
-            alist['match'] += [word[0] for word in topic_embed]
-            alist['sim'] += [word[2] for word in topic_embed]
-        else:
-            alist['embed'] += [embed[1] for embed in topic_embed_norm]
-            alist['match'] += [word[0] for word in topic_embed_norm]
-            alist['sim'] += [word[2] for word in topic_embed_norm]
-
-    tdf = pd.DataFrame(alist)
-    if filename:
-        # Save to JSON
-        tdf.to_json(f"{filename}_neighbors_n{num_neigh}.json", orient="records")
-    return tdf

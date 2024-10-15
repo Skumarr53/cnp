@@ -6,5 +6,3 @@ defaults:
   - lib_config/preprocessing
   - lib_config/blob_conf
   - lib_config/paths
-  - queries/queries
-  - queries/query_mapping
