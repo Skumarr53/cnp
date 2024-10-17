@@ -4,7 +4,9 @@ preprocessing:
   spacy_model: "en_core_web_sm"
   additional_stop_words:
     - "bottom"
+    - "Bottom"
     - "top"
+    - "Top"
     - "call"
   max_length: 1000000000
   cleanup_phrases:

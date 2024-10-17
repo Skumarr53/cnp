@@ -12,10 +12,12 @@ from centralized_nlp_package.text_processing.text_utils import (load_list_from_t
                                                                 find_ngrams, 
                                                                 load_syllable_counts)
 from centralized_nlp_package.data_access.snowflake_utils import read_from_snowflake
-from centralized_nlp_package.preprocessing.text_preprocessing import preprocess_text, preprocess_text_list, tokenize_matched_words
+from centralized_nlp_package.preprocessing.text_preprocessing import (preprocess_text, 
+                                                                      preprocess_text_list, 
+                                                                      tokenize_matched_words, 
+                                                                      tokenize_and_lemmatize_text)
 from centralized_nlp_package import config
 from centralized_nlp_package.utils.exception import FilesNotLoadedException
-
 
 
 def load_word_set(filename: str) -> set:
@@ -343,7 +345,7 @@ def tone_count_with_negation_check_per_sentence(self, text_list):
     return (word_count, positive_word_count_list_per_sentence,negative_word_count_list_per_sentence)
 
 
-
+## TODO: topic modelling
 def get_match_set(matches: List[str]) -> Dict[str, set]:
     """
     Generates the match set including unigrams, bigrams, and phrases.
@@ -413,7 +415,7 @@ def match_count(
     Returns:
         Dict[str, Any]: Dictionary containing counts and statistics.
     """
-    unigrams = word_tokenizer(text)
+    unigrams = tokenize_and_lemmatize_text(text)
     bigrams = ["_".join(g) for g in find_ngrams(unigrams, 2)]
 
     # Initialize count dictionaries per label
@@ -502,7 +504,7 @@ def merge_counts(counts: List[Dict[str, int]]) -> Dict[str, int]:
             merged += Counter(count)
         if not merged:
             return {"NO_MATCH": 1}
-        return merged #dict(merged)
+        return dict(merged) #dict(merged)
     except Exception as e:
         logger.error(f"Error merging counts: {e}")
         return {"ERROR": 1}

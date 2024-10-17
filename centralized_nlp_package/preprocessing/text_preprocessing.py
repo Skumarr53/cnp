@@ -28,19 +28,6 @@ def initialize_spacy() -> spacy.Language:
     logger.info("SpaCy model initialized.")
     return nlp
 
-def find_ngrams(input_list: List[str], n: int) -> List[Tuple[str, ...]]:
-    """
-    Generates n-grams from a list of tokens.
-
-    Args:
-        input_list (List[str]): List of tokens.
-        n (int): Number of tokens in each n-gram.
-
-    Returns:
-        List[Tuple[str, ...]]: List of n-grams as tuples.
-    """
-    return list(zip(*[input_list[i:] for i in range(n)]))
-
 def remove_unwanted_phrases_and_validate(sentence: str) -> Optional[str]:
     """
     Cleans the input sentence by removing unwanted phrases.

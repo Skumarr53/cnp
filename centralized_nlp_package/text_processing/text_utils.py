@@ -118,26 +118,26 @@ def expand_contractions(text):
     return text
 
 
-def word_tokenizer(text: str, spacy_tokenizer: spacy.Language) -> List[str]:
-    """
-    Tokenizes the text and performs lemmatization.
+# def word_tokenizer(text: str, spacy_tokenizer: spacy.Language) -> List[str]:
+#     """
+#     Tokenizes the text and performs lemmatization.
 
-    Args:
-        text (str): The input text to tokenize.
-        config (Config): Configuration object containing file paths.
-        spacy_tokenizer (spacy.Language): Initialized SpaCy tokenizer.
+#     Args:
+#         text (str): The input text to tokenize.
+#         config (Config): Configuration object containing file paths.
+#         spacy_tokenizer (spacy.Language): Initialized SpaCy tokenizer.
 
-    Returns:
-        List[str]: A list of lemmatized words.
-    """
-    stop_words_path = Path(config.lib_config.paths.model_artifacts.path) / config.lib_config.filenames.stop_words_flnm
-    stop_words_list = load_list_from_txt(str(stop_words_path), is_lower=True)
+#     Returns:
+#         List[str]: A list of lemmatized words.
+#     """
+#     stop_words_path = Path(config.lib_config.paths.model_artifacts.path) / config.lib_config.filenames.stop_words_flnm
+#     stop_words_list = load_list_from_txt(str(stop_words_path), is_lower=True)
 
-    doc = spacy_tokenizer(text.lower())
-    token_lemmatized = [token.lemma_ for token in doc]
-    filtered_words = [word for word in token_lemmatized if word not in stop_words_list]
-    logger.debug(f"Tokenized and filtered words. {len(filtered_words)} words remaining.")
-    return filtered_words
+#     doc = spacy_tokenizer(text.lower())
+#     token_lemmatized = [token.lemma_ for token in doc]
+#     filtered_words = [word for word in token_lemmatized if word not in stop_words_list]
+#     logger.debug(f"Tokenized and filtered words. {len(filtered_words)} words remaining.")
+#     return filtered_words
 
 def combine_sent(x: int, y: int) -> float:
     """

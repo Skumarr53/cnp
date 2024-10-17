@@ -1,10 +1,12 @@
 # centralized_nlp_package/utils/helpers.py
 import os
 import re
+import ast
+import dask.dataframe as dd
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Tuple, Union
+from typing import Any, Tuple, Union, List, Callable
 from loguru import logger
 from omegaconf import DictConfig, OmegaConf
 from dateutil.relativedelta import relativedelta
@@ -23,8 +25,7 @@ def load_file(file_path: str) -> str:
         str: The SQL query as a string.
     """
     try:
-        with open(file_path, 'r') as file:
-            return file.read()
+        with open(file_path, 'r') as file:return file.read()
     except FileNotFoundError as e:
         logger.error(f"Query file not found: {file_path}")
         raise FileNotFoundError(f"Query file not found: {file_path}") from e
@@ -142,16 +143,86 @@ def df_remove_rows_with_keywords(df: pd.DataFrame, column_name: str, keywords: l
         pd.DataFrame: The filtered DataFrame.
 
     Raises:
+        ValueError: If the specified column is not found in the DataFrame.
         Warning: If any keyword is not found in the specified column.
     """
+    # Check if the specified column exists in the DataFrame
+    if column_name not in df.columns:
+        raise ValueError(f"The column '{column_name}' does not exist in the DataFrame.")
+    
     # Check if all keywords are present in the column
     missing_keywords = [keyword for keyword in keywords if not df[column_name].str.contains(keyword, na=False).any()]
     if missing_keywords:
         logger.warning(f"The following keywords were not found in the column '{column_name}': {missing_keywords}")
 
     # Filter out rows containing any of the keywords
-    mask = df[column_name].apply(lambda x: not any(keyword == str(x) for keyword in keywords))
-    logger.debug("contructing formatted query")
-    filtered_df = df[mask]
+    try:
+        mask = df[column_name].apply(lambda x: not any(keyword == str(x) for keyword in keywords))
+        filtered_df = df[mask]
+        logger.info(f"Filtered DataFrame to remove rows containing keywords. Remaining rows: {len(filtered_df)}.")
+        return filtered_df
+    except Exception as e:
+        logger.error(f"An error occurred while filtering the DataFrame: {e}")
+        raise
 
-    return filtered_df
+
+def df_apply_transformations(
+    df: Union[pd.DataFrame, dd.DataFrame],
+    transformations: List[Tuple[str, Callable, bool]],
+) -> Union[pd.DataFrame, dd.DataFrame]:
+    """
+    Applies a set of transformations to a DataFrame based on the given list of transformation tuples.
+
+    Args:
+        df (Union[pd.DataFrame, dd.DataFrame]): The DataFrame to apply transformations on.
+        transformations (List[Tuple[str, Callable, bool]]): 
+            A list of tuples where each tuple contains:
+                - column (str): The column name to transform.
+                - func (Callable): The transformation function.
+                - use_row (bool): If True, apply the function row-wise (axis=1). 
+                                   If False, apply column-wise (axis=0).
+        dask_processing (bool, optional): Flag indicating whether to process using Dask. Defaults to False.
+
+    Returns:
+        Union[pd.DataFrame, dd.DataFrame]: The DataFrame with applied transformations.
+
+    Raises:
+        Exception: Re-raises any exception that occurs during the transformation process after logging.
+    Notes:
+    - Ensure that the `transformations` list does not contain tuples with non-callable functions.
+    - When applying multiple transformations to the same column, transformations are applied in the order they appear in the list.
+    - For Dask DataFrames, ensure that transformations are compatible with Dask's lazy evaluation model.
+    """
+
+    for transformation in transformations:
+        if len(transformation) == 3:
+            column, func, use_row = transformation
+        elif len(transformation) == 2:
+            column, func = transformation
+            use_row = False  # Default to column-wise
+        else:
+            logger.error(f"Invalid transformation tuple: {transformation}. Expected 2 or 3 elements.")
+            continue  # Skip invalid transformation tuples
+
+        if not callable(func):
+            logger.error(f"Error: Transformation function for column '{column}' is not callable. Skipping.")
+            continue 
+
+        try:
+            # Apply row-wise if lambda function mentions multiple columns, otherwise apply column-wise
+            if isinstance(df, dd.DataFrame):
+                # Apply the transformation function on the entire row (axis=1) if needed
+                df[column] = (df.apply(func, meta = (column, object), axis=1) 
+                              if use_row 
+                              else df[column].apply(func, meta = (column, object)))
+            elif isinstance(df, pd.DataFrame):
+                df[column] = (df.apply(func, axis=1) 
+                            if use_row 
+                            else df[column].apply(func))
+            else:
+                logger.error(f"Error: Transformation for column '{column}' is not callable. Skipping.")
+        except Exception as e:
+            # Handle any errors during transformation
+            logger.error(f"Error occurred while transforming column '{column}': {e}")
+            raise
+    return  df

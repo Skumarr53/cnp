@@ -78,4 +78,4 @@ def get_config() -> DictConfig:
             logger.error(f"Error loading configuration: {e}")
             raise
     return _config
-config = get_config()
+# config = get_config()
