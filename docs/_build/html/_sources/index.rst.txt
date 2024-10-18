@@ -16,7 +16,6 @@ Welcome to Centralized NLP Package's documentation!
    source/text_processing
    source/tutorials
    source/utils
-   source/visualization
 
 Indices and tables
 ==================

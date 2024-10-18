@@ -9,7 +9,7 @@ from pathlib import Path
 from loguru import logger
 from centralized_nlp_package import config
 from cryptography.fernet import Fernet
-from pyspark.sql import SparkSession
+# from pyspark.sql import SparkSession
 
 
 
@@ -149,7 +149,8 @@ def get_snowflake_options():
     }
     return  snowflake_options
 
-def read_from_snowflake_spark(query: str, spark: SparkSession) -> 'pyspark.sql.DataFrame':
+def read_from_snowflake_spark(query: str, spark):
+    # TODO: read_from_snowflake_spark(query: str, spark: SparkSession) -> 'pyspark.sql.DataFrame':
     """
     Executes a SQL query on Snowflake and returns the result as a Spark DataFrame.
 
@@ -178,7 +179,8 @@ def read_from_snowflake_spark(query: str, spark: SparkSession) -> 'pyspark.sql.D
 
     return df_spark
 
-def write_to_snowflake_spark(df: 'pyspark.sql.DataFrame', table_name: str, spark: SparkSession, mode: str = 'append') -> None:
+def write_to_snowflake_spark(df, table_name: str, mode: str = 'append') -> None:
+    # TODO: write_to_snowflake_spark(df: 'pyspark.sql.DataFrame', table_name: str, mode: str = 'append') -> None:
     """
     Writes a Spark DataFrame to a Snowflake table.
 

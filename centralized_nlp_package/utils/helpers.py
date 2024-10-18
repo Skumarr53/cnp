@@ -226,3 +226,65 @@ def df_apply_transformations(
             logger.error(f"Error occurred while transforming column '{column}': {e}")
             raise
     return  df
+
+
+
+def df_apply_transformations(
+    df: Union[pd.DataFrame, dd.DataFrame],
+    transformations: List[Tuple[str, Union[str, List[str]], Callable]],
+) -> Union[pd.DataFrame, dd.DataFrame]:
+    """
+    Applies a set of transformations to a DataFrame based on the given list of transformation tuples.
+
+    Args:
+        df (Union[pd.DataFrame, dd.DataFrame]): The DataFrame to apply transformations on.
+        transformations (List[Tuple[str, Union[str, List[str]], Callable]]): 
+            A list of tuples where each tuple contains:
+                - new_column (str): The new column name to create or transform.
+                - columns_to_use (Union[str, List[str]]): Column(s) to use in the transformation.
+                - func (Callable): The transformation function.
+
+    Returns:
+        Union[pd.DataFrame, dd.DataFrame]: The DataFrame with applied transformations.
+
+    Raises:
+        Exception: Re-raises any exception that occurs during the transformation process after logging.
+
+    Notes:
+        - Ensure that the `transformations` list contains tuples with callable functions.
+        - When applying multiple transformations to the same column, transformations are applied in the order they appear in the list.
+        - For Dask DataFrames, ensure that transformations are compatible with Dask's lazy evaluation model.
+    """
+
+    for transformation in transformations:
+        if len(transformation) == 3:
+            new_column, columns_to_use, func = transformation
+        else:
+            logger.error(f"Invalid transformation tuple: {transformation}. Expected 3 elements.")
+            continue  # Skip invalid transformation tuples
+
+        if not callable(func):
+            logger.error(f"Error: Transformation function for new column '{new_column}' is not callable. Skipping.")
+            continue 
+
+        try:
+            if isinstance(columns_to_use, str):
+                # Single column transformation
+                if isinstance(df, dd.DataFrame):
+                    df[new_column] = df[columns_to_use].apply(func, meta=(new_column, object))
+                else:
+                    df[new_column] = df[columns_to_use].apply(func)
+            elif isinstance(columns_to_use, list):
+                # Multiple columns transformation
+                if isinstance(df, dd.DataFrame):
+                    df[new_column] = df[columns_to_use].apply(func, axis=1, meta=(new_column, object))
+                else:
+                    df[new_column] = df[columns_to_use].apply(func, axis=1)
+            else:
+                logger.error(f"Invalid columns_to_use: {columns_to_use}. Expected str or list of str.")
+                continue
+        except Exception as e:
+            # Handle any errors during transformation
+            logger.error(f"Error occurred while transforming to new column '{new_column}': {e}")
+            raise
+    return df
