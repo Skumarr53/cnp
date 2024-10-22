@@ -1,7 +1,11 @@
 # centralized_nlp_package/data_access/snowflake_utils.py
 import os
+import re
 from dotenv import load_dotenv
+from centralized_nlp_package import config
 from cryptography.fernet import Fernet
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
 import pandas as pd
 from snowflake.connector import connect
 from typing import Any
@@ -12,140 +16,86 @@ from cryptography.fernet import Fernet
 # from pyspark.sql import SparkSession
 
 
-
-
-load_dotenv()
-
-
-ENV = os.getenv('ENVIRONMENT', 'development')
-
-
-def encrypt_message(message):
-    """It encrypts data passed as a parameter to the method. 
-    The outcome of this encryption is known as a Fernet token which is basically the ciphertext.
-
-    Parameters:
-    argument1 (str): value that needs to be encrypted
-
-    Returns:
-    str: encrypted value 
-
+def initialize_spark():
     """
-    encoded_message = message.encode()
-    fernet_obj= Fernet(os.getenv('FERNET_KEY'))
-    encrypted_message = fernet_obj.encrypt(encoded_message)
-    return encrypted_message
+    Initializes a Spark session and configures Snowflake integration if not already initialized.
 
-def decrypt_message(encrypted_message):
-    """This method decrypts the Fernet token passed as a parameter to the method. 
-    On successful decryption the original plaintext is obtained as a result
+    This function sets up the global Spark session, Spark context, and Snowflake utilities.
+    It also configures the default timezone to UTC.
 
-    Parameters:
-    argument1 (str): encrypted values that needs to be decrypted
-
-    Returns:
-    str: decrypted value 
-
+    Example:
+        initialize_spark_session()
     """
-    fernet_obj= Fernet(os.getenv('FERNET_KEY'))    
-    decrypted_message = fernet_obj.decrypt(encrypted_message)
-    return decrypted_message.decode()
+    global spark, sc, sfUtils
 
+    # Check if Spark session is already initialized
+    if spark is None:
+        # Create Spark session
+        spark = SparkSession.builder \
+            .appName("SnowflakeIntegration") \
+            .getOrCreate()
 
-def get_snowflake_connection():
+        # Get the Spark context
+        sc = spark.sparkContext
+
+        # Set Snowflake pushdown session
+        sfUtils = sc._jvm.net.snowflake.spark.snowflake.Utils
+        sc._jvm.net.snowflake.spark.snowflake.SnowflakeConnectorUtils.enablePushdownSession(spark)
+
+        # Set the default timezone to UTC
+        zone = sc._jvm.java.util.TimeZone
+        zone.setDefault(sc._jvm.java.util.TimeZone.getTimeZone("UTC"))
+        logger.info("Spark session initialized.")
+    else:
+        logger.info("Spark session already initialized; reusing existing session.")
+
+def get_private_key() -> str:
     """
-    Establish a connection to Snowflake using configuration settings.
+    Retrieves and processes the Snowflake private key from AKV.
     
     Returns:
-        conn: A Snowflake connection object
+        str: The private key in a format suitable for Snowflake authentication.
     """
-    snowflake_config = {
-        'user': decrypt_message(config.lib_config.development.snowflake.user),
-        'password': decrypt_message(config.lib_config.development.snowflake.password),
-        'account': config.lib_config.development.snowflake.account,
-        'database': config.lib_config.development.snowflake.database,
-        'schema': config.lib_config.development.snowflake.schema,
-        'timezone': "spark",
-        'role': config.lib_config.development.snowflake.role  # Optional if needed
-    }
+    # Retrieve encrypted private key and password from AKV
+    key_file = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.snowflake_key)
+    pwd = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.snowflake_pwd)
     
-    conn = connect(**snowflake_config)
-    return conn
-
-def read_from_snowflake(query: str) -> pd.DataFrame:
-    """
-    Executes a SQL query on Snowflake and returns the result as a pandas DataFrame.
-
-    Args:
-        query (str): The SQL query to execute.
-        config (Config): Configuration object containing Snowflake credentials.
-
-    Returns:
-        pd.DataFrame: Query result.
-    """
-    logger.info("Establishing connection to Snowflake.")
-    conn = get_snowflake_connection()
-    try:
-        logger.debug(f"Executing query: {query}")
-        df = pd.read_sql(query, conn)
-        logger.info("Query executed successfully.")
-    except Exception as e:
-        logger.error(f"Error executing query: {e}")
-        raise
-    finally:
-        conn.close()
-        logger.info("Snowflake connection closed.")
-    return df
-
-
-
-def write_to_snowflake(df: pd.DataFrame, table_name: str, if_exists: str = 'append') -> None:
-    """
-    Writes a pandas DataFrame to a Snowflake table.
-
-    Args:
-        df (pd.DataFrame): The DataFrame to write to Snowflake.
-        table_name (str): The target table name in Snowflake.
-        config (Config): Configuration object containing Snowflake credentials.
-        if_exists (str): Behavior if the table already exists:
-                         'fail', 'replace', or 'append'. Default is 'append'.
-
-    Returns:
-        None
-    """
-    logger.info("Establishing connection to Snowflake.")
-    conn = get_snowflake_connection()
-
-    try:
-        logger.info(f"Writing DataFrame to Snowflake table: {table_name}")
-        df.to_sql(
-            table_name,
-            con=conn,
-            if_exists=if_exists,
-            index=False,
-            method='multi'  # Use multi-row inserts for efficiency
-        )
-        logger.info(f"DataFrame written successfully to {table_name}.")
-    except Exception as e:
-        logger.error(f"Error writing DataFrame to Snowflake: {e}")
-        raise
-    finally:
-        conn.close()
-        logger.info("Snowflake connection closed.")
+    # Load the private key using the retrieved password
+    p_key = serialization.load_pem_private_key(
+        key_file.encode('ascii'),
+        password=pwd.encode(),
+        backend=default_backend()
+    )
+    
+    # Serialize the private key to PEM format without encryption
+    pkb = p_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    
+    # Decode and clean the private key string
+    pkb = pkb.decode("UTF-8")
+    pkb = re.sub("-*(BEGIN|END) PRIVATE KEY-*\n", "", pkb).replace("\n", "")
+    
+    return pkb
 
 
 def get_snowflake_options():
     """
     Returns a dictionary of Snowflake options.
     """
+    private_key = get_private_key()
+
+    _config = config.lib_config.development.snowflake
     snowflake_options = {
-        'sfURL': f'{config.lib_config.development.snowflake.account}.snowflakecomputing.com',
-        'sfUser': decrypt_message(config.lib_config.development.snowflake.user),
-        'sfPassword': decrypt_message(config.lib_config.development.snowflake.password),
-        'sfDatabase': config.lib_config.development.snowflake.database,
-        'sfSchema': config.lib_config.development.snowflake.schema,
+        'sfURL': f'{_config.account}.snowflakecomputing.com',
+        'sfUser': _config.user,
+        "pem_private_key": private_key,
+        'sfDatabase': _config.database,
+        'sfSchema': _config.schema,
         "sfTimezone": "spark",
-        'sfRole': config.lib_config.development.snowflake.role  # Optional if needed
+        'sfRole': _config.role  # Optional if needed
     }
     return  snowflake_options
 
@@ -207,3 +157,9 @@ def write_to_snowflake_spark(df, table_name: str, mode: str = 'append') -> None:
     except Exception as e:
         logger.error(f"Error writing Spark DataFrame to Snowflake: {e}")
         raise
+
+def truncate_or_merge_table( query):
+    snowflake_options = get_snowflake_options()
+    df=sfUtils.runQuery(snowflake_options, query)
+    result="Truncate or Merge Complete"
+    return result

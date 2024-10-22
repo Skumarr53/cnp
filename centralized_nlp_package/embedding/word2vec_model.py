@@ -9,7 +9,7 @@ from centralized_nlp_package import config
 
 
 ## TODO: Topic modelling 
-def train_word2vec(sents: List[List[str]], bigram = False) -> Word2Vec:
+def train_word2vec(sents: List[List[str]], bigram = False, **kwargs) -> Word2Vec:
     """
     Trains a Word2Vec model on the provided corpus.
 
@@ -23,6 +23,8 @@ def train_word2vec(sents: List[List[str]], bigram = False) -> Word2Vec:
     model_params = (config.lib_config.word2vec_bigram 
                     if bigram else 
                     config.lib_config.word2vec_unigram)
+    model_params.update(kwargs)
+    
     logger.info("Starting Word2Vec model training.")
     model = Word2Vec(sentences=sents, **model_params)
     logger.info("Word2Vec model training completed.")
