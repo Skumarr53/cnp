@@ -1,12 +1,7 @@
 Preprocessing
 =============
 
-.. automodule:: centralized_nlp_package.preprocessing.text_processing
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: centralized_nlp_package.preprocessing.ngram_utils
+.. automodule:: centralized_nlp_package.preprocessing.text_preprocessing
     :members:
     :undoc-members:
     :show-inheritance:

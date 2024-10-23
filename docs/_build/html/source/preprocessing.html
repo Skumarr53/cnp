@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -205,11 +205,6 @@
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 
@@ -245,14 +240,200 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="preprocessing">
-<h1>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this heading">¶</a></h1>
+          <section id="module-centralized_nlp_package.preprocessing.text_preprocessing">
+<span id="preprocessing"></span><h1>Preprocessing<a class="headerlink" href="#module-centralized_nlp_package.preprocessing.text_preprocessing" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.clean_text">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#clean_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.clean_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans the input text by expanding contractions, removing unwanted characters, and normalizing spaces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The input text to clean.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The cleaned text.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">clean_text</span><span class="p">(</span><span class="s2">&quot;I can&#39;t go to the party.&quot;</span><span class="p">)</span>
+<span class="go">&quot;i cannot go to the party&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.initialize_spacy">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">initialize_spacy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#initialize_spacy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.initialize_spacy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes and configures the SpaCy model with custom settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Configured SpaCy model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>spacy.Language</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">initialize_spacy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">doc</span> <span class="o">=</span> <span class="n">nlp</span><span class="p">(</span><span class="s2">&quot;This is a sample sentence.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([</span><span class="n">token</span><span class="o">.</span><span class="n">text</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">])</span>
+<span class="go">[&#39;This&#39;, &#39;is&#39;, &#39;a&#39;, &#39;sample&#39;, &#39;sentence&#39;, &#39;.&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">preprocess_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#preprocess_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocesses the text by validating, cleaning, and tokenizing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text_input</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – The input text or list of texts to preprocess.</p></li>
+<li><p><strong>nlp</strong> (<em>spacy.Language</em>) – Initialized SpaCy tokenizer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The preprocessed text, list of input words, and word count.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[Optional[str], List[str], int]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">initialize_spacy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cleaned_text</span><span class="p">,</span> <span class="n">tokens</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">preprocess_text</span><span class="p">(</span><span class="s2">&quot;I can&#39;t believe it!&quot;</span><span class="p">,</span> <span class="n">nlp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cleaned_text</span><span class="p">)</span>
+<span class="go">&#39;i cannot believe it!&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="go">[&#39;cannot&#39;, &#39;believe&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text_list">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">preprocess_text_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#preprocess_text_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocesses a list of texts by validating, cleaning, and tokenizing each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text_list</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The list of texts to preprocess.</p></li>
+<li><p><strong>nlp</strong> (<em>spacy.Language</em>) – Initialized SpaCy model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cleaned texts, list of token lists, and word counts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[List[str], List[List[str]], List[int]]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">initialize_spacy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;I love this product!&quot;</span><span class="p">,</span> <span class="s2">&quot;Hi!&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cleaned_texts</span><span class="p">,</span> <span class="n">tokens_list</span><span class="p">,</span> <span class="n">counts</span> <span class="o">=</span> <span class="n">preprocess_text_list</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">nlp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cleaned_texts</span><span class="p">)</span>
+<span class="go">[&#39;i love this product!&#39;, &#39;&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tokens_list</span><span class="p">)</span>
+<span class="go">[[&#39;love&#39;, &#39;product&#39;]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">[3, 0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.remove_unwanted_phrases_and_validate">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">remove_unwanted_phrases_and_validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentence</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#remove_unwanted_phrases_and_validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.remove_unwanted_phrases_and_validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans the input sentence by removing unwanted phrases and validating its content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sentence</strong> (<em>str</em>) – The input sentence to process.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Cleaned sentence or None if it doesn’t meet criteria.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">remove_unwanted_phrases_and_validate</span><span class="p">(</span><span class="s2">&quot;Hello! I love this product.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+<span class="go">&#39;I love this product.&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cleaned</span> <span class="o">=</span> <span class="n">remove_unwanted_phrases_and_validate</span><span class="p">(</span><span class="s2">&quot;Hi! Love it.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">cleaned</span><span class="p">)</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.tokenize_and_lemmatize_text">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">tokenize_and_lemmatize_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#tokenize_and_lemmatize_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.tokenize_and_lemmatize_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes and lemmatizes the document text, excluding stop words, punctuation, and numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> (<em>str</em>) – The input text to tokenize.</p></li>
+<li><p><strong>nlp</strong> (<em>spacy.Language</em>) – Initialized SpaCy model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of lemmatized and filtered tokens.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">initialize_spacy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize_and_lemmatize_text</span><span class="p">(</span><span class="s2">&quot;I am loving the new features!&quot;</span><span class="p">,</span> <span class="n">nlp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="go">[&#39;love&#39;, &#39;new&#39;, &#39;feature&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.preprocessing.text_preprocessing.tokenize_matched_words">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.preprocessing.text_preprocessing.</span></span><span class="sig-name descname"><span class="pre">tokenize_matched_words</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">doc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/preprocessing/text_preprocessing.html#tokenize_matched_words"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.preprocessing.text_preprocessing.tokenize_matched_words" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes matched words by removing stop words, punctuation, and numbers. Prioritizes proper nouns and capitalized words.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doc</strong> (<em>str</em>) – The input text to tokenize.</p></li>
+<li><p><strong>nlp</strong> (<em>spacy.Language</em>) – Initialized SpaCy model.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of lemmatized and filtered tokens.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">initialize_spacy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize_matched_words</span><span class="p">(</span><span class="s2">&quot;John loves New York!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="go">[&#39;john&#39;, &#39;love&#39;, &#39;new&#39;, &#39;york&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 
         </article>
@@ -298,8 +479,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Preprocessing</a><ul>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.clean_text"><code class="docutils literal notranslate"><span class="pre">clean_text()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.initialize_spacy"><code class="docutils literal notranslate"><span class="pre">initialize_spacy()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text"><code class="docutils literal notranslate"><span class="pre">preprocess_text()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text_list"><code class="docutils literal notranslate"><span class="pre">preprocess_text_list()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.remove_unwanted_phrases_and_validate"><code class="docutils literal notranslate"><span class="pre">remove_unwanted_phrases_and_validate()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.tokenize_and_lemmatize_text"><code class="docutils literal notranslate"><span class="pre">tokenize_and_lemmatize_text()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.preprocessing.text_preprocessing.tokenize_matched_words"><code class="docutils literal notranslate"><span class="pre">tokenize_matched_words()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>

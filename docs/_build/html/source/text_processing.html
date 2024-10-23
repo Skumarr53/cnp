@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Tutorials" href="tutorials.html" /><link rel="prev" title="Preprocessing" href="preprocessing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Utilities" href="utils.html" /><link rel="prev" title="Preprocessing" href="preprocessing.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>Text processing - Centralized NLP Package 0.1.0 documentation</title>
@@ -205,11 +205,6 @@
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 
@@ -254,55 +249,58 @@
           <section id="module-centralized_nlp_package.text_processing.text_utils">
 <span id="text-processing"></span><h1>Text processing<a class="headerlink" href="#module-centralized_nlp_package.text_processing.text_utils" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.check_datatype">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">check_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#check_datatype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.check_datatype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validates and formats the input text.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>text_input</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – The input text or list of texts to validate.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Joined text if valid, else None.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[str]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.combine_sent">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">combine_sent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#combine_sent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.combine_sent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combines two sentiment scores.</p>
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.combine_sentiment_scores">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">combine_sentiment_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positive_count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_count</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#combine_sentiment_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.combine_sentiment_scores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines two sentiment scores into a single score.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>int</em>) – Positive sentiment count.</p></li>
-<li><p><strong>y</strong> (<em>int</em>) – Negative sentiment count.</p></li>
+<li><p><strong>positive_count</strong> (<em>int</em>) – Positive sentiment count.</p></li>
+<li><p><strong>negative_count</strong> (<em>int</em>) – Negative sentiment count.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Combined sentiment score.</p>
+<dd class="field-even"><p>Combined sentiment score. Returns 0.0 if both counts are zero.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">combine_sentiment_scores</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">0.25</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">combine_sentiment_scores</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="go">0.0</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.expand_contractions">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">expand_contractions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#expand_contractions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.expand_contractions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expand contractions</p>
-<p>Parameters:
-argument1 (str): text</p>
-<p>Returns:
-str:returns text with expanded contractions</p>
+<dd><p>Expands contractions in the input text based on a contraction dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The input text containing contractions.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Text with expanded contractions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">contraction_map</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;can&#39;t&quot;</span><span class="p">:</span> <span class="s2">&quot;cannot&quot;</span><span class="p">,</span> <span class="s2">&quot;I&#39;m&quot;</span><span class="p">:</span> <span class="s2">&quot;I am&quot;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">expand_contractions</span><span class="p">(</span><span class="s2">&quot;I can&#39;t go.&quot;</span><span class="p">)</span>
+<span class="go">&#39;I cannot go.&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.find_ngrams">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">find_ngrams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#find_ngrams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.find_ngrams" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.generate_ngrams">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">generate_ngrams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#generate_ngrams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.generate_ngrams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates n-grams from a list of tokens.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -318,6 +316,11 @@ str:returns text with expanded contractions</p>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterator</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]]</span></p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">generate_ngrams</span><span class="p">([</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;love&#39;</span><span class="p">,</span> <span class="s1">&#39;coding&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">))</span>
+<span class="go">[(&#39;I&#39;, &#39;love&#39;), (&#39;love&#39;, &#39;coding&#39;)]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -338,11 +341,17 @@ str:returns text with expanded contractions</p>
 <dd class="field-even"><p><strong>FilesNotLoadedException</strong> – If the file is not found at the given path.</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">content</span> <span class="o">=</span> <span class="n">load_content_from_txt</span><span class="p">(</span><span class="s2">&quot;data/sample.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<span class="go">&#39;This is a sample text file.&#39;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.load_list_from_txt">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">load_list_from_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#load_list_from_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.load_list_from_txt" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.load_set_from_txt">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">load_set_from_txt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#load_set_from_txt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.load_set_from_txt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the content of a text file and returns it as a set of lines.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -361,6 +370,12 @@ str:returns text with expanded contractions</p>
 <dd class="field-even"><p><strong>FilesNotLoadedException</strong> – If there is an error reading the file.</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">word_set</span> <span class="o">=</span> <span class="n">load_set_from_txt</span><span class="p">(</span><span class="s2">&quot;data/positive_words.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">word_set</span><span class="p">)</span>
+<span class="go">{&#39;happy&#39;, &#39;joyful&#39;, &#39;delighted&#39;}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -378,9 +393,68 @@ str:returns text with expanded contractions</p>
 <dd class="field-odd"><p>Dict[str, int]</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>FilesNotLoadedException</strong> – If the file is not found at the given path.</p>
+<dd class="field-even"><p><strong>FilesNotLoadedException</strong> – If the file is not found or has an invalid format.</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">syllables</span> <span class="o">=</span> <span class="n">load_syllable_counts</span><span class="p">(</span><span class="s2">&quot;data/syllable_counts.txt&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">syllables</span><span class="p">[</span><span class="s1">&#39;beautiful&#39;</span><span class="p">]</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.tokenize_text">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">tokenize_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacy_tokenizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#tokenize_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.tokenize_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tokenizes the text and performs lemmatization, excluding stop words.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) – The input text to tokenize.</p></li>
+<li><p><strong>spacy_tokenizer</strong> (<em>spacy.Language</em>) – Initialized SpaCy tokenizer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of lemmatized and filtered words.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;en_core_web_sm&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokenize_text</span><span class="p">(</span><span class="s2">&quot;I am loving the new features!&quot;</span><span class="p">,</span> <span class="n">nlp</span><span class="p">)</span>
+<span class="go">[&#39;love&#39;, &#39;new&#39;, &#39;feature&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_utils.validate_and_format_text">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_utils.</span></span><span class="sig-name descname"><span class="pre">validate_and_format_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_utils.html#validate_and_format_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_utils.validate_and_format_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validates and formats the input text by ensuring it’s a non-empty string.
+If the input is a list of strings, joins them into a single string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text_input</strong> (<em>Optional</em><em>[</em><em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>]</em>) – The input text or list of texts to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Joined and stripped text if valid, else None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">validate_and_format_text</span><span class="p">(</span><span class="s2">&quot;  Hello World!  &quot;</span><span class="p">)</span>
+<span class="go">&#39;Hello World!&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_and_format_text</span><span class="p">([</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="s2">&quot;World&quot;</span><span class="p">])</span>
+<span class="go">&#39;Hello World&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_and_format_text</span><span class="p">([])</span>
+<span class="go">None</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -390,12 +464,12 @@ str:returns text with expanded contractions</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tutorials.html">
+          <a class="next-page" href="utils.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Tutorials</div>
+                <div class="title">Utilities</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -441,13 +515,14 @@ str:returns text with expanded contractions</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Text processing</a><ul>
-<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.check_datatype"><code class="docutils literal notranslate"><span class="pre">check_datatype()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.combine_sent"><code class="docutils literal notranslate"><span class="pre">combine_sent()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.combine_sentiment_scores"><code class="docutils literal notranslate"><span class="pre">combine_sentiment_scores()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.expand_contractions"><code class="docutils literal notranslate"><span class="pre">expand_contractions()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.find_ngrams"><code class="docutils literal notranslate"><span class="pre">find_ngrams()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.generate_ngrams"><code class="docutils literal notranslate"><span class="pre">generate_ngrams()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.load_content_from_txt"><code class="docutils literal notranslate"><span class="pre">load_content_from_txt()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.load_list_from_txt"><code class="docutils literal notranslate"><span class="pre">load_list_from_txt()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.load_set_from_txt"><code class="docutils literal notranslate"><span class="pre">load_set_from_txt()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.load_syllable_counts"><code class="docutils literal notranslate"><span class="pre">load_syllable_counts()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.tokenize_text"><code class="docutils literal notranslate"><span class="pre">tokenize_text()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.validate_and_format_text"><code class="docutils literal notranslate"><span class="pre">validate_and_format_text()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -9,34 +9,58 @@ from centralized_nlp_package import config
 
 
 ## TODO: Topic modelling 
-def train_word2vec(sents: List[List[str]], bigram = False, **kwargs) -> Word2Vec:
+def train_word2vec_model(
+    sentences: List[List[str]], 
+    bigram: bool = False, 
+    **kwargs: Any
+) -> Word2Vec:
     """
     Trains a Word2Vec model on the provided corpus.
 
+    This function initializes and trains a Word2Vec model using either bigram or unigram configurations
+    from the library's configuration. Additional Word2Vec parameters can be specified via keyword arguments.
+
     Args:
-        feed (List[List[str]]): Corpus of tokenized sentences.
-        model_params (Dict[str, Any]): Parameters for Word2Vec.
+        sentences (List[List[str]]): Corpus of tokenized sentences.
+        bigram (bool, optional): Whether to use bigram configurations. Defaults to False.
+        **kwargs (Any): Additional parameters for Word2Vec training.
 
     Returns:
         Word2Vec: Trained Word2Vec model.
+
+    Example:
+        >>> from centralized_nlp_package.embedding.word2vec_model import train_word2vec_model
+        >>> sentences = [['hello', 'world'], ['machine', 'learning']]
+        >>> model = train_word2vec_model(sentences, vector_size=100, window=5, min_count=1)
+        >>> model.wv['hello']
+        array([ 0.0123, -0.0456, ...,  0.0789], dtype=float32)
     """
-    model_params = (config.lib_config.word2vec_bigram 
-                    if bigram else 
-                    config.lib_config.word2vec_unigram)
+    model_params = (
+        config.lib_config.word2vec_bigram if bigram else config.lib_config.word2vec_unigram
+    )
     model_params.update(kwargs)
     
     logger.info("Starting Word2Vec model training.")
-    model = Word2Vec(sentences=sents, **model_params)
+    model = Word2Vec(sentences=sentences, **model_params)
     logger.info("Word2Vec model training completed.")
     return model
 
-def save_model(model: Word2Vec, path: str) -> None:
+def save_word2vec_model(model: Word2Vec, path: str) -> None:
     """
-    Saves the trained Word2Vec model to the specified path.
+    Saves the trained Word2Vec model to the specified file path.
+
+    This function ensures that the directory for the specified path exists and then saves
+    the Word2Vec model in Gensim's native format.
 
     Args:
         model (Word2Vec): Trained Word2Vec model.
         path (str): File path to save the model.
+
+    Example:
+        >>> from gensim.models import Word2Vec
+        >>> from centralized_nlp_package.embedding.word2vec_model import save_word2vec_model
+        >>> model = Word2Vec(sentences=[['hello', 'world']])
+        >>> save_word2vec_model(model, 'models/word2vec.model')
     """
     model_path = Path(path)
     model_path.parent.mkdir(parents=True, exist_ok=True)

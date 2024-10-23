@@ -205,11 +205,6 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Embedding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 
@@ -256,27 +251,38 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.embedding.embedding_utils.average_token_embeddings">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.embedding.embedding_utils.</span></span><span class="sig-name descname"><span class="pre">average_token_embeddings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/embedding/embedding_utils.html#average_token_embeddings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.embedding.embedding_utils.average_token_embeddings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates an embedding for the given list of tokens by averaging their vectors.</p>
+<dd><p>Generates an embedding for a list of tokens by averaging their vectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tokens</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of tokens (unigrams or bigrams).</p></li>
-<li><p><strong>model</strong> (<em>Word2Vec</em>) – Trained Word2Vec model.</p></li>
+<li><p><strong>tokens</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of tokens (e.g., unigrams or bigrams).</p></li>
+<li><p><strong>model</strong> (<em>Word2Vec</em>) – A trained Word2Vec model.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Averaged embedding vector or None if no tokens are in the model.</p>
+<dd class="field-even"><p>The averaged embedding vector, or None if none of the tokens are in the model.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Optional[np.ndarray]</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">([[</span><span class="s1">&#39;king&#39;</span><span class="p">,</span> <span class="s1">&#39;queen&#39;</span><span class="p">,</span> <span class="s1">&#39;man&#39;</span><span class="p">]],</span> <span class="n">vector_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;king&#39;</span><span class="p">,</span> <span class="s1">&#39;queen&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown_token&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">embedding</span> <span class="o">=</span> <span class="n">average_token_embeddings</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(100,)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <span class="target" id="module-centralized_nlp_package.embedding.word2vec_model"></span><dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.embedding.word2vec_model.save_model">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.embedding.word2vec_model.</span></span><span class="sig-name descname"><span class="pre">save_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/embedding/word2vec_model.html#save_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.embedding.word2vec_model.save_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the trained Word2Vec model to the specified path.</p>
+<dt class="sig sig-object py" id="centralized_nlp_package.embedding.word2vec_model.save_word2vec_model">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.embedding.word2vec_model.</span></span><span class="sig-name descname"><span class="pre">save_word2vec_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/embedding/word2vec_model.html#save_word2vec_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.embedding.word2vec_model.save_word2vec_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the trained Word2Vec model to the specified file path.</p>
+<p>This function ensures that the directory for the specified path exists and then saves
+the Word2Vec model in Gensim’s native format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -288,17 +294,27 @@
 <dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.embedding.word2vec_model</span> <span class="kn">import</span> <span class="n">save_word2vec_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_word2vec_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;models/word2vec.model&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.embedding.word2vec_model.train_word2vec">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.embedding.word2vec_model.</span></span><span class="sig-name descname"><span class="pre">train_word2vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sents</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bigram</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/embedding/word2vec_model.html#train_word2vec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.embedding.word2vec_model.train_word2vec" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="centralized_nlp_package.embedding.word2vec_model.train_word2vec_model">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.embedding.word2vec_model.</span></span><span class="sig-name descname"><span class="pre">train_word2vec_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sentences</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bigram</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/embedding/word2vec_model.html#train_word2vec_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.embedding.word2vec_model.train_word2vec_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trains a Word2Vec model on the provided corpus.</p>
+<p>This function initializes and trains a Word2Vec model using either bigram or unigram configurations
+from the library’s configuration. Additional Word2Vec parameters can be specified via keyword arguments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>feed</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Corpus of tokenized sentences.</p></li>
-<li><p><strong>model_params</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>) – Parameters for Word2Vec.</p></li>
+<li><p><strong>sentences</strong> (<em>List</em><em>[</em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Corpus of tokenized sentences.</p></li>
+<li><p><strong>bigram</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to use bigram configurations. Defaults to False.</p></li>
+<li><p><strong>**kwargs</strong> (<em>Any</em>) – Additional parameters for Word2Vec training.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -308,6 +324,14 @@
 <dd class="field-odd"><p>Word2Vec</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.embedding.word2vec_model</span> <span class="kn">import</span> <span class="n">train_word2vec_model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sentences</span> <span class="o">=</span> <span class="p">[[</span><span class="s1">&#39;hello&#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;machine&#39;</span><span class="p">,</span> <span class="s1">&#39;learning&#39;</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">train_word2vec_model</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">vector_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="s1">&#39;hello&#39;</span><span class="p">]</span>
+<span class="go">array([ 0.0123, -0.0456, ...,  0.0789], dtype=float32)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -369,8 +393,8 @@
             <ul>
 <li><a class="reference internal" href="#">Embedding</a><ul>
 <li><a class="reference internal" href="#centralized_nlp_package.embedding.embedding_utils.average_token_embeddings"><code class="docutils literal notranslate"><span class="pre">average_token_embeddings()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.embedding.word2vec_model.save_model"><code class="docutils literal notranslate"><span class="pre">save_model()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.embedding.word2vec_model.train_word2vec"><code class="docutils literal notranslate"><span class="pre">train_word2vec()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.embedding.word2vec_model.save_word2vec_model"><code class="docutils literal notranslate"><span class="pre">save_word2vec_model()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.embedding.word2vec_model.train_word2vec_model"><code class="docutils literal notranslate"><span class="pre">train_word2vec_model()</span></code></a></li>
 </ul>
 </li>
 </ul>

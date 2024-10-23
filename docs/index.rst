@@ -14,7 +14,6 @@ Welcome to Centralized NLP Package's documentation!
    source/embedding
    source/preprocessing
    source/text_processing
-   source/tutorials
    source/utils
 
 Indices and tables

@@ -205,11 +205,6 @@
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 </ul>
 
@@ -254,132 +249,177 @@
           <section id="module-centralized_nlp_package.data_access.snowflake_utils">
 <span id="data-access"></span><h1>Data Access<a class="headerlink" href="#module-centralized_nlp_package.data_access.snowflake_utils" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.decrypt_message">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">decrypt_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">encrypted_message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#decrypt_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.decrypt_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method decrypts the Fernet token passed as a parameter to the method.
-On successful decryption the original plaintext is obtained as a result</p>
-<p>Parameters:
-argument1 (str): encrypted values that needs to be decrypted</p>
-<p>Returns:
-str: decrypted value</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.encrypt_message">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">encrypt_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#encrypt_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.encrypt_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>It encrypts data passed as a parameter to the method.
-The outcome of this encryption is known as a Fernet token which is basically the ciphertext.</p>
-<p>Parameters:
-argument1 (str): value that needs to be encrypted</p>
-<p>Returns:
-str: encrypted value</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">get_snowflake_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#get_snowflake_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Establish a connection to Snowflake using configuration settings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>A Snowflake connection object</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>conn</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.get_snowflake_options">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">get_snowflake_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#get_snowflake_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary of Snowflake options.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">read_from_snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#read_from_snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes a SQL query on Snowflake and returns the result as a pandas DataFrame.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>str</em>) – The SQL query to execute.</p></li>
-<li><p><strong>config</strong> (<a class="reference internal" href="utils.html#centralized_nlp_package.utils.config.Config" title="centralized_nlp_package.utils.config.Config"><em>Config</em></a>) – Configuration object containing Snowflake credentials.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Query result.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pd.DataFrame</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake_spark">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">read_from_snowflake_spark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spark</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#read_from_snowflake_spark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake_spark" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.execute_snowflake_query_spark">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">execute_snowflake_query_spark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#execute_snowflake_query_spark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.execute_snowflake_query_spark" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes a SQL query on Snowflake and returns the result as a Spark DataFrame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – The SQL query to execute.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The result of the SQL query as a Spark DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If there is an error executing the query on Snowflake.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>df = execute_snowflake_query_spark(“SELECT * FROM my_table”)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.execute_truncate_or_merge_query">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">execute_truncate_or_merge_query</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#execute_truncate_or_merge_query"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.execute_truncate_or_merge_query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes a TRUNCATE or MERGE SQL query on Snowflake.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>query</strong> (<em>str</em>) – The SQL query to execute.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A confirmation message indicating the completion of the operation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>result = execute_truncate_or_merge_query(“TRUNCATE TABLE my_table”)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection_options">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">get_snowflake_connection_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#get_snowflake_connection_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs and returns a dictionary of Snowflake connection options.</p>
+<p>This includes the Snowflake account URL, user credentials, private key, database, schema,
+timezone, and role.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing Snowflake connection parameters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, str]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>snowflake_options = get_snowflake_connection_options()</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.retrieve_snowflake_private_key">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">retrieve_snowflake_private_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#retrieve_snowflake_private_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.retrieve_snowflake_private_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves and processes the Snowflake private key from Azure Key Vault (AKV).</p>
+<p>This function fetches the encrypted private key and password from AKV, decrypts the key,
+and formats it for Snowflake authentication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The private key in PEM format suitable for Snowflake authentication.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>private_key = retrieve_snowflake_private_key()</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.singleton">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#singleton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>A decorator to make a class a Singleton by ensuring only one instance exists.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.with_spark_session">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">with_spark_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#with_spark_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.with_spark_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator to ensure that the Spark session is initialized before function execution.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.write_dataframe_to_snowflake">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">write_dataframe_to_snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'append'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#write_dataframe_to_snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.write_dataframe_to_snowflake" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a Spark DataFrame to a specified Snowflake table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>query</strong> (<em>str</em>) – The SQL query to execute.</p></li>
-<li><p><strong>config</strong> (<a class="reference internal" href="utils.html#centralized_nlp_package.utils.config.Config" title="centralized_nlp_package.utils.config.Config"><em>Config</em></a>) – Configuration object containing Snowflake credentials.</p></li>
-<li><p><strong>spark</strong> (<em>SparkSession</em>) – The active Spark session.</p></li>
+<li><p><strong>df</strong> (<em>DataFrame</em>) – The Spark DataFrame to write to Snowflake.</p></li>
+<li><p><strong>table_name</strong> (<em>str</em>) – The target table name in Snowflake.</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies the behavior if the table already exists.
+Options are ‘append’, ‘overwrite’, ‘error’, or ‘ignore’.
+Default is ‘append’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If there is an error writing the DataFrame to Snowflake.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>write_dataframe_to_snowflake(df, “target_table”, mode=”append”)</p>
+</dd></dl>
+
+<span class="target" id="module-centralized_nlp_package.data_access.dask_utils"></span><dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.dask_utils.dask_compute_with_progress">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.dask_utils.</span></span><span class="sig-name descname"><span class="pre">dask_compute_with_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dask_dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/dask_utils.html#dask_compute_with_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.dask_utils.dask_compute_with_progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a Dask DataFrame, optionally displaying a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dask_dataframe</strong> (<em>Any</em>) – The Dask DataFrame to be computed.</p></li>
+<li><p><strong>use_progress</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to display a progress bar during computation. Defaults to True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Query result.</p>
+<dd class="field-even"><p>The computed DataFrame (e.g., pandas DataFrame).</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pyspark.sql.DataFrame</p>
+<dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">dask.dataframe</span> <span class="k">as</span> <span class="nn">dd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/*.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">computed_df</span> <span class="o">=</span> <span class="n">dask_compute_with_progress</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">use_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">computed_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="go">   column1  column2</span>
+<span class="go">0        1        4</span>
+<span class="go">1        2        5</span>
+<span class="go">2        3        6</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">write_to_snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_exists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'append'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#write_to_snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a pandas DataFrame to a Snowflake table.</p>
+<dt class="sig sig-object py" id="centralized_nlp_package.data_access.dask_utils.initialize_dask_client">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.dask_utils.</span></span><span class="sig-name descname"><span class="pre">initialize_dask_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads_per_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/dask_utils.html#initialize_dask_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.dask_utils.initialize_dask_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a Dask client with specified number of workers and threads per worker.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The DataFrame to write to Snowflake.</p></li>
-<li><p><strong>table_name</strong> (<em>str</em>) – The target table name in Snowflake.</p></li>
-<li><p><strong>config</strong> (<a class="reference internal" href="utils.html#centralized_nlp_package.utils.config.Config" title="centralized_nlp_package.utils.config.Config"><em>Config</em></a>) – Configuration object containing Snowflake credentials.</p></li>
-<li><p><strong>if_exists</strong> (<em>str</em>) – Behavior if the table already exists:
-‘fail’, ‘replace’, or ‘append’. Default is ‘append’.</p></li>
+<li><p><strong>n_workers</strong> (<em>int</em>) – Number of workers to initialize.</p></li>
+<li><p><strong>threads_per_worker</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of threads per worker. Defaults to 1.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the Dask distributed client.</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake_spark">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_access.snowflake_utils.</span></span><span class="sig-name descname"><span class="pre">write_to_snowflake_spark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'append'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_access/snowflake_utils.html#write_to_snowflake_spark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake_spark" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a Spark DataFrame to a Snowflake table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>df</strong> (<em>pyspark.sql.DataFrame</em>) – The Spark DataFrame to write to Snowflake.</p></li>
-<li><p><strong>table_name</strong> (<em>str</em>) – The target table name in Snowflake.</p></li>
-<li><p><strong>spark</strong> (<em>SparkSession</em>) – The active Spark session.</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – Specifies the behavior if the table already exists:
-‘append’, ‘overwrite’, ‘error’, or ‘ignore’. Default is ‘append’.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Client</p>
 </dd>
 </dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">initialize_dask_client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+<span class="go">&lt;distributed.client.Client object at 0x...&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -440,14 +480,15 @@ str: encrypted value</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Data Access</a><ul>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.decrypt_message"><code class="docutils literal notranslate"><span class="pre">decrypt_message()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.encrypt_message"><code class="docutils literal notranslate"><span class="pre">encrypt_message()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection"><code class="docutils literal notranslate"><span class="pre">get_snowflake_connection()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_options"><code class="docutils literal notranslate"><span class="pre">get_snowflake_options()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake"><code class="docutils literal notranslate"><span class="pre">read_from_snowflake()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.read_from_snowflake_spark"><code class="docutils literal notranslate"><span class="pre">read_from_snowflake_spark()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake"><code class="docutils literal notranslate"><span class="pre">write_to_snowflake()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.write_to_snowflake_spark"><code class="docutils literal notranslate"><span class="pre">write_to_snowflake_spark()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.execute_snowflake_query_spark"><code class="docutils literal notranslate"><span class="pre">execute_snowflake_query_spark()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.execute_truncate_or_merge_query"><code class="docutils literal notranslate"><span class="pre">execute_truncate_or_merge_query()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection_options"><code class="docutils literal notranslate"><span class="pre">get_snowflake_connection_options()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.retrieve_snowflake_private_key"><code class="docutils literal notranslate"><span class="pre">retrieve_snowflake_private_key()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.singleton"><code class="docutils literal notranslate"><span class="pre">singleton()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.with_spark_session"><code class="docutils literal notranslate"><span class="pre">with_spark_session()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.snowflake_utils.write_dataframe_to_snowflake"><code class="docutils literal notranslate"><span class="pre">write_dataframe_to_snowflake()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.dask_utils.dask_compute_with_progress"><code class="docutils literal notranslate"><span class="pre">dask_compute_with_progress()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_access.dask_utils.initialize_dask_client"><code class="docutils literal notranslate"><span class="pre">initialize_dask_client()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -1,26 +1,30 @@
 # centralized_nlp_package/embedding/embedding_utils.py
-
 from typing import List, Optional
 import numpy as np
-import pandas as pd
 from gensim.models import Word2Vec
-from loguru import logger
-
-
 
 def average_token_embeddings(tokens: List[str], model: Word2Vec) -> Optional[np.ndarray]:
     """
-    Generates an embedding for the given list of tokens by averaging their vectors.
+    Generates an embedding for a list of tokens by averaging their vectors.
 
     Args:
-        tokens (List[str]): List of tokens (unigrams or bigrams).
-        model (Word2Vec): Trained Word2Vec model.
+        tokens (List[str]): List of tokens (e.g., unigrams or bigrams).
+        model (Word2Vec): A trained Word2Vec model.
 
     Returns:
-        Optional[np.ndarray]: Averaged embedding vector or None if no tokens are in the model.
+        Optional[np.ndarray]: The averaged embedding vector, or None if none of the tokens are in the model.
+
+    Example:
+        >>> from gensim.models import Word2Vec
+        >>> model = Word2Vec([['king', 'queen', 'man']], vector_size=100, min_count=1, epochs=10)
+        >>> tokens = ['king', 'queen', 'unknown_token']
+        >>> embedding = average_token_embeddings(tokens, model)
+        >>> print(embedding.shape)
+        (100,)
     """
     valid_vectors = [model.wv[token] for token in tokens if token in model.wv]
     if not valid_vectors:
         return None
     return np.mean(np.stack(valid_vectors), axis=0)
+
 

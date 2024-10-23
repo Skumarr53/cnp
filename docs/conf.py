@@ -45,7 +45,7 @@ extensions = [
 
 
 # open _build/html/index.html
-
+autodoc_mock_imports = ["pyspark", "dask"]
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 

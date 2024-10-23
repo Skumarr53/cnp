@@ -204,11 +204,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 </ul>
 
@@ -258,16 +253,25 @@
 <span class="kn">from</span> <span class="nn">centralized_nlp_package.utils.exception</span> <span class="kn">import</span> <span class="n">FilesNotLoadedException</span>
 <span class="c1"># from centralized_nlp_package.preprocessing.text_preprocessing import clean_text </span>
 
-
-<div class="viewcode-block" id="check_datatype"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.check_datatype">[docs]</a><span class="k">def</span> <span class="nf">check_datatype</span><span class="p">(</span><span class="n">text_input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="c1"># def check_datatype()</span>
+<div class="viewcode-block" id="validate_and_format_text"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.validate_and_format_text">[docs]</a><span class="k">def</span> <span class="nf">validate_and_format_text</span><span class="p">(</span><span class="n">text_input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Validates and formats the input text.</span>
+<span class="sd">    Validates and formats the input text by ensuring it&#39;s a non-empty string.</span>
+<span class="sd">    If the input is a list of strings, joins them into a single string.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        text_input (Optional[Union[str, List[str]]]): The input text or list of texts to validate.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[str]: Joined text if valid, else None.</span>
+<span class="sd">        Optional[str]: Joined and stripped text if valid, else None.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; validate_and_format_text(&quot;  Hello World!  &quot;)</span>
+<span class="sd">        &#39;Hello World!&#39;</span>
+<span class="sd">        &gt;&gt;&gt; validate_and_format_text([&quot;Hello&quot;, &quot;World&quot;])</span>
+<span class="sd">        &#39;Hello World&#39;</span>
+<span class="sd">        &gt;&gt;&gt; validate_and_format_text([])</span>
+<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text_input</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">joined_text</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text_input</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -283,8 +287,8 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Input text is invalid or empty.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-
-<div class="viewcode-block" id="find_ngrams"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.find_ngrams">[docs]</a><span class="k">def</span> <span class="nf">find_ngrams</span><span class="p">(</span><span class="n">input_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="c1">## def generate_ngrams()</span>
+<div class="viewcode-block" id="generate_ngrams"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.generate_ngrams">[docs]</a><span class="k">def</span> <span class="nf">generate_ngrams</span><span class="p">(</span><span class="n">input_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generates n-grams from a list of tokens.</span>
 
@@ -294,7 +298,14 @@
 
 <span class="sd">    Yields:</span>
 <span class="sd">        Iterator[Tuple[str, ...]]: An iterator over n-grams as tuples.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; list(generate_ngrams([&#39;I&#39;, &#39;love&#39;, &#39;coding&#39;], 2))</span>
+<span class="sd">        [(&#39;I&#39;, &#39;love&#39;), (&#39;love&#39;, &#39;coding&#39;)]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;n must be at least 1.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span></div>
 
 
@@ -310,9 +321,14 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        FilesNotLoadedException: If the file is not found at the given path.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; content = load_content_from_txt(&quot;data/sample.txt&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(content)</span>
+<span class="sd">        &#39;This is a sample text file.&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_obj</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_obj</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">f_obj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded content from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">content</span>
@@ -321,7 +337,8 @@
         <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
 
-<div class="viewcode-block" id="load_list_from_txt"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_list_from_txt">[docs]</a><span class="k">def</span> <span class="nf">load_list_from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_lower</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
+<span class="c1"># def load_list_from_txt()</span>
+<div class="viewcode-block" id="load_set_from_txt"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_set_from_txt">[docs]</a><span class="k">def</span> <span class="nf">load_set_from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_lower</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads the content of a text file and returns it as a set of lines.</span>
 
@@ -334,27 +351,38 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        FilesNotLoadedException: If there is an error reading the file.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; word_set = load_set_from_txt(&quot;data/positive_words.txt&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(word_set)</span>
+<span class="sd">        {&#39;happy&#39;, &#39;joyful&#39;, &#39;delighted&#39;}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">load_content_from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">is_lower</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-        <span class="n">words_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded list from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">words_list</span>
+        <span class="n">words_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_set</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">words_set</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading list from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading list from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
 
 <div class="viewcode-block" id="expand_contractions"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.expand_contractions">[docs]</a><span class="k">def</span> <span class="nf">expand_contractions</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Expand contractions</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;    	</span>
+<span class="sd">    Expands contractions in the input text based on a contraction dictionary.</span>
 
-<span class="sd">    Parameters:</span>
-<span class="sd">    argument1 (str): text</span>
-<span class="sd">   </span>
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): The input text containing contractions.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">    str:returns text with expanded contractions</span>
+<span class="sd">        str: Text with expanded contractions.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; contraction_map = {&quot;can&#39;t&quot;: &quot;cannot&quot;, &quot;I&#39;m&quot;: &quot;I am&quot;}</span>
+<span class="sd">        &gt;&gt;&gt; expand_contractions(&quot;I can&#39;t go.&quot;)</span>
+<span class="sd">        &#39;I cannot go.&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: add contraction words to config or txt file then load</span>
@@ -364,46 +392,59 @@
         <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">contraction_dict</span><span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()])</span>
     <span class="k">return</span> <span class="n">text</span></div>
 
-
-<span class="c1"># def word_tokenizer(text: str, spacy_tokenizer: spacy.Language) -&gt; List[str]:</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     Tokenizes the text and performs lemmatization.</span>
-
-<span class="c1">#     Args:</span>
-<span class="c1">#         text (str): The input text to tokenize.</span>
-<span class="c1">#         config (Config): Configuration object containing file paths.</span>
-<span class="c1">#         spacy_tokenizer (spacy.Language): Initialized SpaCy tokenizer.</span>
-
-<span class="c1">#     Returns:</span>
-<span class="c1">#         List[str]: A list of lemmatized words.</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     stop_words_path = Path(config.lib_config.paths.model_artifacts.path) / config.lib_config.filenames.stop_words_flnm</span>
-<span class="c1">#     stop_words_list = load_list_from_txt(str(stop_words_path), is_lower=True)</span>
-
-<span class="c1">#     doc = spacy_tokenizer(text.lower())</span>
-<span class="c1">#     token_lemmatized = [token.lemma_ for token in doc]</span>
-<span class="c1">#     filtered_words = [word for word in token_lemmatized if word not in stop_words_list]</span>
-<span class="c1">#     logger.debug(f&quot;Tokenized and filtered words. {len(filtered_words)} words remaining.&quot;)</span>
-<span class="c1">#     return filtered_words</span>
-
-<div class="viewcode-block" id="combine_sent"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.combine_sent">[docs]</a><span class="k">def</span> <span class="nf">combine_sent</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="c1"># def word_tokenizer()</span>
+<div class="viewcode-block" id="tokenize_text"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.tokenize_text">[docs]</a><span class="k">def</span> <span class="nf">tokenize_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spacy_tokenizer</span><span class="p">:</span> <span class="n">spacy</span><span class="o">.</span><span class="n">Language</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Combines two sentiment scores.</span>
+<span class="sd">    Tokenizes the text and performs lemmatization, excluding stop words.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (int): Positive sentiment count.</span>
-<span class="sd">        y (int): Negative sentiment count.</span>
+<span class="sd">        text (str): The input text to tokenize.</span>
+<span class="sd">        spacy_tokenizer (spacy.Language): Initialized SpaCy tokenizer.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: Combined sentiment score.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="mf">0.0</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">combined_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined sentiment score: </span><span class="si">{</span><span class="n">combined_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">combined_score</span></div>
+<span class="sd">        List[str]: A list of lemmatized and filtered words.</span>
 
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; nlp = spacy.load(&quot;en_core_web_sm&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; tokenize_text(&quot;I am loving the new features!&quot;, nlp)</span>
+<span class="sd">        [&#39;love&#39;, &#39;new&#39;, &#39;feature&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stop_words_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">paths</span><span class="o">.</span><span class="n">model_artifacts</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">filenames</span><span class="o">.</span><span class="n">stop_words_flnm</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">stop_words_set</span> <span class="o">=</span> <span class="n">load_set_from_txt</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stop_words_path</span><span class="p">),</span> <span class="n">is_lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">FilesNotLoadedException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stop words could not be loaded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="n">doc</span> <span class="o">=</span> <span class="n">spacy_tokenizer</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="n">token_lemmatized</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">]</span>
+    <span class="n">filtered_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">token_lemmatized</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words_set</span> <span class="ow">and</span> <span class="n">word</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokenized and filtered words. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_words</span><span class="p">)</span><span class="si">}</span><span class="s2"> words remaining.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">filtered_words</span></div>
+
+<span class="c1"># def combine_sent</span>
+<div class="viewcode-block" id="combine_sentiment_scores"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.combine_sentiment_scores">[docs]</a><span class="k">def</span> <span class="nf">combine_sentiment_scores</span><span class="p">(</span><span class="n">positive_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">negative_count</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Combines two sentiment scores into a single score.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        positive_count (int): Positive sentiment count.</span>
+<span class="sd">        negative_count (int): Negative sentiment count.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        float: Combined sentiment score. Returns 0.0 if both counts are zero.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; combine_sentiment_scores(5, 3)</span>
+<span class="sd">        0.25</span>
+<span class="sd">        &gt;&gt;&gt; combine_sentiment_scores(0, 0)</span>
+<span class="sd">        0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">+</span> <span class="n">negative_count</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="n">combined_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">-</span> <span class="n">negative_count</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">+</span> <span class="n">negative_count</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined sentiment score: </span><span class="si">{</span><span class="n">combined_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">combined_score</span></div>
 
 
 <div class="viewcode-block" id="load_syllable_counts"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_syllable_counts">[docs]</a><span class="k">def</span> <span class="nf">load_syllable_counts</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
@@ -417,17 +458,24 @@
 <span class="sd">        Dict[str, int]: A dictionary where keys are words and values are their syllable counts.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        FilesNotLoadedException: If the file is not found at the given path.</span>
+<span class="sd">        FilesNotLoadedException: If the file is not found or has an invalid format.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; syllables = load_syllable_counts(&quot;data/syllable_counts.txt&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; syllables[&#39;beautiful&#39;]</span>
+<span class="sd">        3</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">syllables</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">syllables</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fs_pos_words</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fs_pos_words</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fs_pos_words</span><span class="p">:</span>
                 <span class="n">parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="n">word</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">parts</span>
                     <span class="n">syllables</span><span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded syllable counts from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring invalid line in syllable count file: </span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded syllable counts from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">syllables</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">syllables</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -435,7 +483,6 @@
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value error in syllable count file: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid format in syllable count file: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ve</span></div>
-
 </pre></div>
         </article>
       </div>

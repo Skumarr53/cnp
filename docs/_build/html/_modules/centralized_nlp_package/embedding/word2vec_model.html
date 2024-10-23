@@ -204,11 +204,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/usage_pipeline1.html">Usage: Pipeline 1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/usage_pipeline2.html">Usage: Pipeline 2</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 </ul>
 
@@ -256,32 +251,58 @@
 
 
 <span class="c1">## TODO: Topic modelling </span>
-<div class="viewcode-block" id="train_word2vec"><a class="viewcode-back" href="../../../source/embedding.html#centralized_nlp_package.embedding.word2vec_model.train_word2vec">[docs]</a><span class="k">def</span> <span class="nf">train_word2vec</span><span class="p">(</span><span class="n">sents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">bigram</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Word2Vec</span><span class="p">:</span>
+<div class="viewcode-block" id="train_word2vec_model"><a class="viewcode-back" href="../../../source/embedding.html#centralized_nlp_package.embedding.word2vec_model.train_word2vec_model">[docs]</a><span class="k">def</span> <span class="nf">train_word2vec_model</span><span class="p">(</span>
+    <span class="n">sentences</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> 
+    <span class="n">bigram</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> 
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Word2Vec</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Trains a Word2Vec model on the provided corpus.</span>
 
+<span class="sd">    This function initializes and trains a Word2Vec model using either bigram or unigram configurations</span>
+<span class="sd">    from the library&#39;s configuration. Additional Word2Vec parameters can be specified via keyword arguments.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        feed (List[List[str]]): Corpus of tokenized sentences.</span>
-<span class="sd">        model_params (Dict[str, Any]): Parameters for Word2Vec.</span>
+<span class="sd">        sentences (List[List[str]]): Corpus of tokenized sentences.</span>
+<span class="sd">        bigram (bool, optional): Whether to use bigram configurations. Defaults to False.</span>
+<span class="sd">        **kwargs (Any): Additional parameters for Word2Vec training.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Word2Vec: Trained Word2Vec model.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.embedding.word2vec_model import train_word2vec_model</span>
+<span class="sd">        &gt;&gt;&gt; sentences = [[&#39;hello&#39;, &#39;world&#39;], [&#39;machine&#39;, &#39;learning&#39;]]</span>
+<span class="sd">        &gt;&gt;&gt; model = train_word2vec_model(sentences, vector_size=100, window=5, min_count=1)</span>
+<span class="sd">        &gt;&gt;&gt; model.wv[&#39;hello&#39;]</span>
+<span class="sd">        array([ 0.0123, -0.0456, ...,  0.0789], dtype=float32)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">model_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">word2vec_bigram</span> 
-                    <span class="k">if</span> <span class="n">bigram</span> <span class="k">else</span> 
-                    <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">word2vec_unigram</span><span class="p">)</span>
+    <span class="n">model_params</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">word2vec_bigram</span> <span class="k">if</span> <span class="n">bigram</span> <span class="k">else</span> <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">word2vec_unigram</span>
+    <span class="p">)</span>
+    <span class="n">model_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+    
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Word2Vec model training.&quot;</span><span class="p">)</span>
-    <span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">sents</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">(</span><span class="n">sentences</span><span class="o">=</span><span class="n">sentences</span><span class="p">,</span> <span class="o">**</span><span class="n">model_params</span><span class="p">)</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Word2Vec model training completed.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="save_model"><a class="viewcode-back" href="../../../source/embedding.html#centralized_nlp_package.embedding.word2vec_model.save_model">[docs]</a><span class="k">def</span> <span class="nf">save_model</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Word2Vec</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="save_word2vec_model"><a class="viewcode-back" href="../../../source/embedding.html#centralized_nlp_package.embedding.word2vec_model.save_word2vec_model">[docs]</a><span class="k">def</span> <span class="nf">save_word2vec_model</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">Word2Vec</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Saves the trained Word2Vec model to the specified path.</span>
+<span class="sd">    Saves the trained Word2Vec model to the specified file path.</span>
+
+<span class="sd">    This function ensures that the directory for the specified path exists and then saves</span>
+<span class="sd">    the Word2Vec model in Gensim&#39;s native format.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        model (Word2Vec): Trained Word2Vec model.</span>
 <span class="sd">        path (str): File path to save the model.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from gensim.models import Word2Vec</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.embedding.word2vec_model import save_word2vec_model</span>
+<span class="sd">        &gt;&gt;&gt; model = Word2Vec(sentences=[[&#39;hello&#39;, &#39;world&#39;]])</span>
+<span class="sd">        &gt;&gt;&gt; save_word2vec_model(model, &#39;models/word2vec.model&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">model_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">model_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
