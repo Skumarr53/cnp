@@ -213,7 +213,7 @@ def execute_snowflake_query_spark(query: str) -> DataFrame:
 
     try:
         logger.debug(f"Executing query: {query}")
-        df_spark = _spark_session.read.format("snowflake") \
+        df_spark = _spark_session.read.format("net.snowflake.spark.snowflake") \
             .options(**snowflake_options) \
             .option("query", query) \
             .load()
@@ -252,7 +252,7 @@ def write_dataframe_to_snowflake(df: DataFrame, table_name: str, mode: str = 'ap
     snowflake_options = get_snowflake_connection_options()
 
     try:
-        df.write.format("snowflake") \
+        df.write.format("net.snowflake.spark.snowflake") \
             .options(**snowflake_options) \
             .option("dbtable", table_name) \
             .mode(mode) \
