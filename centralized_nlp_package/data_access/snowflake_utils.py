@@ -32,12 +32,12 @@ def singleton(cls):
     def get_instance(*args, **kwargs):
         global _spark_session, _sfUtils
         if cls not in instances:
-            logger.info(f"Creating a new instance of {cls.__name__}")
+            #logger.info(f"Creating a new instance of {cls.__name__}")
             instances[cls] = cls(*args, **kwargs)
             _spark_session = instances[cls].spark
             _sfUtils = instances[cls].sfUtils
-        else:
-            logger.info(f"Using existing instance of {cls.__name__}")
+        # else:
+            #logger.info(f"Using existing instance of {cls.__name__}")
         return instances[cls]
 
     return get_instance
@@ -67,19 +67,20 @@ class SparkSessionManager:
         Configures Spark session settings and Snowflake integration.
         """
         global _sfUtils
-        logger.info("Configuring Spark session settings...")
+        #logger.info("Configuring Spark session settings...")
 
         sc = self.spark.sparkContext
 
         # Configure Snowflake pushdown session
-        _sfUtils = sc._jvm.net.snowflake.spark.snowflake.Utils
-        sc._jvm.net.snowflake.spark.snowflake.SnowflakeConnectorUtils.enablePushdownSession(self.spark)
+        self.sfUtils = sc._jvm.net.snowflake.spark.snowflake.Utils
+        # sc._jvm.net.snowflake.spark.snowflake.SnowflakeConnectorUtils.enablePushdownSession(self.spark)
+        sc._jvm.net.snowflake.spark.snowflake.SnowflakeConnectorUtils.enablePushdownSession(sc._jvm.org.apache.spark.sql.SparkSession.builder().getOrCreate())
 
         # Set the default timezone to UTC
         zone = sc._jvm.java.util.TimeZone
         zone.setDefault(sc._jvm.java.util.TimeZone.getTimeZone("UTC"))
 
-        logger.info("Spark session configured and Snowflake integration enabled.")
+        #logger.info("Spark session configured and Snowflake integration enabled.")
 
 
 def with_spark_session(func):
@@ -90,13 +91,12 @@ def with_spark_session(func):
     def wrapper(*args, **kwargs):
         global _spark_session
         if _spark_session is None:
-            logger.info("Spark session not initialized. Initializing now...")
+            #logger.info("Spark session not initialized. Initializing now...")
             SparkSessionManager(app_name="SnowflakeIntegration")
         else:
-            logger.info("Spark session already initialized; reusing existing session.")
+            print("Spark session already initialized; reusing existing session.")
         return func(*args, **kwargs)
     return wrapper
-
 
 @with_spark_session
 def retrieve_snowflake_private_key() -> str:
@@ -110,7 +110,7 @@ def retrieve_snowflake_private_key() -> str:
         str: The private key in PEM format suitable for Snowflake authentication.
 
     Example:
-        private_key = retrieve_snowflake_private_key()
+        >>> private_key = retrieve_snowflake_private_key()
     """
     global _spark_session  # Access Spark session if needed
 
@@ -156,7 +156,7 @@ def retrieve_snowflake_private_key() -> str:
 
 
 @with_spark_session
-def get_snowflake_connection_options() -> Dict[str, str]:
+def get_snowflake_connection_options(database: str, schema: str) -> Dict[str, str]:
     """
     Constructs and returns a dictionary of Snowflake connection options.
 
@@ -167,7 +167,7 @@ def get_snowflake_connection_options() -> Dict[str, str]:
         Dict[str, str]: A dictionary containing Snowflake connection parameters.
 
     Example:
-        snowflake_options = get_snowflake_connection_options()
+        >>> snowflake_options = get_snowflake_connection_options()
     """
     global _spark_session  # Access Spark session if needed
 
@@ -178,8 +178,8 @@ def get_snowflake_connection_options() -> Dict[str, str]:
         'sfURL': f'{_config.account}.snowflakecomputing.com',
         'sfUser': _config.user,
         "pem_private_key": private_key,
-        'sfDatabase': _config.database,
-        'sfSchema': _config.schema,
+        'sfDatabase': database,
+        'sfSchema': schema,
         "sfTimezone": "spark",
         'sfRole': _config.role  # Optional if needed
     }
@@ -203,7 +203,7 @@ def execute_snowflake_query_spark(query: str) -> DataFrame:
         Exception: If there is an error executing the query on Snowflake.
 
     Example:
-        df = execute_snowflake_query_spark("SELECT * FROM my_table")
+        >>> df = execute_snowflake_query_spark("SELECT * FROM my_table")
     """
     global _spark_session  # Access Spark session
 
@@ -244,7 +244,7 @@ def write_dataframe_to_snowflake(df: DataFrame, table_name: str, mode: str = 'ap
         Exception: If there is an error writing the DataFrame to Snowflake.
 
     Example:
-        write_dataframe_to_snowflake(df, "target_table", mode="append")
+        >>> write_dataframe_to_snowflake(df, "target_table", mode="append")
     """
     global _spark_session  # Access Spark session
 
@@ -275,7 +275,7 @@ def execute_truncate_or_merge_query(query: str) -> str:
         str: A confirmation message indicating the completion of the operation.
 
     Example:
-        result = execute_truncate_or_merge_query("TRUNCATE TABLE my_table")
+        >>> result = execute_truncate_or_merge_query("TRUNCATE TABLE my_table")
     """
     global _spark_session  # Access Spark session
 
