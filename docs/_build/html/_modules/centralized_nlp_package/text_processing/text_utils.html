@@ -205,6 +205,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
 </ul>
 
 </div>
@@ -250,6 +252,7 @@
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
 <span class="kn">from</span> <span class="nn">centralized_nlp_package</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.file_utils</span> <span class="kn">import</span> <span class="n">load_content_from_txt</span>
 <span class="kn">from</span> <span class="nn">centralized_nlp_package.utils.exception</span> <span class="kn">import</span> <span class="n">FilesNotLoadedException</span>
 <span class="c1"># from centralized_nlp_package.preprocessing.text_preprocessing import clean_text </span>
 
@@ -307,34 +310,6 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;n must be at least 1.&quot;</span><span class="p">)</span>
         <span class="k">return</span>
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span></div>
-
-
-<div class="viewcode-block" id="load_content_from_txt"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_content_from_txt">[docs]</a><span class="k">def</span> <span class="nf">load_content_from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads the entire content of a text file from the given file path.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        file_path (str): The path to the text file.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The content of the text file.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        FilesNotLoadedException: If the file is not found at the given path.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; content = load_content_from_txt(&quot;data/sample.txt&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; print(content)</span>
-<span class="sd">        &#39;This is a sample text file.&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_obj</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">f_obj</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded content from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">content</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span></div>
 
 
 <span class="c1"># def load_list_from_txt()</span>

@@ -8,6 +8,7 @@ import numpy as np
 from loguru import logger
 
 from centralized_nlp_package import config
+from centralized_nlp_package.common_utils.file_utils import load_content_from_txt
 from centralized_nlp_package.utils.exception import FilesNotLoadedException
 # from centralized_nlp_package.preprocessing.text_preprocessing import clean_text 
 
@@ -65,34 +66,6 @@ def generate_ngrams(input_list: List[str], n: int) -> Iterator[Tuple[str, ...]]:
         logger.warning("n must be at least 1.")
         return
     return zip(*[input_list[i:] for i in range(n)])
-
-
-def load_content_from_txt(file_path: str) -> str:
-    """
-    Reads the entire content of a text file from the given file path.
-
-    Args:
-        file_path (str): The path to the text file.
-
-    Returns:
-        str: The content of the text file.
-
-    Raises:
-        FilesNotLoadedException: If the file is not found at the given path.
-
-    Example:
-        >>> content = load_content_from_txt("data/sample.txt")
-        >>> print(content)
-        'This is a sample text file.'
-    """
-    try:
-        with open(file_path, "r", encoding="utf-8") as f_obj:
-            content = f_obj.read()
-        logger.debug(f"Loaded content from {file_path}.")
-        return content
-    except FileNotFoundError as ex:
-        logger.error(f"File not found: {file_path}")
-        raise FilesNotLoadedException(f"File not found: {file_path}") from ex
 
 
 # def load_list_from_txt()

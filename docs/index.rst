@@ -15,6 +15,8 @@ Welcome to Centralized NLP Package's documentation!
    source/preprocessing
    source/text_processing
    source/utils
+   source/common_utils
+   source/data_processing
 
 Indices and tables
 ==================

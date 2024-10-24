@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>centralized_nlp_package.embedding.embedding_utils - Centralized NLP Package 0.1.0 documentation</title>
+        <title>centralized_nlp_package.common_utils.string_utils - Centralized NLP Package 0.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
@@ -241,37 +241,85 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for centralized_nlp_package.embedding.embedding_utils</h1><div class="highlight"><pre>
-<span></span><span class="c1"># centralized_nlp_package/embedding/embedding_utils.py</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">gensim.models</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+          <h1>Source code for centralized_nlp_package.common_utils.string_utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># centralized_nlp_package/common_utils/string_utils.py</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.file_utils</span> <span class="kn">import</span> <span class="n">load_content_from_txt</span>
 
-<div class="viewcode-block" id="average_token_embeddings"><a class="viewcode-back" href="../../../source/embedding.html#centralized_nlp_package.embedding.embedding_utils.average_token_embeddings">[docs]</a><span class="k">def</span> <span class="nf">average_token_embeddings</span><span class="p">(</span><span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">model</span><span class="p">:</span> <span class="n">Word2Vec</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+
+
+<div class="viewcode-block" id="format_string_template"><a class="viewcode-back" href="../../../source/common_utils.html#centralized_nlp_package.common_utils.string_utils.format_string_template">[docs]</a><span class="k">def</span> <span class="nf">format_string_template</span><span class="p">(</span><span class="n">template</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates an embedding for a list of tokens by averaging their vectors.</span>
+<span class="sd">    Constructs a formatted string by replacing placeholders in the template with provided keyword arguments.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        tokens (List[str]): List of tokens (e.g., unigrams or bigrams).</span>
-<span class="sd">        model (Word2Vec): A trained Word2Vec model.</span>
+<span class="sd">        template (str): Template string containing placeholders in the form {key}.</span>
+<span class="sd">        **kwargs: Variable keyword arguments to replace placeholders.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[np.ndarray]: The averaged embedding vector, or None if none of the tokens are in the model.</span>
+<span class="sd">        str: The formatted string with placeholders replaced.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If any placeholder in the template does not have a corresponding keyword argument.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; from gensim.models import Word2Vec</span>
-<span class="sd">        &gt;&gt;&gt; model = Word2Vec([[&#39;king&#39;, &#39;queen&#39;, &#39;man&#39;]], vector_size=100, min_count=1, epochs=10)</span>
-<span class="sd">        &gt;&gt;&gt; tokens = [&#39;king&#39;, &#39;queen&#39;, &#39;unknown_token&#39;]</span>
-<span class="sd">        &gt;&gt;&gt; embedding = average_token_embeddings(tokens, model)</span>
-<span class="sd">        &gt;&gt;&gt; print(embedding.shape)</span>
-<span class="sd">        (100,)</span>
+<span class="sd">        &gt;&gt;&gt; template = &quot;Hello, {name}! Today is {day}.&quot;</span>
+<span class="sd">        &gt;&gt;&gt; format_string_template(template, name=&quot;Alice&quot;, day=&quot;Monday&quot;)</span>
+<span class="sd">        &#39;Hello, Alice! Today is Monday.&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">valid_vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="n">token</span><span class="p">]</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_vectors</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">valid_vectors</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+    <span class="n">placeholders</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{(.*?)}&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+
+    <span class="n">missing_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">placeholders</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">missing_keys</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing keys for placeholders: </span><span class="si">{</span><span class="n">missing_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing keys for placeholders: </span><span class="si">{</span><span class="n">missing_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">format_string</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Formatted string: </span><span class="si">{</span><span class="n">format_string</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">format_string</span>
+    <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing key during string formatting: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Missing key during string formatting: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error formatting string: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error formatting string: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
 
+<div class="viewcode-block" id="query_constructor"><a class="viewcode-back" href="../../../source/common_utils.html#centralized_nlp_package.common_utils.string_utils.query_constructor">[docs]</a><span class="k">def</span> <span class="nf">query_constructor</span><span class="p">(</span><span class="n">query_input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs a query string by loading from a file or using a provided string and replacing placeholders with provided parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        query_input (Union[str, os.PathLike]): The file path to the query or the query string itself.</span>
+<span class="sd">        **kwargs: Parameters to replace placeholders in the query.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The constructed query string with parameters substituted.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If placeholders in the query do not match the provided parameters.</span>
+<span class="sd">        FilesNotLoadedException: If the provided path to the query file does not exist.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; template = &quot;SELECT * FROM users WHERE signup_date &gt; &#39;{start_date}&#39; AND signup_date &lt; &#39;{end_date}&#39;;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; query = query_constructor(template, start_date=&quot;2022-01-01&quot;, end_date=&quot;2022-12-31&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(query)</span>
+<span class="sd">        &quot;SELECT * FROM users WHERE signup_date &gt; &#39;2022-01-01&#39; AND signup_date &lt; &#39;2022-12-31&#39;;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">query_input</span><span class="p">):</span>
+        <span class="n">base_query</span> <span class="o">=</span> <span class="n">load_content_from_txt</span><span class="p">(</span><span class="n">query_input</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded query from file: </span><span class="si">{</span><span class="n">query_input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">base_query</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">query_input</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using provided query string.&quot;</span><span class="p">)</span>
+
+    <span class="n">final_query</span> <span class="o">=</span> <span class="n">format_string_template</span><span class="p">(</span><span class="n">base_query</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">final_query</span></div>
 </pre></div>
         </article>
       </div>

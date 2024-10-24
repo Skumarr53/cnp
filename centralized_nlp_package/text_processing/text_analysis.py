@@ -10,7 +10,7 @@ from loguru import logger
 from centralized_nlp_package.text_processing.text_utils import (
     load_set_from_txt,
     combine_sentiment_scores,
-    find_ngrams,
+    generate_ngrams,
     load_syllable_counts,
 )
 from centralized_nlp_package.preprocessing.text_preprocessing import (

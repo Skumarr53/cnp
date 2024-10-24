@@ -204,6 +204,8 @@
 <li class="toctree-l1"><a class="reference internal" href="source/preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/text_processing.html">Text processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="source/utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/common_utils.html">Common Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="source/data_processing.html">Data Processing</a></li>
 </ul>
 
 </div>
@@ -241,7 +243,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
@@ -257,6 +259,31 @@
   <h2>C</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.calculate_polarity_score">calculate_polarity_score() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.calculate_sentence_score">calculate_sentence_score() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li>
+    centralized_nlp_package.common_utils.date_utils
+
+        <ul>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.date_utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    centralized_nlp_package.common_utils.file_utils
+
+        <ul>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.file_utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    centralized_nlp_package.common_utils.string_utils
+
+        <ul>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.string_utils">module</a>
+</li>
+        </ul></li>
         <li>
     centralized_nlp_package.data_access.dask_utils
 
@@ -272,6 +299,15 @@
 </li>
         </ul></li>
         <li>
+    centralized_nlp_package.data_processing.dataframe_utils
+
+        <ul>
+          <li><a href="source/data_processing.html#module-centralized_nlp_package.data_processing.dataframe_utils">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
     centralized_nlp_package.embedding.embedding_utils
 
         <ul>
@@ -285,13 +321,18 @@
           <li><a href="source/embedding.html#module-centralized_nlp_package.embedding.word2vec_model">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     centralized_nlp_package.preprocessing.text_preprocessing
 
         <ul>
           <li><a href="source/preprocessing.html#module-centralized_nlp_package.preprocessing.text_preprocessing">module</a>
+</li>
+        </ul></li>
+        <li>
+    centralized_nlp_package.text_processing.text_analysis
+
+        <ul>
+          <li><a href="source/text_processing.html#module-centralized_nlp_package.text_processing.text_analysis">module</a>
 </li>
         </ul></li>
         <li>
@@ -308,6 +349,8 @@
           <li><a href="source/utils.html#module-centralized_nlp_package.utils.helpers">module</a>
 </li>
         </ul></li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.check_negation">check_negation() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
         <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.clean_text">clean_text() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
 </li>
         <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.combine_sentiment_scores">combine_sentiment_scores() (in module centralized_nlp_package.text_processing.text_utils)</a>
@@ -322,12 +365,20 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/data_access.html#centralized_nlp_package.data_access.dask_utils.dask_compute_with_progress">dask_compute_with_progress() (in module centralized_nlp_package.data_access.dask_utils)</a>
 </li>
+        <li><a href="source/data_processing.html#centralized_nlp_package.data_processing.dataframe_utils.df_apply_transformations">df_apply_transformations() (in module centralized_nlp_package.data_processing.dataframe_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.df_apply_transformations">(in module centralized_nlp_package.utils.helpers)</a>
+</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.df_apply_transformations">df_apply_transformations() (in module centralized_nlp_package.utils.helpers)</a>
+        <li><a href="source/data_processing.html#centralized_nlp_package.data_processing.dataframe_utils.df_remove_rows_with_keywords">df_remove_rows_with_keywords() (in module centralized_nlp_package.data_processing.dataframe_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.df_remove_rows_with_keywords">(in module centralized_nlp_package.utils.helpers)</a>
 </li>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.df_remove_rows_with_keywords">df_remove_rows_with_keywords() (in module centralized_nlp_package.utils.helpers)</a>
-</li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -352,12 +403,24 @@
   <h2>F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.format_date">format_date() (in module centralized_nlp_package.utils.helpers)</a>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.fog_analysis_per_section">fog_analysis_per_section() (in module centralized_nlp_package.text_processing.text_analysis)</a>
 </li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.fog_analysis_per_sentence">fog_analysis_per_sentence() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/common_utils.html#centralized_nlp_package.common_utils.date_utils.format_date">format_date() (in module centralized_nlp_package.common_utils.date_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.format_date">(in module centralized_nlp_package.utils.helpers)</a>
+</li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.format_string_template">format_string_template() (in module centralized_nlp_package.utils.helpers)</a>
+        <li><a href="source/common_utils.html#centralized_nlp_package.common_utils.string_utils.format_string_template">format_string_template() (in module centralized_nlp_package.common_utils.string_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.format_string_template">(in module centralized_nlp_package.utils.helpers)</a>
 </li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -366,11 +429,23 @@
   <h2>G</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.generate_match_count">generate_match_count() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
         <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.generate_ngrams">generate_ngrams() (in module centralized_nlp_package.text_processing.text_utils)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.generate_sentence_relevance_score">generate_sentence_relevance_score() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.generate_topic_statistics">generate_topic_statistics() (in module centralized_nlp_package.text_processing.text_analysis)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.get_date_range">get_date_range() (in module centralized_nlp_package.utils.helpers)</a>
+        <li><a href="source/common_utils.html#centralized_nlp_package.common_utils.date_utils.get_date_range">get_date_range() (in module centralized_nlp_package.common_utils.date_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.get_date_range">(in module centralized_nlp_package.utils.helpers)</a>
+</li>
+        </ul></li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.get_match_set">get_match_set() (in module centralized_nlp_package.text_processing.text_analysis)</a>
 </li>
         <li><a href="source/data_access.html#centralized_nlp_package.data_access.snowflake_utils.get_snowflake_connection_options">get_snowflake_connection_options() (in module centralized_nlp_package.data_access.snowflake_utils)</a>
 </li>
@@ -388,6 +463,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.initialize_spacy">initialize_spacy() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
 </li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.is_complex">is_complex() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -396,7 +473,7 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_content_from_txt">load_content_from_txt() (in module centralized_nlp_package.text_processing.text_utils)</a>
+        <li><a href="source/common_utils.html#centralized_nlp_package.common_utils.file_utils.load_content_from_txt">load_content_from_txt() (in module centralized_nlp_package.common_utils.file_utils)</a>
 </li>
         <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.load_file">load_file() (in module centralized_nlp_package.utils.helpers)</a>
 </li>
@@ -406,6 +483,8 @@
 </li>
         <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.load_syllable_counts">load_syllable_counts() (in module centralized_nlp_package.text_processing.text_utils)</a>
 </li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.load_word_set">load_word_set() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -414,19 +493,33 @@
   <h2>M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.match_count">match_count() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.merge_counts">merge_counts() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
         <li>
     module
 
         <ul>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.date_utils">centralized_nlp_package.common_utils.date_utils</a>
+</li>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.file_utils">centralized_nlp_package.common_utils.file_utils</a>
+</li>
+          <li><a href="source/common_utils.html#module-centralized_nlp_package.common_utils.string_utils">centralized_nlp_package.common_utils.string_utils</a>
+</li>
           <li><a href="source/data_access.html#module-centralized_nlp_package.data_access.dask_utils">centralized_nlp_package.data_access.dask_utils</a>
 </li>
           <li><a href="source/data_access.html#module-centralized_nlp_package.data_access.snowflake_utils">centralized_nlp_package.data_access.snowflake_utils</a>
+</li>
+          <li><a href="source/data_processing.html#module-centralized_nlp_package.data_processing.dataframe_utils">centralized_nlp_package.data_processing.dataframe_utils</a>
 </li>
           <li><a href="source/embedding.html#module-centralized_nlp_package.embedding.embedding_utils">centralized_nlp_package.embedding.embedding_utils</a>
 </li>
           <li><a href="source/embedding.html#module-centralized_nlp_package.embedding.word2vec_model">centralized_nlp_package.embedding.word2vec_model</a>
 </li>
           <li><a href="source/preprocessing.html#module-centralized_nlp_package.preprocessing.text_preprocessing">centralized_nlp_package.preprocessing.text_preprocessing</a>
+</li>
+          <li><a href="source/text_processing.html#module-centralized_nlp_package.text_processing.text_analysis">centralized_nlp_package.text_processing.text_analysis</a>
 </li>
           <li><a href="source/text_processing.html#module-centralized_nlp_package.text_processing.text_utils">centralized_nlp_package.text_processing.text_utils</a>
 </li>
@@ -437,14 +530,28 @@
   </tr></table>
 </section>
 
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.netscore">netscore() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="P" class="genindex-section">
   <h2>P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text">preprocess_text() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.polarity_score_per_section">polarity_score_per_section() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.polarity_score_per_sentence">polarity_score_per_sentence() (in module centralized_nlp_package.text_processing.text_analysis)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text">preprocess_text() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
+</li>
         <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.preprocess_text_list">preprocess_text_list() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
 </li>
     </ul></td>
@@ -455,8 +562,12 @@
   <h2>Q</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.query_constructor">query_constructor() (in module centralized_nlp_package.utils.helpers)</a>
+        <li><a href="source/common_utils.html#centralized_nlp_package.common_utils.string_utils.query_constructor">query_constructor() (in module centralized_nlp_package.common_utils.string_utils)</a>
+
+        <ul>
+          <li><a href="source/utils.html#centralized_nlp_package.utils.helpers.query_constructor">(in module centralized_nlp_package.utils.helpers)</a>
 </li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>
@@ -497,9 +608,13 @@
 </li>
         <li><a href="source/preprocessing.html#centralized_nlp_package.preprocessing.text_preprocessing.tokenize_matched_words">tokenize_matched_words() (in module centralized_nlp_package.preprocessing.text_preprocessing)</a>
 </li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.tokenize_text">tokenize_text() (in module centralized_nlp_package.text_processing.text_utils)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_utils.tokenize_text">tokenize_text() (in module centralized_nlp_package.text_processing.text_utils)</a>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.tone_count_with_negation_check">tone_count_with_negation_check() (in module centralized_nlp_package.text_processing.text_analysis)</a>
+</li>
+        <li><a href="source/text_processing.html#centralized_nlp_package.text_processing.text_analysis.tone_count_with_negation_check_per_sentence">tone_count_with_negation_check_per_sentence() (in module centralized_nlp_package.text_processing.text_analysis)</a>
 </li>
         <li><a href="source/embedding.html#centralized_nlp_package.embedding.word2vec_model.train_word2vec_model">train_word2vec_model() (in module centralized_nlp_package.embedding.word2vec_model)</a>
 </li>
