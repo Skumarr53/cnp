@@ -22,6 +22,7 @@ def df_remove_rows_with_keywords(
         ValueError: If the specified column is not found in the DataFrame.
 
     Example:
+        >>> import centralized_nlp_package.data_processing import df_remove_rows_with_keywords
         >>> data = {'comments': ["Good product", "Bad service", "Average experience"]}
         >>> df = pd.DataFrame(data)
         >>> filtered_df = df_remove_rows_with_keywords(df, 'comments', ['Bad service'])
@@ -78,6 +79,7 @@ def df_apply_transformations(
         Exception: Re-raises any exception that occurs during the transformation process after logging.
 
     Example:
+        >>> from centralized_nlp_package.data_processing import df_apply_transformations
         >>> def concat_columns(a, b):
         ...     return f"{a}_{b}"
         >>> data = {'col1': ['A', 'B'], 'col2': ['C', 'D']}

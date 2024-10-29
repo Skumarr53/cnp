@@ -3,7 +3,7 @@ import os
 import re
 from typing import Union
 from loguru import logger
-from centralized_nlp_package.common_utils.file_utils import load_content_from_txt
+from centralized_nlp_package.common_utils import load_content_from_txt
 
 
 
@@ -22,6 +22,7 @@ def format_string_template(template: str, **kwargs) -> str:
         ValueError: If any placeholder in the template does not have a corresponding keyword argument.
 
     Example:
+        >>> from centralized_nlp_package.common_utils import format_string_template
         >>> template = "Hello, {name}! Today is {day}."
         >>> format_string_template(template, name="Alice", day="Monday")
         'Hello, Alice! Today is Monday.'
@@ -61,6 +62,7 @@ def query_constructor(query_input: Union[str, os.PathLike], **kwargs) -> str:
         FilesNotLoadedException: If the provided path to the query file does not exist.
 
     Example:
+        >>> from centralized_nlp_package.common_utils import query_constructor
         >>> template = "SELECT * FROM users WHERE signup_date > '{start_date}' AND signup_date < '{end_date}';"
         >>> query = query_constructor(template, start_date="2022-01-01", end_date="2022-12-31")
         >>> print(query)

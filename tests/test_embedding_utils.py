@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from gensim.models import Word2Vec
-from centralized_nlp_package.embedding.embedding_utils import average_token_embeddings
+from centralized_nlp_package.embedding import average_token_embeddings
 
 @pytest.fixture
 def sample_model():

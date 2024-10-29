@@ -31,7 +31,7 @@ def train_word2vec_model(
         Word2Vec: Trained Word2Vec model.
 
     Example:
-        >>> from centralized_nlp_package.embedding.word2vec_model import train_word2vec_model
+        >>> from centralized_nlp_package.embedding import train_word2vec_model
         >>> sentences = [['hello', 'world'], ['machine', 'learning']]
         >>> model = train_word2vec_model(sentences, vector_size=100, window=5, min_count=1)
         >>> model.wv['hello']
@@ -54,6 +54,7 @@ def save_word2vec_model(model: Word2Vec, path: str) -> None:
         path (str): File path to save the model.
 
     Example:
+        >>> from centralized_nlp_package.embedding import save_word2vec_model
         >>> from gensim.models import Word2Vec
         >>> from centralized_nlp_package.embedding.word2vec_model import save_word2vec_model
         >>> model = Word2Vec(sentences=[['hello', 'world']])

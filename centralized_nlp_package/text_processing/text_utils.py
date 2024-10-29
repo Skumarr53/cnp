@@ -1,4 +1,6 @@
 
+# centralized_nlp_package/text_processing/text_utils.py
+
 import re
 from typing import List, Tuple, Optional, Dict, Iterator, Union
 from pathlib import Path
@@ -8,9 +10,8 @@ import numpy as np
 from loguru import logger
 
 from centralized_nlp_package import config
-from centralized_nlp_package.common_utils.file_utils import load_content_from_txt
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
-# from centralized_nlp_package.preprocessing.text_preprocessing import clean_text 
+from centralized_nlp_package.common_utils import load_content_from_txt
+from centralized_nlp_package.utils import FilesNotLoadedException
 
 # def check_datatype()
 def validate_and_format_text(text_input: Optional[Union[str, List[str]]]) -> Optional[str]:
@@ -25,6 +26,7 @@ def validate_and_format_text(text_input: Optional[Union[str, List[str]]]) -> Opt
         Optional[str]: Joined and stripped text if valid, else None.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import validate_and_format_text
         >>> validate_and_format_text("  Hello World!  ")
         'Hello World!'
         >>> validate_and_format_text(["Hello", "World"])
@@ -59,6 +61,7 @@ def generate_ngrams(input_list: List[str], n: int) -> Iterator[Tuple[str, ...]]:
         Iterator[Tuple[str, ...]]: An iterator over n-grams as tuples.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import generate_ngrams
         >>> list(generate_ngrams(['I', 'love', 'coding'], 2))
         [('I', 'love'), ('love', 'coding')]
     """
@@ -84,6 +87,7 @@ def load_set_from_txt(file_path: str, is_lower: bool = True) -> set:
         FilesNotLoadedException: If there is an error reading the file.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import load_set_from_txt
         >>> word_set = load_set_from_txt("data/positive_words.txt")
         >>> print(word_set)
         {'happy', 'joyful', 'delighted'}
@@ -111,6 +115,7 @@ def expand_contractions(text):
         str: Text with expanded contractions.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import expand_contractions
         >>> contraction_map = {"can't": "cannot", "I'm": "I am"}
         >>> expand_contractions("I can't go.")
         'I cannot go.'
@@ -136,6 +141,7 @@ def tokenize_text(text: str, spacy_tokenizer: spacy.Language) -> List[str]:
         List[str]: A list of lemmatized and filtered words.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import tokenize_text
         >>> nlp = spacy.load("en_core_web_sm")
         >>> tokenize_text("I am loving the new features!", nlp)
         ['love', 'new', 'feature']
@@ -166,6 +172,7 @@ def combine_sentiment_scores(positive_count: int, negative_count: int) -> float:
         float: Combined sentiment score. Returns 0.0 if both counts are zero.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import combine_sentiment_scores
         >>> combine_sentiment_scores(5, 3)
         0.25
         >>> combine_sentiment_scores(0, 0)
@@ -192,6 +199,7 @@ def load_syllable_counts(file_path: str) -> Dict[str, int]:
         FilesNotLoadedException: If the file is not found or has an invalid format.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import load_syllable_counts
         >>> syllables = load_syllable_counts("data/syllable_counts.txt")
         >>> syllables['beautiful']
         3

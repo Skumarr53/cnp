@@ -5,30 +5,53 @@ from typing import List, Tuple, Optional, Union, Dict
 import spacy
 from loguru import logger
 from centralized_nlp_package import config
-from centralized_nlp_package.text_processing.text_utils import (
+from centralized_nlp_package.text_processing import (
     validate_and_format_text,
     expand_contractions,
     tokenize_text,
     load_set_from_txt,
 )
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
+from centralized_nlp_package.utils import FilesNotLoadedException
 
 
 
-def initialize_spacy(model: str = "en_core_web_sm", max_length: int = 1000000000, exclude_stop_words: Optional[List[str]] = {"bottom", "top", "Bottom", "Top", "call"}) -> spacy.Language:
+def initialize_spacy(
+    model: str = "en_core_web_sm",
+    max_length: int = 1000000000,
+    exclude_stop_words: Optional[List[str]] = ["bottom", "top", "Bottom", "Top", "call"]
+) -> spacy.Language:
     """
-    Initializes and configures the SpaCy model with custom settings.
-
-    default exclude_stop_words: {"bottom", "top", "Bottom", "Top", "call"}
-
+    Initializes and configures the SpaCy language model with custom settings.
+    
+    This function loads a specified SpaCy model, adjusts its maximum processing length, 
+    and customizes its stop words by excluding a predefined or user-specified list of words.
+    
+    Args:
+        model (str, optional): The name of the SpaCy model to load. Defaults to "en_core_web_sm".
+            Example models include "en_core_web_sm", "en_core_web_md", "en_core_web_lg", etc.
+        max_length (int, optional): The maximum number of characters the SpaCy model will process. 
+            Setting this to a higher value allows processing of larger texts. Defaults to 1000000000.
+        exclude_stop_words (Optional[List[str]], optional): A list of stop words to exclude from the model's 
+            default stop words set. This allows for customization of what words are considered insignificant 
+            during text processing. Defaults to ["bottom", "top", "Bottom", "Top", "call"].
+    
     Returns:
-        spacy.Language: Configured SpaCy model.
-
+        spacy.Language: The configured SpaCy language model ready for text processing.
+    
+    Raises:
+        FilesNotLoadedException: If there is an error loading additional stop words.
+        Exception: If there is a general error initializing the SpaCy model.
+    
     Example:
-        >>> nlp = initialize_spacy()
-        >>> doc = nlp("This is a sample sentence.")
+        >>> from centralized_nlp_package.preprocessing import initialize_spacy
+        >>> nlp = initialize_spacy(
+        ...     model="en_core_web_md",
+        ...     max_length=2000000000,
+        ...     exclude_stop_words=["example", "test"]
+        ... )
+        >>> doc = nlp("This is a sample sentence for testing the SpaCy model.")
         >>> print([token.text for token in doc])
-        ['This', 'is', 'a', 'sample', 'sentence', '.']
+        ['This', 'is', 'a', 'sample', 'sentence', 'for', 'testing', 'SpaCy', 'model', '.']
     """
     logger.info(f"Loading SpaCy model: {model}")
     try:
@@ -36,9 +59,10 @@ def initialize_spacy(model: str = "en_core_web_sm", max_length: int = 1000000000
             model, disable=["parser"]
         )
         if exclude_stop_words:
-            nlp.Defaults.stop_words -= exclude_stop_words
+            nlp.Defaults.stop_words -= set(exclude_stop_words)
+            logger.debug(f"Excluded stop words: {exclude_stop_words}")
         nlp.max_length = max_length
-        logger.info("SpaCy model initialized.")
+        logger.info("SpaCy model initialized successfully.")
         return nlp
     except FilesNotLoadedException as e:
         logger.error(f"Failed to load additional stop words: {e}")
@@ -47,56 +71,75 @@ def initialize_spacy(model: str = "en_core_web_sm", max_length: int = 1000000000
         logger.error(f"Error initializing SpaCy model: {e}")
         raise
 
-def remove_unwanted_phrases_and_validate(sentence: str, min_word_length: int = 5, cleanup_phrases: List[str] = [], greeting_phrases: List[str] = []) -> Optional[str]:
+def remove_unwanted_phrases_and_validate(
+    sentence: str,
+    min_word_length: int = 5,
+    cleanup_phrases: Optional[List[str]] = None,
+    greeting_phrases: Optional[List[str]] = None
+) -> Optional[str]:
     """
-    Cleans the input sentence by removing unwanted phrases and validating its content.
+    Cleans the sentence by removing unwanted and greeting phrases, then validates its length.
 
     Args:
-        sentence (str): The input sentence to process.
-        
-    defaults: load from config
-        cleanup_phrases: ["Thank you", "thank you", "thanks", "Thanks", "earnings call", "earnings release", "earnings conference"]
-        greeting_phrases: ["good morning", "good afternoon", "good evening"]
-        
+        sentence (str): The sentence to process.
+        min_word_length (int, optional): Minimum word count required. Defaults to 5.
+        cleanup_phrases (Optional[List[str]], optional): Phrases to remove. 
+            Defaults to config values:
+                ["Thank you", "thank you", "thanks", "Thanks", 
+                 "earnings call", "earnings release", "earnings conference"]
+        greeting_phrases (Optional[List[str]], optional): Greeting phrases to check. 
+            Defaults to config values:
+                ["good morning", "good afternoon", "good evening"]
+
     Returns:
-        Optional[str]: Cleaned sentence or None if it doesn't meet criteria.
+        Optional[str]: Cleaned sentence or `None` if invalid.
+
+    Raises:
+        TypeError: If `sentence` is not a string.
+        Exception: For unexpected processing errors.
 
     Example:
-        >>> cleaned = remove_unwanted_phrases_and_validate("Hello! I love this product.")
+        >>> cleaned = remove_unwanted_phrases_and_validate(
+        ...     sentence="Thank you! I love this product.",
+        ...     min_word_length=3
+        ... )
         >>> print(cleaned)
         'I love this product.'
-        >>> cleaned = remove_unwanted_phrases_and_validate("Hi! Love it.")
+
+        >>> cleaned = remove_unwanted_phrases_and_validate(
+        ...     sentence="Good morning! Love it.",
+        ...     min_word_length=3
+        ... )
         >>> print(cleaned)
         None
     """
     logger.debug("Cleaning sentence.")
     
-    # Cleanup phrases if provided by user else use default phrases
-    if not cleanup_phrases:
+    # Assign default phrases from config if not provided
+    if cleanup_phrases is None:
         cleanup_phrases = config.lib_config.preprocessing.cleanup_phrases
+        logger.debug(f"Using default cleanup phrases: {cleanup_phrases}")
     
-        # Cleanup phrases if provided by user else use default phrases
-    if not greeting_phrases:
+    if greeting_phrases is None:
         greeting_phrases = config.lib_config.preprocessing.greeting_phrases
-
-    # Remove specified phrases
+        logger.debug(f"Using default greeting phrases: {greeting_phrases}")
+    
+    # Remove cleanup phrases
     for phrase in cleanup_phrases:
         sentence = sentence.replace(phrase, "")
     sentence = sentence.strip()
-
-    # Check word count
+    
+    # Validate word count
     word_count = len(sentence.split())
     if word_count < min_word_length:
         logger.debug("Sentence below minimum word length. Skipping.")
         return None
-
-    # Remove greetings
-    if any(
-        greet in sentence.lower() for greet in greeting_phrases
-    ):
+    
+    # Check for greeting phrases
+    if any(greet.lower() in sentence.lower() for greet in greeting_phrases):
         logger.debug("Greeting phrase detected. Skipping.")
         return None
-
+    
     logger.debug(f"Cleaned sentence: {sentence}")
     return sentence if sentence else None
 

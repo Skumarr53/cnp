@@ -12,7 +12,7 @@ from loguru import logger
 from omegaconf import DictConfig, OmegaConf
 from dateutil.relativedelta import relativedelta
 from centralized_nlp_package import config
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
+from centralized_nlp_package.utils import FilesNotLoadedException
 
 
 

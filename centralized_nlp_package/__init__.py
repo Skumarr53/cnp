@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from centralized_nlp_package.utils.config import get_config
+from centralized_nlp_package.utils import get_config
 
 
 # load_dotenv()
@@ -7,7 +7,7 @@ from centralized_nlp_package.utils.config import get_config
 config = get_config()
 
 # Now set up logging using the initialized config
-from centralized_nlp_package.utils.logging_setup import setup_logging
+from centralized_nlp_package.utils import setup_logging
 
 
 setup_logging()

@@ -6,7 +6,6 @@ from typing import Any, Optional
 import pandas as pd
 from loguru import logger
 from centralized_nlp_package import config
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
 
 
 def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> Client:
@@ -21,6 +20,7 @@ def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> 
         Client: An instance of the Dask distributed client.
     
     Example:
+        >>> from centralized_nlp_package.data_access import initialize_dask_client
         >>> client = initialize_dask_client(n_workers=32, threads_per_worker=1)
         >>> print(client)
         <distributed.client.Client object at 0x...>
@@ -51,6 +51,7 @@ def dask_compute_with_progress(dask_dataframe: Any, use_progress: bool = True) -
         Any: The computed DataFrame (e.g., pandas DataFrame).
     
     Example:
+        >>> >>> from centralized_nlp_package.data_access import dask_compute_with_progress
         >>> import dask.dataframe as dd
         >>> df = dd.read_csv('data/*.csv')
         >>> computed_df = dask_compute_with_progress(df, use_progress=True)

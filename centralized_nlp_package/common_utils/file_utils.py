@@ -1,7 +1,7 @@
 # centralized_nlp_package/common_utils/file_utils.py
 import os
 from loguru import logger
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
+from centralized_nlp_package.utils import FilesNotLoadedException
 
 def load_content_from_txt(file_path: str) -> str:
     """
@@ -17,6 +17,7 @@ def load_content_from_txt(file_path: str) -> str:
         FilesNotLoadedException: If the file is not found at the given path.
 
     Example:
+        >>> from centralized_nlp_package.common_utils import load_content_from_txt
         >>> content = load_content_from_txt("data/sample.txt")
         >>> print(content)
         'This is a sample text file.'

@@ -16,6 +16,7 @@ def get_date_range(years_back: int = 0, months_back: int = 0) -> Tuple[str, str]
         Tuple[str, str]: A tuple containing the start date and end date in 'YYYY-MM-DD' format.
 
     Example:
+        >>> from centralized_nlp_package.common_utils import get_date_range
         >>> start_date, end_date = get_date_range(years_back=1, months_back=2) ## exmaple current date is 2023-10-01
         >>> print(start_date, end_date)
         '2022-08-01' '2023-10-01'
@@ -40,6 +41,7 @@ def format_date(date: datetime) -> str:
         str: The formatted date string.
 
     Example:
+        >>> from centralized_nlp_package.common_utils import format_date
         >>> from datetime import datetime
         >>> format_date(datetime(2023, 9, 15))
         '2023-09-15'

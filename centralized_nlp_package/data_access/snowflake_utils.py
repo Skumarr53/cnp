@@ -191,19 +191,31 @@ def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 
 @with_spark_session
 def read_from_snowflake(query: str) -> DataFrame:
     """
-    Executes a SQL query on Snowflake and returns the result as a Spark DataFrame.
-
+    Executes a SQL query on a specified Snowflake database and schema, returning the result as a Spark DataFrame.
+    
+    This function utilizes the provided Spark session to execute the given SQL query against the specified 
+    database and schema in Snowflake. It ensures that the query is executed within the correct context 
+    by setting the appropriate connection options.
+    
     Args:
         query (str): The SQL query to execute.
-
+        database (str): The target database name in Snowflake where the query will be executed.
+        schema (str): The target schema name within the specified database in Snowflake.
+    
     Returns:
         DataFrame: The result of the SQL query as a Spark DataFrame.
-
+    
     Raises:
         Exception: If there is an error executing the query on Snowflake.
-
+    
     Example:
-        >>> df = execute_snowflake_query_spark("SELECT * FROM my_table")
+        >>> from centralized_nlp_package.data_access import read_from_snowflake
+        >>> df = read_from_snowflake(
+        ...     query="SELECT * FROM analytics_db.public.sales_data",
+        ...     database="analytics_db",
+        ...     schema="public"
+        ... )
+        >>> df.show()
     """
     global _spark_session  # Access Spark session
 
@@ -229,11 +241,21 @@ def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, tabl
     """
     Writes a Spark DataFrame to a specified Snowflake table.
 
+    This function utilizes the provided Spark session to write the given DataFrame to a 
+    Snowflake table. It allows specifying the target database and schema, ensuring that 
+    the data is correctly directed to the intended location within Snowflake.
+
     Args:
         df (DataFrame): The Spark DataFrame to write to Snowflake.
-        table_name (str): The target table name in Snowflake.
+        database (str): The target database name in Snowflake.
+        schema (str): The target schema name within the specified database in Snowflake.
+        table_name (str): The target table name in Snowflake where the DataFrame will be written.
         mode (str, optional): Specifies the behavior if the table already exists.
-                              Options are 'append', 'overwrite', 'error', or 'ignore'.
+                              Options are:
+                                - 'append': Append the data to the existing table.
+                                - 'overwrite': Overwrite the existing table with the new data.
+                                - 'error': Throw an error if the table exists.
+                                - 'ignore': Ignore the operation if the table exists.
                               Default is 'append'.
 
     Returns:
@@ -243,7 +265,14 @@ def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, tabl
         Exception: If there is an error writing the DataFrame to Snowflake.
 
     Example:
-        >>> write_dataframe_to_snowflake(df, "target_table", mode="append")
+        >>> from centralized_nlp_package.data_access import write_dataframe_to_snowflake
+        >>> write_dataframe_to_snowflake(
+        ...     df, 
+        ...     database="analytics_db", 
+        ...     schema="public", 
+        ...     table_name="sales_data", 
+        ...     mode="append"
+        ... )
     """
     global _spark_session  # Access Spark session
 
@@ -265,16 +294,30 @@ def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, tabl
 @with_spark_session
 def execute_truncate_or_merge_query(query: str, database: str, schema: str) -> str:
     """
-    Executes a TRUNCATE or MERGE SQL query on Snowflake.
+    Executes a TRUNCATE or MERGE SQL query on a specified Snowflake database and schema.
+
+    This function runs the provided SQL query (either TRUNCATE or MERGE) against the 
+    specified database and schema in Snowflake using the established Spark session. 
+    It ensures that the query is executed within the correct context.
 
     Args:
-        query (str): The SQL query to execute.
+        query (str): The SQL query to execute. Typically, this will be a TRUNCATE or MERGE statement.
+        database (str): The target database name in Snowflake where the query will be executed.
+        schema (str): The target schema name within the specified database in Snowflake.
 
     Returns:
-        str: A confirmation message indicating the completion of the operation.
+        str: A confirmation message indicating the successful completion of the operation.
+
+    Raises:
+        Exception: If there is an error executing the TRUNCATE or MERGE query on Snowflake.
 
     Example:
-        >>> result = execute_truncate_or_merge_query("TRUNCATE TABLE my_table")
+        >>> from centralized_nlp_package.data_access import execute_truncate_or_merge_query
+        >>> execute_truncate_or_merge_query(
+        ...     query="TRUNCATE TABLE analytics_db.public.sales_data",
+        ...     database="analytics_db",
+        ...     schema="public"
+        ... )
     """
     global _spark_session  # Access Spark session
 
@@ -284,9 +327,6 @@ def execute_truncate_or_merge_query(query: str, database: str, schema: str) -> s
         logger.debug(f"Executing TRUNCATE or MERGE query: {query}")
         _spark_session._jvm.net.snowflake.spark.snowflake.Utils.runQuery(snowflake_options, query)
         logger.info("Truncate or Merge operation completed successfully.")
-        result = "Truncate or Merge Complete"
     except Exception as e:
         logger.error(f"Error executing TRUNCATE or MERGE query on Snowflake: {e}")
         raise
-
-    return result

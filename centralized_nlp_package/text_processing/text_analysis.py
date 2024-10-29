@@ -7,20 +7,20 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from loguru import logger
-from centralized_nlp_package.text_processing.text_utils import (
+from centralized_nlp_package.text_processing import (
     load_set_from_txt,
     combine_sentiment_scores,
     generate_ngrams,
     load_syllable_counts,
 )
-from centralized_nlp_package.preprocessing.text_preprocessing import (
+from centralized_nlp_package.preprocessing import (
     preprocess_text,
     preprocess_text_list,
     tokenize_matched_words,
     tokenize_and_lemmatize_text,
 )
 from centralized_nlp_package import config
-from centralized_nlp_package.utils.exception import FilesNotLoadedException
+from centralized_nlp_package.utils import FilesNotLoadedException
 
 
 
@@ -35,6 +35,7 @@ def load_word_set(filename: str) -> set:
         set: A set of words loaded from the file.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import load_word_set
         >>> word_set = load_word_set("positive_words.txt")
         >>> print(len(word_set))
         1500
@@ -65,6 +66,7 @@ def check_negation(input_words: List[str], index: int, negation_words: set) -> b
         bool: True if negation is found within the specified window, False otherwise.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import check_negation
         >>> words = ["I", "do", "not", "like", "this"]
         >>> negations = {"not", "never", "no"}
         >>> check_negation(words, 3, negations)
@@ -104,6 +106,7 @@ def calculate_polarity_score(
             - Legacy score
 
     Example:
+        >>> from centralized_nlp_package.text_processing import calculate_polarity_score
         >>> words = ["I", "do", "not", "like", "this"]
         >>> pos = {"like", "love"}
         >>> neg = {"hate", "dislike"}
@@ -159,6 +162,7 @@ def polarity_score_per_section(
             - Legacy score
 
     Example:
+        >>> from centralized_nlp_package.text_processing import polarity_score_per_section
         >>> texts = ["I love this product", "I do not like this service"]
         >>> score = polarity_score_per_section(texts)
         >>> print(score)
@@ -196,6 +200,7 @@ def polarity_score_per_sentence(
             - Negative word counts per sentence
 
     Example:
+        >>> from centralized_nlp_package.text_processing import polarity_score_per_sentence
         >>> sentences = ["I love this", "I do not like that"]
         >>> counts = polarity_score_per_sentence(sentences)
         >>> print(counts)
@@ -239,6 +244,7 @@ def is_complex(word: str, syllables: Dict[str, int]) -> bool:
         bool: True if the word is complex, False otherwise.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import is_complex
         >>> syllable_dict = {"beautiful": 3, "cat": 1}
         >>> is_complex("beautiful", syllable_dict)
         True
@@ -283,6 +289,7 @@ def fog_analysis_per_section(
             - Total word count
 
     Example:
+        >>> from centralized_nlp_package.text_processing import fog_analysis_per_section
         >>> texts = ["This is a simple sentence.", "This sentence is unnecessarily complex."]
         >>> fog = fog_analysis_per_section(texts)
         >>> print(fog)
@@ -332,6 +339,7 @@ def fog_analysis_per_sentence(
             - Total word count list
 
     Example:
+        >>> from centralized_nlp_package.text_processing import fog_analysis_per_sentence
         >>> sentences = ["This is simple.", "This sentence is complex and unnecessarily verbose."]
         >>> fog_scores = fog_analysis_per_sentence(sentences)
         >>> print(fog_scores)
@@ -398,6 +406,7 @@ def tone_count_with_negation_check(
             - Legacy scores
 
     Example:
+        >>> from centralized_nlp_package.text_processing import tone_count_with_negation_check
         >>> texts = ["I love this product", "I do not like this service"]
         >>> results = tone_count_with_negation_check(texts)
         >>> print(results)
@@ -448,6 +457,7 @@ def tone_count_with_negation_check_per_sentence(
             - Negative word counts per sentence
 
     Example:
+        >>> from centralized_nlp_package.text_processing import tone_count_with_negation_check_per_sentence
         >>> sentences = ["I love this", "I do not like that"]
         >>> counts = tone_count_with_negation_check_per_sentence(sentences)
         >>> print(counts)
@@ -477,6 +487,7 @@ def get_match_set(matches: List[str]) -> Dict[str, set]:
         Dict[str, set]: Dictionary containing original matches, unigrams, bigrams, and phrases.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import get_match_set
         >>> matches = ["happy", "very happy", "extremely happy"]
         >>> match_set = get_match_set(matches)
         >>> print(match_set["unigrams"])
@@ -543,6 +554,7 @@ def match_count(
         Dict[str, Any]: Dictionary containing counts and statistics.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import match_count
         >>> text = "I am very happy and extremely joyful."
         >>> matches = {"unigrams": {"happy"}, "bigrams": {"very_happy"}, "phrases": {"extremely joyful"}}
         >>> counts = match_count(text, matches)
@@ -636,6 +648,7 @@ def merge_counts(counts: List[Dict[str, int]]) -> Dict[str, int]:
         Dict[str, int]: Merged count dictionary.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import merge_counts
         >>> counts = [{"happy": 2}, {"happy": 3, "joyful": 1}]
         >>> merged = merge_counts(counts)
         >>> print(merged)
@@ -670,6 +683,7 @@ def calculate_sentence_score(
         Optional[float]: Calculated sentence score or None.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import calculate_sentence_score
         >>> indicators = [1, 0, 1]
         >>> weights = [2, 3, 4]
         >>> score = calculate_sentence_score(indicators, weights)
@@ -710,6 +724,7 @@ def netscore(
         Optional[float]: Calculated net score or None.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import netscore
         >>> counts = [1, 2, 0]
         >>> indicators = [1, 0, 1]
         >>> score = netscore(counts, indicators)
@@ -747,6 +762,7 @@ def generate_match_count(
         pd.DataFrame: Updated DataFrame with match counts.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import generate_match_count
         >>> import pandas as pd
         >>> data = {'section1': ["I love this product", "This is bad"]}
         >>> df = pd.DataFrame(data)
@@ -782,6 +798,7 @@ def generate_topic_statistics(
         pd.DataFrame: Updated DataFrame with topic statistics.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import generate_topic_statistics
         >>> import pandas as pd
         >>> data = {'matches_section1': [{"uni": 1, "bi": 0, "total": 1, "stats": {"love": 1}}, {"uni": 1, "bi": 0, "total": 1, "stats": {"bad": 1}}]}
         >>> df = pd.DataFrame(data)
@@ -830,6 +847,7 @@ def generate_sentence_relevance_score(
         pd.DataFrame: Updated DataFrame with sentence relevance scores.
 
     Example:
+        >>> from centralized_nlp_package.text_processing import generate_sentence_relevance_score
         >>> import pandas as pd
         >>> data = {'SENT_LABELS_section1': [[1, 0, 1], [0, 1, 0]], 'love_TOTAL_section1': [[1, 0, 1], [0, 1, 0]]}
         >>> df = pd.DataFrame(data)

@@ -16,6 +16,7 @@ def setup_logging(log_file_path: str = "logs/log_file.log", env: str = "dev") ->
                              Use "prod" for production (ERROR level) and "dev" for development (DEBUG level). Defaults to "dev".
 
     Example:
+        >>> from centralized_nlp_package.utils import setup_logging
         >>> setup_logging(log_file_path="app_logs/app.log", env="prod")
         >>> logger.info("This is an info message.")
         >>> logger.error("This is an error message.")
