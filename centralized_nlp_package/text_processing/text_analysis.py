@@ -757,7 +757,7 @@ def generate_match_count(
         1    {'bad': 1}
         Name: matches_section1, dtype: object
     """
-    for label in config.FILT_sections:
+    for label in config.lib_config.psycholinguistics.filt_sections:
         match_set = word_set_dict.get(label, {})
         df[f"matches_{label}"] = df[label].apply(
             lambda x: [match_count(sent, match_set, phrases=False) for sent in x], 
@@ -790,7 +790,7 @@ def generate_topic_statistics(
         >>> print(updated_df.columns)
         Index(['LEN_section1', 'RAW_LEN_section1', 'love_TOTAL_section1', 'bad_TOTAL_section1', 'love_STATS_section1', 'bad_STATS_section1', 'NUM_SENTS_section1'], dtype='object')
     """
-    for label in config.FILT_sections:
+    for label in config.lib_config.psycholinguistics.filt_sections:
         df[f"LEN_{label}"] = df[f"matches_{label}"].apply(
             lambda x: [calc['len'] for calc in x]
         )
@@ -840,7 +840,7 @@ def generate_sentence_relevance_score(
         1    0.0
         Name: love_SENT_section1, dtype: float64
     """
-    for label in config.FILT_sections:
+    for label in config.lib_config.psycholinguistics.filt_sections:
         df[f"SENT_{label}"] = df[f"SENT_LABELS_{label}"].apply(
             lambda x: float(np.sum(x) / len(x)) if len(x) > 0 else None
         )

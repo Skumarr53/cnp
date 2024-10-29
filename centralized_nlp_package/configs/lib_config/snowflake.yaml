@@ -4,5 +4,3 @@ snowflake:
     account: voya.east-us-2.privatelink
     user: ${oc.env:SNOWFLAKE_USER}
     role: ROLE_EDS_PROD_DDLADMIN_QUANT
-    database: EDS_PROD
-    schema:  ${oc.env:SNOWFLAKE_SCHEMA}

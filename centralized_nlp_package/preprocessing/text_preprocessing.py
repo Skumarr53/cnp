@@ -15,9 +15,11 @@ from centralized_nlp_package.utils.exception import FilesNotLoadedException
 
 
 
-def initialize_spacy() -> spacy.Language:
+def initialize_spacy(model: str = "en_core_web_sm", max_length: int = 1000000000, exclude_stop_words: Optional[List[str]] = {"bottom", "top", "Bottom", "Top", "call"}) -> spacy.Language:
     """
     Initializes and configures the SpaCy model with custom settings.
+
+    default exclude_stop_words: {"bottom", "top", "Bottom", "Top", "call"}
 
     Returns:
         spacy.Language: Configured SpaCy model.
@@ -28,21 +30,14 @@ def initialize_spacy() -> spacy.Language:
         >>> print([token.text for token in doc])
         ['This', 'is', 'a', 'sample', 'sentence', '.']
     """
-    logger.info(f"Loading SpaCy model: {config.lib_config.preprocessing.spacy_model}")
+    logger.info(f"Loading SpaCy model: {model}")
     try:
         nlp = spacy.load(
-            config.lib_config.preprocessing.spacy_model, disable=["parser"]
+            model, disable=["parser"]
         )
-        # Excluding financially relevant stopwords
-        additional_stop_words = load_set_from_txt(
-            str(
-                config.lib_config.paths.model_artifacts.path
-                / config.lib_config.filenames.additional_stop_words_flnm
-            ),
-            is_lower=True,
-        )
-        nlp.Defaults.stop_words -= additional_stop_words
-        nlp.max_length = config.lib_config.preprocessing.max_length
+        if exclude_stop_words:
+            nlp.Defaults.stop_words -= exclude_stop_words
+        nlp.max_length = max_length
         logger.info("SpaCy model initialized.")
         return nlp
     except FilesNotLoadedException as e:
@@ -52,13 +47,17 @@ def initialize_spacy() -> spacy.Language:
         logger.error(f"Error initializing SpaCy model: {e}")
         raise
 
-def remove_unwanted_phrases_and_validate(sentence: str) -> Optional[str]:
+def remove_unwanted_phrases_and_validate(sentence: str, min_word_length: int = 5, cleanup_phrases: List[str] = [], greeting_phrases: List[str] = []) -> Optional[str]:
     """
     Cleans the input sentence by removing unwanted phrases and validating its content.
 
     Args:
         sentence (str): The input sentence to process.
-
+        
+    defaults: load from config
+        cleanup_phrases: ["Thank you", "thank you", "thanks", "Thanks", "earnings call", "earnings release", "earnings conference"]
+        greeting_phrases: ["good morning", "good afternoon", "good evening"]
+        
     Returns:
         Optional[str]: Cleaned sentence or None if it doesn't meet criteria.
 
@@ -71,20 +70,29 @@ def remove_unwanted_phrases_and_validate(sentence: str) -> Optional[str]:
         None
     """
     logger.debug("Cleaning sentence.")
+    
+    # Cleanup phrases if provided by user else use default phrases
+    if not cleanup_phrases:
+        cleanup_phrases = config.lib_config.preprocessing.cleanup_phrases
+    
+        # Cleanup phrases if provided by user else use default phrases
+    if not greeting_phrases:
+        greeting_phrases = config.lib_config.preprocessing.greeting_phrases
+
     # Remove specified phrases
-    for phrase in config.lib_config.preprocessing.cleanup_phrases:
+    for phrase in cleanup_phrases:
         sentence = sentence.replace(phrase, "")
     sentence = sentence.strip()
 
     # Check word count
     word_count = len(sentence.split())
-    if word_count < config.lib_config.preprocessing.min_word_length:
+    if word_count < min_word_length:
         logger.debug("Sentence below minimum word length. Skipping.")
         return None
 
     # Remove greetings
     if any(
-        greet in sentence.lower() for greet in config.lib_config.preprocessing.greeting_phrases
+        greet in sentence.lower() for greet in greeting_phrases
     ):
         logger.debug("Greeting phrase detected. Skipping.")
         return None

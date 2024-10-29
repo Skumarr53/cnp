@@ -1,4 +1,4 @@
-# centralized_nlp_package/preprocessing/dask_utils.py
+# centralized_nlp_package/data_access/dask_utils.py
 
 from dask.distributed import Client
 from dask.diagnostics import ProgressBar
@@ -9,7 +9,7 @@ from centralized_nlp_package import config
 from centralized_nlp_package.utils.exception import FilesNotLoadedException
 
 
-def initialize_dask_client(n_workers: int, threads_per_worker: int = 1) -> Client:
+def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> Client:
     """
     Initializes a Dask client with specified number of workers and threads per worker.
     
@@ -21,7 +21,7 @@ def initialize_dask_client(n_workers: int, threads_per_worker: int = 1) -> Clien
         Client: An instance of the Dask distributed client.
     
     Example:
-        >>> client = initialize_dask_client(n_workers=4, threads_per_worker=2)
+        >>> client = initialize_dask_client(n_workers=32, threads_per_worker=1)
         >>> print(client)
         <distributed.client.Client object at 0x...>
     """

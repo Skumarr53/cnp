@@ -4,15 +4,17 @@ from gensim.models import Word2Vec, Phrases
 from typing import List, Dict, Any
 from loguru import logger
 from pathlib import Path
-from centralized_nlp_package import config
 
 
 
 ## TODO: Topic modelling 
 def train_word2vec_model(
-    sentences: List[List[str]], 
-    bigram: bool = False, 
-    **kwargs: Any
+    sentences: List[List[str]],
+    vector_size: int = 300,
+    window: int = 5,
+    min_count: int = 10,
+    workers: int = 16,
+    epochs: int = 15,
 ) -> Word2Vec:
     """
     Trains a Word2Vec model on the provided corpus.
@@ -34,14 +36,9 @@ def train_word2vec_model(
         >>> model = train_word2vec_model(sentences, vector_size=100, window=5, min_count=1)
         >>> model.wv['hello']
         array([ 0.0123, -0.0456, ...,  0.0789], dtype=float32)
-    """
-    model_params = (
-        config.lib_config.word2vec_bigram if bigram else config.lib_config.word2vec_unigram
-    )
-    model_params.update(kwargs)
-    
+    """    
     logger.info("Starting Word2Vec model training.")
-    model = Word2Vec(sentences=sentences, **model_params)
+    model = Word2Vec(sentences=sentences, vector_size=vector_size, window=window, min_count=min_count, workers=workers, epochs=epochs,)
     logger.info("Word2Vec model training completed.")
     return model
 

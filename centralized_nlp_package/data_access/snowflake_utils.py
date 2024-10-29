@@ -156,7 +156,7 @@ def retrieve_snowflake_private_key() -> str:
 
 
 @with_spark_session
-def get_snowflake_connection_options(database: str, schema: str) -> Dict[str, str]:
+def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 'QUANT') -> Dict[str, str]:
     """
     Constructs and returns a dictionary of Snowflake connection options.
 
@@ -189,7 +189,7 @@ def get_snowflake_connection_options(database: str, schema: str) -> Dict[str, st
 
 
 @with_spark_session
-def execute_snowflake_query_spark(query: str) -> DataFrame:
+def read_from_snowflake(query: str) -> DataFrame:
     """
     Executes a SQL query on Snowflake and returns the result as a Spark DataFrame.
 
@@ -224,9 +224,8 @@ def execute_snowflake_query_spark(query: str) -> DataFrame:
 
     return df_spark
 
-
 @with_spark_session
-def write_dataframe_to_snowflake(df: DataFrame, table_name: str, mode: str = 'append') -> None:
+def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, table_name: str,  mode: str = 'append') -> None:
     """
     Writes a Spark DataFrame to a specified Snowflake table.
 
@@ -249,7 +248,7 @@ def write_dataframe_to_snowflake(df: DataFrame, table_name: str, mode: str = 'ap
     global _spark_session  # Access Spark session
 
     logger.info(f"Writing Spark DataFrame to Snowflake table: {table_name}.")
-    snowflake_options = get_snowflake_connection_options()
+    snowflake_options = get_snowflake_connection_options(database, schema)
 
     try:
         df.write.format("net.snowflake.spark.snowflake") \
@@ -264,7 +263,7 @@ def write_dataframe_to_snowflake(df: DataFrame, table_name: str, mode: str = 'ap
 
 
 @with_spark_session
-def execute_truncate_or_merge_query(query: str) -> str:
+def execute_truncate_or_merge_query(query: str, database: str, schema: str) -> str:
     """
     Executes a TRUNCATE or MERGE SQL query on Snowflake.
 
@@ -279,7 +278,7 @@ def execute_truncate_or_merge_query(query: str) -> str:
     """
     global _spark_session  # Access Spark session
 
-    snowflake_options = get_snowflake_connection_options()
+    snowflake_options = get_snowflake_connection_options(database, schema)
 
     try:
         logger.debug(f"Executing TRUNCATE or MERGE query: {query}")
