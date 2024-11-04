@@ -1,21 +1,15 @@
 # centralized_nlp_package/data_access/__init__.py
 
-from .dask_utils import (
-    initialize_dask_client,
-    dask_compute_with_progress
-)
 from .snowflake_utils import (
     retrieve_snowflake_private_key,
     get_snowflake_connection_options,
     read_from_snowflake,
     write_dataframe_to_snowflake,
     execute_truncate_or_merge_query,
-    SparkSessionManager
+    SparkSessionManager,
 )
 
 __all__ = [
-    'initialize_dask_client',
-    'dask_compute_with_progress',
     'retrieve_snowflake_private_key',
     'get_snowflake_connection_options',
     'read_from_snowflake',

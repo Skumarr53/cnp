@@ -130,3 +130,61 @@ def df_apply_transformations(
 
     logger.info("All transformations applied successfully.")
     return df
+
+
+def concatenate_and_reset_index(dataframes: List[pd.DataFrame], drop_column: str = 'index') -> pd.DataFrame:
+    """
+    Concatenates multiple Pandas DataFrames, resets the index, and drops the old index column.
+
+    This function performs the following steps:
+        1. Concatenates the provided DataFrames along the rows.
+        2. Resets the index of the concatenated DataFrame.
+        3. Drops the specified column (default is 'index') resulting from the reset.
+
+    Args:
+        dataframes (List[pd.DataFrame]): A list of Pandas DataFrames to concatenate.
+        drop_column (str, optional): The name of the column to drop after resetting the index.
+                                      Defaults to 'index'.
+
+    Returns:
+        pd.DataFrame: The concatenated DataFrame with the index reset and the old index column dropped.
+
+    Raises:
+        ValueError: If the input list `dataframes` is empty.
+        KeyError: If the `drop_column` does not exist in the concatenated DataFrame.
+
+    Example:
+        >>> rdf = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
+        >>> cdf = pd.DataFrame({'A': [5, 6], 'B': [7, 8]})
+        >>> sdf = pd.DataFrame({'A': [9, 10], 'B': [11, 12]})
+        >>> concatdf = concatenate_and_reset_index([rdf, cdf, sdf])
+        >>> print(concatdf)
+            A   B
+        0   1   3
+        1   2   4
+        2   5   7
+        3   6   8
+        4   9  11
+        5  10  12
+    """
+    if not dataframes:
+        logger.error("No DataFrames provided for concatenation.")
+        raise ValueError("The list of DataFrames to concatenate is empty.")
+
+    # Concatenate the DataFrames along the rows (default axis=0)
+    concatenated_df = pd.concat(dataframes, ignore_index=True)
+    logger.debug(f"Concatenated DataFrame shape: {concatenated_df.shape}")
+
+    # Reset the index (though ignore_index=True already does this)
+    concatenated_df.reset_index(inplace=True)
+    logger.debug("Index has been reset.")
+
+    # Attempt to drop the specified column
+    try:
+        concatenated_df.drop(columns=[drop_column], inplace=True)
+        logger.debug(f"Dropped column '{drop_column}'.")
+    except KeyError:
+        logger.error(f"Column '{drop_column}' does not exist in the DataFrame.")
+        raise KeyError(f"Column '{drop_column}' not found in the DataFrame.")
+
+    return concatenated_df

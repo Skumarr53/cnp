@@ -144,28 +144,52 @@ def remove_unwanted_phrases_and_validate(
     return sentence if sentence else None
 
 
-def tokenize_and_lemmatize_text(doc: str, nlp: spacy.Language) -> List[str]:
+def tokenize_and_lemmatize_text(
+    doc: str,
+    nlp: spacy.Language,
+    pos_exclude: Optional[List[str]] = None,
+    ent_type_exclude: Optional[List[str]] = None
+) -> List[str]:
     """
-    Tokenizes and lemmatizes the document text, excluding stop words, punctuation, and numbers.
+    Tokenizes and lemmatizes the document text, excluding stop words, punctuation, numbers,
+    and optionally excluding specific parts of speech and entity types.
 
     Args:
         doc (str): The input text to tokenize.
         nlp (spacy.Language): Initialized SpaCy model.
+        pos_exclude (Optional[List[str]]): List of part-of-speech tags to exclude. Defaults to None.
+        ent_type_exclude (Optional[List[str]]): List of named entity types to exclude. Defaults to None.
 
     Returns:
         List[str]: List of lemmatized and filtered tokens.
 
     Example:
-        >>> nlp = initialize_spacy()
+        >>> nlp = spacy.load("en_core_web_sm")
         >>> tokens = tokenize_and_lemmatize_text("I am loving the new features!", nlp)
         >>> print(tokens)
         ['love', 'new', 'feature']
+        
+        >>> tokens = tokenize_and_lemmatize_text(
+        ...     "Apple is looking at buying U.K. startup for $1 billion",
+        ...     nlp,
+        ...     pos_exclude=["VERB"],
+        ...     ent_type_exclude=["ORG"]
+        ... )
+        >>> print(tokens)
+        ['apple', 'look', 'buy', 'u.k.', 'startup', 'billion']
     """
-    tokens = [
-        token.lemma_.lower()
-        for token in nlp(doc)
-        if not token.is_stop and not token.is_punct and token.pos_ != "NUM"
-    ]
+    tokens = []
+    for token in nlp(doc):
+        if token.is_stop:
+            continue
+        if token.is_punct:
+            continue
+        if pos_exclude and token.pos_ in pos_exclude:
+            continue
+        if ent_type_exclude and token.ent_type_ in ent_type_exclude:
+            continue
+        tokens.append(token.lemma_.lower())
+
     logger.debug(f"Tokenized document into {len(tokens)} tokens.")
     return tokens
 

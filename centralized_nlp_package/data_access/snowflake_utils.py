@@ -16,11 +16,12 @@ from pyspark.sql import SparkSession, DataFrame
 from functools import wraps
 
 from centralized_nlp_package import config
+from centralized_nlp_package.utils import determine_environment
 
 # Module-level variables to hold the Spark session and Snowflake utilities
 _spark_session: Optional[SparkSession] = None
 _sfUtils: Optional[Any] = None  # Replace 'Any' with the appropriate type if available
-
+    
 
 def singleton(cls):
     """
@@ -99,7 +100,7 @@ def with_spark_session(func):
     return wrapper
 
 @with_spark_session
-def retrieve_snowflake_private_key() -> str:
+def retrieve_snowflake_private_key(config) -> str:
     """
     Retrieves and processes the Snowflake private key from Azure Key Vault (AKV).
 
@@ -156,7 +157,7 @@ def retrieve_snowflake_private_key() -> str:
 
 
 @with_spark_session
-def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 'QUANT') -> Dict[str, str]:
+def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 'QUANT', env: str = None) -> Dict[str, str]:
     """
     Constructs and returns a dictionary of Snowflake connection options.
 
@@ -171,9 +172,11 @@ def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 
     """
     global _spark_session  # Access Spark session if needed
 
+    determined_env = determine_environment(env)
+    _config = config.lib_config.snowflake[determined_env]
     private_key = retrieve_snowflake_private_key()
 
-    _config = config.lib_config.development.snowflake
+    
     snowflake_options = {
         'sfURL': f'{_config.account}.snowflakecomputing.com',
         'sfUser': _config.user,
