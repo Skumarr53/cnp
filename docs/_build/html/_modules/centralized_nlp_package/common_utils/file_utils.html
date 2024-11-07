@@ -207,6 +207,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -245,7 +246,7 @@
 <span></span><span class="c1"># centralized_nlp_package/common_utils/file_utils.py</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">centralized_nlp_package.utils.exception</span> <span class="kn">import</span> <span class="n">FilesNotLoadedException</span>
+<span class="kn">from</span> <span class="nn">centralized_nlp_package.utils</span> <span class="kn">import</span> <span class="n">FilesNotLoadedException</span>
 
 <div class="viewcode-block" id="load_content_from_txt"><a class="viewcode-back" href="../../../source/common_utils.html#centralized_nlp_package.common_utils.file_utils.load_content_from_txt">[docs]</a><span class="k">def</span> <span class="nf">load_content_from_txt</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -261,6 +262,7 @@
 <span class="sd">        FilesNotLoadedException: If the file is not found at the given path.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.common_utils import load_content_from_txt</span>
 <span class="sd">        &gt;&gt;&gt; content = load_content_from_txt(&quot;data/sample.txt&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; print(content)</span>
 <span class="sd">        &#39;This is a sample text file.&#39;</span>

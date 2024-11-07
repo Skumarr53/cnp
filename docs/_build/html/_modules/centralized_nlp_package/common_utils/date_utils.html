@@ -207,6 +207,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -260,6 +261,7 @@
 <span class="sd">        Tuple[str, str]: A tuple containing the start date and end date in &#39;YYYY-MM-DD&#39; format.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.common_utils import get_date_range</span>
 <span class="sd">        &gt;&gt;&gt; start_date, end_date = get_date_range(years_back=1, months_back=2) ## exmaple current date is 2023-10-01</span>
 <span class="sd">        &gt;&gt;&gt; print(start_date, end_date)</span>
 <span class="sd">        &#39;2022-08-01&#39; &#39;2023-10-01&#39;</span>
@@ -284,6 +286,7 @@
 <span class="sd">        str: The formatted date string.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.common_utils import format_date</span>
 <span class="sd">        &gt;&gt;&gt; from datetime import datetime</span>
 <span class="sd">        &gt;&gt;&gt; format_date(datetime(2023, 9, 15))</span>
 <span class="sd">        &#39;2023-09-15&#39;</span>

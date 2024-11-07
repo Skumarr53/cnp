@@ -207,6 +207,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -247,7 +248,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.file_utils</span> <span class="kn">import</span> <span class="n">load_content_from_txt</span>
+<span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">load_content_from_txt</span>
 
 
 
@@ -266,6 +267,7 @@
 <span class="sd">        ValueError: If any placeholder in the template does not have a corresponding keyword argument.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.common_utils import format_string_template</span>
 <span class="sd">        &gt;&gt;&gt; template = &quot;Hello, {name}! Today is {day}.&quot;</span>
 <span class="sd">        &gt;&gt;&gt; format_string_template(template, name=&quot;Alice&quot;, day=&quot;Monday&quot;)</span>
 <span class="sd">        &#39;Hello, Alice! Today is Monday.&#39;</span>
@@ -305,6 +307,7 @@
 <span class="sd">        FilesNotLoadedException: If the provided path to the query file does not exist.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.common_utils import query_constructor</span>
 <span class="sd">        &gt;&gt;&gt; template = &quot;SELECT * FROM users WHERE signup_date &gt; &#39;{start_date}&#39; AND signup_date &lt; &#39;{end_date}&#39;;&quot;</span>
 <span class="sd">        &gt;&gt;&gt; query = query_constructor(template, start_date=&quot;2022-01-01&quot;, end_date=&quot;2022-12-31&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; print(query)</span>

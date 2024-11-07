@@ -207,6 +207,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -259,6 +260,7 @@
 <span class="sd">        Optional[np.ndarray]: The averaged embedding vector, or None if none of the tokens are in the model.</span>
 
 <span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from centralized_nlp_package.embedding import average_token_embeddings</span>
 <span class="sd">        &gt;&gt;&gt; from gensim.models import Word2Vec</span>
 <span class="sd">        &gt;&gt;&gt; model = Word2Vec([[&#39;king&#39;, &#39;queen&#39;, &#39;man&#39;]], vector_size=100, min_count=1, epochs=10)</span>
 <span class="sd">        &gt;&gt;&gt; tokens = [&#39;king&#39;, &#39;queen&#39;, &#39;unknown_token&#39;]</span>

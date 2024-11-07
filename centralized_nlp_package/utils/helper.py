@@ -3,7 +3,7 @@ from typing import Any, Tuple, Union, List, Callable, Optional
 
 def determine_environment(provided_env: Optional[str] = None) -> str:
     """
-    Determines the environment based on the provided argument or auto-detects it using the workspace name.
+    Determines the environment based on the provided argument or auto-detects it using the DataBricks workspace name.
     
     Args:
         provided_env (Optional[str]): The environment specified by the user ('dev', 'stg', 'prod').

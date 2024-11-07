@@ -1,0 +1,711 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
+        <title>centralized_nlp_package.data_processing.spark_utils - Centralized NLP Package 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=11203d66" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Centralized NLP Package 0.1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Centralized NLP Package 0.1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_access.html">Data Access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/preprocessing.html">Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <h1>Source code for centralized_nlp_package.data_processing.spark_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">DataFrame</span>
+<span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">StructType</span><span class="p">,</span>
+    <span class="n">StructField</span><span class="p">,</span>
+    <span class="n">StringType</span><span class="p">,</span>
+    <span class="n">IntegerType</span><span class="p">,</span>
+    <span class="n">LongType</span><span class="p">,</span>
+    <span class="n">FloatType</span><span class="p">,</span>
+    <span class="n">DoubleType</span><span class="p">,</span>
+    <span class="n">BooleanType</span><span class="p">,</span>
+    <span class="n">TimestampType</span><span class="p">,</span>
+    <span class="n">ArrayType</span><span class="p">,</span>
+    <span class="n">MapType</span><span class="p">,</span>
+    <span class="n">DataType</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+
+<span class="c1"># Define the keyword to Spark DataType mapping</span>
+<span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;arr_str&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">StringType</span><span class="p">()),</span>
+    <span class="s1">&#39;arr_int&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">IntegerType</span><span class="p">()),</span>
+    <span class="s1">&#39;arr_long&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">LongType</span><span class="p">()),</span>
+    <span class="s1">&#39;arr_float&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">FloatType</span><span class="p">()),</span>
+    <span class="s1">&#39;arr_double&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">()),</span>
+    <span class="s1">&#39;arr_bool&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">BooleanType</span><span class="p">()),</span>
+    <span class="s1">&#39;map_str_int&#39;</span><span class="p">:</span> <span class="n">MapType</span><span class="p">(</span><span class="n">StringType</span><span class="p">(),</span> <span class="n">IntegerType</span><span class="p">()),</span>
+    <span class="s1">&#39;map_str_str&#39;</span><span class="p">:</span> <span class="n">MapType</span><span class="p">(</span><span class="n">StringType</span><span class="p">(),</span> <span class="n">StringType</span><span class="p">()),</span>
+    <span class="c1"># Add more mappings as needed</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="get_default_dtype_mapping"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping">[docs]</a><span class="k">def</span> <span class="nf">get_default_dtype_mapping</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the default mapping from Pandas dtypes to Spark DataTypes.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, DataType]: Mapping of Pandas dtypes to Spark DataTypes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">(),</span>
+        <span class="s1">&#39;int64&#39;</span><span class="p">:</span> <span class="n">LongType</span><span class="p">(),</span>
+        <span class="s1">&#39;int32&#39;</span><span class="p">:</span> <span class="n">IntegerType</span><span class="p">(),</span>
+        <span class="s1">&#39;float64&#39;</span><span class="p">:</span> <span class="n">DoubleType</span><span class="p">(),</span>
+        <span class="s1">&#39;float32&#39;</span><span class="p">:</span> <span class="n">FloatType</span><span class="p">(),</span>
+        <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">BooleanType</span><span class="p">(),</span>
+        <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span> <span class="n">TimestampType</span><span class="p">(),</span>
+        <span class="s1">&#39;timedelta[ns]&#39;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">(),</span>  <span class="c1"># Spark does not have a timedelta type</span>
+    <span class="p">}</span></div>
+
+<div class="viewcode-block" id="keyword_to_datatype"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype">[docs]</a><span class="k">def</span> <span class="nf">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataType</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a keyword to the corresponding Spark DataType.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        keyword (str): The type identifier keyword.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Optional[DataType]: The corresponding Spark DataType, or None if keyword is invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to Spark DataType &#39;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; is not recognized. It will be ignored.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dtype</span></div>
+
+<div class="viewcode-block" id="equivalent_type"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.equivalent_type">[docs]</a><span class="k">def</span> <span class="nf">equivalent_type</span><span class="p">(</span>
+    <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">pandas_dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">column_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines the Spark DataType for a given column based on column name and Pandas dtype.</span>
+<span class="sd">    Priority is given to column name mapping over dtype mapping.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        column_name (str): Name of the column.</span>
+<span class="sd">        pandas_dtype (str): Pandas dtype of the column.</span>
+<span class="sd">        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        DataType: Corresponding Spark DataType.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check if column name has a custom keyword mapping</span>
+    <span class="k">if</span> <span class="n">column_mapping</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">:</span>
+                <span class="n">keyword</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+                <span class="n">spark_type</span> <span class="o">=</span> <span class="n">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">spark_type</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; uses custom keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">spark_type</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; has an invalid keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39;. Falling back to default mapping.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="ow">in</span> <span class="n">column_name</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">keyword</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">spark_type</span> <span class="o">=</span> <span class="n">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">spark_type</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; uses custom keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">spark_type</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; has an invalid keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39;. Falling back to default mapping.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Fallback to default dtype mapping</span>
+    <span class="n">default_dtype_mapping</span> <span class="o">=</span> <span class="n">get_default_dtype_mapping</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">pandas_dtype</span> <span class="ow">in</span> <span class="n">default_dtype_mapping</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39; for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; mapped to default Spark type &#39;</span><span class="si">{</span><span class="n">default_dtype_mapping</span><span class="p">[</span><span class="n">pandas_dtype</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">default_dtype_mapping</span><span class="p">[</span><span class="n">pandas_dtype</span><span class="p">]</span>
+    
+    <span class="c1"># Fallback to StringType if no mapping is found</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No mapping found for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; with Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39;. Using StringType.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StringType</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="define_structure"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.define_structure">[docs]</a><span class="k">def</span> <span class="nf">define_structure</span><span class="p">(</span>
+    <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">pandas_dtype</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">column_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StructField</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a StructField for a Spark StructType schema.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        column_name (str): Name of the column.</span>
+<span class="sd">        pandas_dtype (str): Pandas dtype of the column.</span>
+<span class="sd">        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        StructField: StructField with column name and determined Spark DataType.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">spark_type</span> <span class="o">=</span> <span class="n">equivalent_type</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">pandas_dtype</span><span class="p">,</span> <span class="n">column_mapping</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">StructField</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">spark_type</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="pandas_to_spark"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.pandas_to_spark">[docs]</a><span class="k">def</span> <span class="nf">pandas_to_spark</span><span class="p">(</span>
+    <span class="n">pandas_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">spark</span><span class="p">:</span> <span class="n">SparkSession</span><span class="p">,</span>
+    <span class="n">column_type_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.</span>
+
+<span class="sd">    If a column name is present in the &#39;column_type_mapping&#39;, its Spark DataType will be determined</span>
+<span class="sd">    based on the provided type identifier keyword. If a column name is not present in the mapping,</span>
+<span class="sd">    its type will be determined based on the Pandas dtype using a predefined dtype mapping.</span>
+
+<span class="sd">    Predefined Pandas dtype to Spark DataType mapping:</span>
+<span class="sd">        - &#39;object&#39;            -&gt; StringType()</span>
+<span class="sd">        - &#39;int64&#39;             -&gt; LongType()</span>
+<span class="sd">        - &#39;int32&#39;             -&gt; IntegerType()</span>
+<span class="sd">        - &#39;float64&#39;           -&gt; DoubleType()</span>
+<span class="sd">        - &#39;float32&#39;           -&gt; FloatType()</span>
+<span class="sd">        - &#39;bool&#39;              -&gt; BooleanType()</span>
+<span class="sd">        - &#39;datetime64[ns]&#39;    -&gt; TimestampType()</span>
+<span class="sd">        - &#39;timedelta[ns]&#39;     -&gt; StringType()  </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        pandas_df (pd.DataFrame): The Pandas DataFrame to convert.</span>
+<span class="sd">        spark (SparkSession): The active SparkSession.</span>
+<span class="sd">        column_type_mapping (Optional[Dict[str, str]]): Optional mapping from column names to type identifier keywords.</span>
+<span class="sd">            Example: {&#39;FILT_MD&#39;: &#39;arr_str&#39;, &#39;stats&#39;: &#39;map_str_int&#39;}</span>
+<span class="sd">            </span>
+<span class="sd">            custom keyword to Spark DataType mapping:</span>
+
+<span class="sd">            - &#39;arr_str&#39;     -&gt; ArrayType(StringType())</span>
+<span class="sd">            - &#39;arr_int&#39;     -&gt; ArrayType(IntegerType())</span>
+<span class="sd">            - &#39;arr_long&#39;    -&gt; ArrayType(LongType())</span>
+<span class="sd">            - &#39;arr_float&#39;   -&gt; ArrayType(FloatType())</span>
+<span class="sd">            - &#39;arr_double&#39;  -&gt; ArrayType(DoubleType())</span>
+<span class="sd">            - &#39;arr_bool&#39;    -&gt; ArrayType(BooleanType())</span>
+<span class="sd">            - &#39;map_str_int&#39; -&gt; MapType(StringType(), IntegerType())</span>
+<span class="sd">            - &#39;map_str_str&#39; -&gt; MapType(StringType(), StringType())</span>
+<span class="sd">            </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The resulting Spark DataFrame.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If there&#39;s an issue during the conversion process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting conversion from Pandas to Spark DataFrame.&quot;</span><span class="p">)</span>
+    
+    <span class="n">columns</span> <span class="o">=</span> <span class="n">pandas_df</span><span class="o">.</span><span class="n">columns</span>
+    <span class="n">dtypes</span> <span class="o">=</span> <span class="n">pandas_df</span><span class="o">.</span><span class="n">dtypes</span>
+
+    <span class="n">struct_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
+        <span class="n">pandas_dtype</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">field</span> <span class="o">=</span> <span class="n">define_structure</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">pandas_dtype</span><span class="p">,</span> <span class="n">column_type_mapping</span><span class="p">)</span>
+        <span class="n">struct_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">(</span><span class="n">struct_fields</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constructed Spark schema: </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">spark_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">pandas_df</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully converted Pandas DataFrame to Spark DataFrame.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">spark_df</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting Pandas DataFrame to Spark DataFrame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conversion failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+
+
+<div class="viewcode-block" id="convert_columns_to_timestamp"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp">[docs]</a><span class="k">def</span> <span class="nf">convert_columns_to_timestamp</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">columns_formats</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+    <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts specified columns in a Spark DataFrame to timestamp type using provided formats.</span>
+
+<span class="sd">    This function iterates over the provided dictionary of column names and their corresponding</span>
+<span class="sd">    timestamp formats, applying the &#39;to_timestamp&#39; transformation to each specified column.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (DataFrame): The input Spark DataFrame.</span>
+<span class="sd">        columns_formats (Dict[str, str]): A dictionary where keys are column names to be converted,</span>
+<span class="sd">                                          and values are the corresponding timestamp formats.</span>
+<span class="sd">                                          Example:</span>
+<span class="sd">                                              {</span>
+<span class="sd">                                                  &quot;DATE&quot;: &quot;yyyy-MM-dd&quot;,</span>
+<span class="sd">                                                  &quot;REPORT_DATE&quot;: &quot;yyyy-MM-dd HH mm ss&quot;,</span>
+<span class="sd">                                                  &quot;EVENT_DATETIME_UTC&quot;: &quot;yyyy-MM-dd HH mm ss&quot;</span>
+<span class="sd">                                              }</span>
+<span class="sd">        overwrite (bool, optional): Whether to overwrite the existing column with the transformed column.</span>
+<span class="sd">                                    If &#39;False&#39;, a new column with a suffix (e.g., &#39;_ts&#39;) will be created.</span>
+<span class="sd">                                    Defaults to &#39;True&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The Spark DataFrame with specified columns converted to timestamp type.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If &#39;columns_formats&#39; is empty.</span>
+<span class="sd">        KeyError: If a specified column does not exist in the DataFrame.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from pyspark.sql import SparkSession</span>
+<span class="sd">        &gt;&gt;&gt; spark = SparkSession.builder.appName(&quot;ExampleApp&quot;).getOrCreate()</span>
+<span class="sd">        &gt;&gt;&gt; data = [</span>
+<span class="sd">        ...     (&quot;2023-01-01&quot;, &quot;2023-01-01 12 00 00&quot;, &quot;2023-01-01 12 00 00&quot;),</span>
+<span class="sd">        ...     (&quot;2023-02-01&quot;, &quot;2023-02-01 13 30 45&quot;, &quot;2023-02-01 13 30 45&quot;)</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; columns = [&quot;DATE&quot;, &quot;REPORT_DATE&quot;, &quot;EVENT_DATETIME_UTC&quot;]</span>
+<span class="sd">        &gt;&gt;&gt; df = spark.createDataFrame(data, schema=columns)</span>
+<span class="sd">        &gt;&gt;&gt; columns_to_convert = {</span>
+<span class="sd">        ...     &quot;DATE&quot;: &quot;yyyy-MM-dd&quot;,</span>
+<span class="sd">        ...     &quot;REPORT_DATE&quot;: &quot;yyyy-MM-dd HH mm ss&quot;,</span>
+<span class="sd">        ...     &quot;EVENT_DATETIME_UTC&quot;: &quot;yyyy-MM-dd HH mm ss&quot;</span>
+<span class="sd">        ... }</span>
+<span class="sd">        &gt;&gt;&gt; converted_df = convert_columns_to_timestamp(df, columns_to_convert)</span>
+<span class="sd">        &gt;&gt;&gt; converted_df.printSchema()</span>
+<span class="sd">        root</span>
+<span class="sd">         |-- DATE: timestamp (nullable = true)</span>
+<span class="sd">         |-- REPORT_DATE: timestamp (nullable = true)</span>
+<span class="sd">         |-- EVENT_DATETIME_UTC: timestamp (nullable = true)</span>
+<span class="sd">        &gt;&gt;&gt; converted_df.show(truncate=False)</span>
+<span class="sd">        +-------------------+-------------------+---------------------+</span>
+<span class="sd">        |DATE               |REPORT_DATE        |EVENT_DATETIME_UTC   |</span>
+<span class="sd">        +-------------------+-------------------+---------------------+</span>
+<span class="sd">        |2023-01-01 00:00:00|2023-01-01 12:00:00|2023-01-01 12:00:00  |</span>
+<span class="sd">        |2023-02-01 00:00:00|2023-02-01 13:30:45|2023-02-01 13:30:45  |</span>
+<span class="sd">        +-------------------+-------------------+---------------------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">columns_formats</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No columns and formats provided for timestamp conversion.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;columns_formats&#39; dictionary cannot be empty.&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">columns_formats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; does not exist in the DataFrame.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in the DataFrame.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Overwriting existing column.&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_timestamp</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">column</span><span class="p">),</span> <span class="n">fmt</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_column</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">_ts&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Creating new column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">new_column</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_timestamp</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">column</span><span class="p">),</span> <span class="n">fmt</span><span class="p">))</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Timestamp conversion completed successfully.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+
+
+<div class="viewcode-block" id="sparkdf_apply_transformations"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.sparkdf_apply_transformations">[docs]</a><span class="k">def</span> <span class="nf">sparkdf_apply_transformations</span><span class="p">(</span>
+    <span class="n">spark_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
+    <span class="n">transformations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">Callable</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]],</span>
+    <span class="n">error_on_missing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies a series of transformations to a PySpark DataFrame based on the provided specifications.</span>
+
+<span class="sd">    Each transformation is defined by a tuple containing:</span>
+<span class="sd">        - The name of the new or existing column to be created or overwritten.</span>
+<span class="sd">        - The name(s) of the column(s) to be used as input for the transformation.</span>
+<span class="sd">        - The transformation function to apply.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        spark_df (DataFrame): The input PySpark DataFrame to transform.</span>
+<span class="sd">        transformations (List[Tuple[str, Union[str, List[str]], Callable[..., Any]]]):</span>
+<span class="sd">            A list of transformation specifications. Each specification is a tuple:</span>
+<span class="sd">                (new_column_name, input_columns, transformation_function)</span>
+<span class="sd">                </span>
+<span class="sd">                - &#39;new_column_name&#39; (str): The name of the column to create or overwrite.</span>
+<span class="sd">                - &#39;input_columns&#39; (str or List[str]): The column name(s) to pass as arguments to the transformation function.</span>
+<span class="sd">                - &#39;transformation_function&#39; (Callable): A function that takes one or more &#39;Column&#39; objects and returns a &#39;Column&#39;.</span>
+<span class="sd">        error_on_missing (bool, optional): </span>
+<span class="sd">            If &#39;True&#39;, the function will raise a &#39;KeyError&#39; if any of the specified input columns are missing in the DataFrame.</span>
+<span class="sd">            If &#39;False&#39;, missing columns will be skipped with a warning.</span>
+<span class="sd">            Defaults to &#39;True&#39;.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        DataFrame: The transformed PySpark DataFrame with all specified transformations applied.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        KeyError: If &#39;error_on_missing&#39; is &#39;True&#39; and any specified input columns are missing.</span>
+<span class="sd">        TypeError: If &#39;transformations&#39; is not a list of tuples with the required structure.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        from pyspark.sql import SparkSession</span>
+<span class="sd">        from pyspark.sql.functions import udf</span>
+<span class="sd">        from pyspark.sql.types import StringType</span>
+
+<span class="sd">        # Initialize SparkSession</span>
+<span class="sd">        spark = SparkSession.builder.appName(&quot;TransformationExample&quot;).getOrCreate()</span>
+
+<span class="sd">        # Sample DataFrame</span>
+<span class="sd">        data = [</span>
+<span class="sd">            (&quot;Hello World&quot;, &quot;2023-01-01&quot;),</span>
+<span class="sd">            (&quot;PySpark Transformations&quot;, &quot;2023-02-01&quot;)</span>
+<span class="sd">        ]</span>
+<span class="sd">        columns = [&quot;text_column&quot;, &quot;date_column&quot;]</span>
+<span class="sd">        df = spark.createDataFrame(data, schema=columns)</span>
+
+<span class="sd">        # Define UDFs</span>
+<span class="sd">        def to_upper(text):</span>
+<span class="sd">            return text.upper() if text else text</span>
+
+<span class="sd">        def extract_year(date_str):</span>
+<span class="sd">            return date_str.split(&quot;-&quot;)[0] if date_str else None</span>
+
+<span class="sd">        to_upper_udf = udf(to_upper, StringType())</span>
+<span class="sd">        extract_year_udf = udf(extract_year, StringType())</span>
+
+<span class="sd">        # Define transformations</span>
+<span class="sd">        transformations = [</span>
+<span class="sd">            (&quot;text_upper&quot;, &quot;text_column&quot;, to_upper_udf),</span>
+<span class="sd">            (&quot;year_extracted&quot;, &quot;date_column&quot;, extract_year_udf),</span>
+<span class="sd">            (&quot;combined&quot;, [&quot;text_column&quot;, &quot;date_column&quot;], lambda text, date: F.concat(text, F.lit(&quot; - &quot;), date))</span>
+<span class="sd">        ]</span>
+
+<span class="sd">        # Apply transformations</span>
+<span class="sd">        transformed_df = apply_transformations(df, transformations)</span>
+
+<span class="sd">        # Show results</span>
+<span class="sd">        transformed_df.show(truncate=False)</span>
+<span class="sd">        ```</span>
+
+<span class="sd">        **Output:**</span>
+<span class="sd">        ```</span>
+<span class="sd">        +-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="sd">        |text_column              |date_column|text_upper |year_extracted |combined              |</span>
+<span class="sd">        +-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="sd">        |Hello World              |2023-01-01 |HELLO WORLD|2023           |Hello World - 2023-01-01|</span>
+<span class="sd">        |PySpark Transformations  |2023-02-01 |PYSPARK TRANSFORMATIONS|2023           |PySpark Transformations - 2023-02-01|</span>
+<span class="sd">        +-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="sd">        ```</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformations</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Transformations should be provided as a list of tuples.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Transformations should be a list of tuples.&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">transformation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">transformation</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Each transformation should be a tuple of (new_column_name, input_columns, transformation_function). &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Each transformation must be a tuple of (new_column_name, input_columns, transformation_function).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">new_column</span><span class="p">,</span> <span class="n">input_columns</span><span class="p">,</span> <span class="n">transformation_func</span> <span class="o">=</span> <span class="n">transformation</span>
+
+        <span class="c1"># Normalize input_columns to a list</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_columns</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">input_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_columns</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">col_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">input_columns</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All input column names must be strings. Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All input column names must be strings.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;input_columns must be either a string or a list of strings. Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input_columns must be either a string or a list of strings.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check for missing columns</span>
+        <span class="n">missing_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">col_name</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">input_columns</span> <span class="k">if</span> <span class="n">col_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">missing_cols</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Missing input columns </span><span class="si">{</span><span class="n">missing_cols</span><span class="si">}</span><span class="s2"> for transformation &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+            <span class="k">if</span> <span class="n">error_on_missing</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">continue</span>  <span class="c1"># Skip this transformation</span>
+
+        <span class="c1"># Prepare Column objects</span>
+        <span class="n">column_objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">col_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">input_columns</span><span class="p">]</span>
+
+        <span class="c1"># Apply the transformation function</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; using columns </span><span class="si">{</span><span class="n">input_columns</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">transformed_column</span> <span class="o">=</span> <span class="n">transformation_func</span><span class="p">(</span><span class="o">*</span><span class="n">column_objs</span><span class="p">)</span>
+            <span class="n">spark_df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">new_column</span><span class="p">,</span> <span class="n">transformed_column</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; applied successfully.&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All transformations have been applied successfully.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">spark_df</span></div>
+</pre></div>
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Santhosh Kumar
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=2389946f"></script>
+    <script src="../../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>

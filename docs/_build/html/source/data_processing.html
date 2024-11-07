@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Common Utils" href="common_utils.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="NLI utilities" href="nli_utils.html" /><link rel="prev" title="Common Utils" href="common_utils.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>Data Processing - Centralized NLP Package 0.1.0 documentation</title>
@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common_utils.html">Common Utils</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -251,6 +252,82 @@
           <section id="module-centralized_nlp_package.data_processing.dataframe_utils">
 <span id="data-processing"></span><h1>Data Processing<a class="headerlink" href="#module-centralized_nlp_package.data_processing.dataframe_utils" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dataframe_utils.check_dataframe_for_records">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dataframe_utils.</span></span><span class="sig-name descname"><span class="pre">check_dataframe_for_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PARSED_DATETIME_EASTERN_TZ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_on_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'both'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dataframe_utils.html#check_dataframe_for_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dataframe_utils.check_dataframe_for_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the provided DataFrame is non-empty and prints relevant information.
+If the DataFrame is empty, prints a message and optionally exits the program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – The DataFrame to check.</p></li>
+<li><p><strong>datetime_col</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the datetime column to determine the data span.
+Defaults to ‘PARSED_DATETIME_EASTERN_TZ’.</p></li>
+<li><p><strong>exit_on_empty</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to exit the program if the DataFrame is empty.
+Defaults to True.</p></li>
+<li><p><strong>exit_method</strong> (<em>str</em><em>, </em><em>optional</em>) – Method to exit the program. Options are ‘dbutils’, ‘os’, or ‘both’.
+Defaults to ‘both’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the specified datetime column does not exist in the DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dataframe_utils.concatenate_and_reset_index">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dataframe_utils.</span></span><span class="sig-name descname"><span class="pre">concatenate_and_reset_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'index'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dataframe_utils.html#concatenate_and_reset_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dataframe_utils.concatenate_and_reset_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates multiple Pandas DataFrames, resets the index, and drops the old index column.</p>
+<dl class="simple">
+<dt>This function performs the following steps:</dt><dd><ol class="arabic simple">
+<li><p>Concatenates the provided DataFrames along the rows.</p></li>
+<li><p>Resets the index of the concatenated DataFrame.</p></li>
+<li><p>Drops the specified column (default is ‘index’) resulting from the reset.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframes</strong> (<em>List</em><em>[</em><em>pd.DataFrame</em><em>]</em>) – A list of Pandas DataFrames to concatenate.</p></li>
+<li><p><strong>drop_column</strong> (<em>str</em><em>, </em><em>optional</em>) – The name of the column to drop after resetting the index.
+Defaults to ‘index’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The concatenated DataFrame with the index reset and the old index column dropped.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the input list ‘dataframes’ is empty.</p></li>
+<li><p><strong>KeyError</strong> – If the ‘drop_column’ does not exist in the concatenated DataFrame.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">rdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">concatdf</span> <span class="o">=</span> <span class="n">concatenate_and_reset_index</span><span class="p">([</span><span class="n">rdf</span><span class="p">,</span> <span class="n">cdf</span><span class="p">,</span> <span class="n">sdf</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">concatdf</span><span class="p">)</span>
+<span class="go">    A   B</span>
+<span class="go">0   1   3</span>
+<span class="go">1   2   4</span>
+<span class="go">2   5   7</span>
+<span class="go">3   6   8</span>
+<span class="go">4   9  11</span>
+<span class="go">5  10  12</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dataframe_utils.df_apply_transformations">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dataframe_utils.</span></span><span class="sig-name descname"><span class="pre">df_apply_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dataframe_utils.html#df_apply_transformations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dataframe_utils.df_apply_transformations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a set of transformations to a DataFrame based on the given list of transformation tuples.</p>
@@ -291,7 +368,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">concat_columns</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.data_processing</span> <span class="kn">import</span> <span class="n">df_apply_transformations</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">concat_columns</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;col1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">],</span> <span class="s1">&#39;col2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -330,7 +408,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Good product&quot;</span><span class="p">,</span> <span class="s2">&quot;Bad service&quot;</span><span class="p">,</span> <span class="s2">&quot;Average experience&quot;</span><span class="p">]}</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">centralized_nlp_package.data_processing</span> <span class="kn">import</span> <span class="nn">df_remove_rows_with_keywords</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Good product&quot;</span><span class="p">,</span> <span class="s2">&quot;Bad service&quot;</span><span class="p">,</span> <span class="s2">&quot;Average experience&quot;</span><span class="p">]}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">filtered_df</span> <span class="o">=</span> <span class="n">df_remove_rows_with_keywords</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;comments&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;Bad service&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">filtered_df</span><span class="p">)</span>
@@ -341,6 +420,395 @@
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dataframe_utils.save_report">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dataframe_utils.</span></span><span class="sig-name descname"><span class="pre">save_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dataframe_utils.html#save_report"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dataframe_utils.save_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the report DataFrame to a CSV or Parquet file based on the file extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – DataFrame to be saved.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – File path to save the report. The format is inferred from the file extension.
+Supported formats are ‘.csv’ and ‘.parquet’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the file extension is not supported.</p></li>
+<li><p><strong>ImportError</strong> – If the required engine for Parquet is not installed.</p></li>
+</ul>
+</dd>
+</dl>
+<dl>
+<dt>Usage Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">save_report_module</span> <span class="kn">import</span> <span class="n">save_report</span>  <span class="c1"># Assuming the function is in save_report_module.py</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a sample DataFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Alice&#39;</span><span class="p">,</span> <span class="s1">&#39;Bob&#39;</span><span class="p">,</span> <span class="s1">&#39;Charlie&#39;</span><span class="p">],</span> <span class="s1">&#39;Score&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">78</span><span class="p">]}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save as CSV</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_report</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;report.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save as Parquet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">save_report</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;report.parquet&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-centralized_nlp_package.data_processing.dask_utils"></span><dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dask_utils.dask_compute_with_progress">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dask_utils.</span></span><span class="sig-name descname"><span class="pre">dask_compute_with_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dask_dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dask_utils.html#dask_compute_with_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dask_utils.dask_compute_with_progress" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes a Dask DataFrame, optionally displaying a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dask_dataframe</strong> (<em>Any</em>) – The Dask DataFrame to be computed.</p></li>
+<li><p><strong>use_progress</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to display a progress bar during computation. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The computed DataFrame (e.g., pandas DataFrame).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">centralized_nlp_package.data_access</span> <span class="kn">import</span> <span class="n">dask_compute_with_progress</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">dask.dataframe</span> <span class="k">as</span> <span class="nn">dd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/*.csv&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">computed_df</span> <span class="o">=</span> <span class="n">dask_compute_with_progress</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">use_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">computed_df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="go">   column1  column2</span>
+<span class="go">0        1        4</span>
+<span class="go">1        2        5</span>
+<span class="go">2        3        6</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.dask_utils.initialize_dask_client">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.dask_utils.</span></span><span class="sig-name descname"><span class="pre">initialize_dask_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threads_per_worker</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/dask_utils.html#initialize_dask_client"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.dask_utils.initialize_dask_client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a Dask client with specified number of workers and threads per worker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_workers</strong> (<em>int</em>) – Number of workers to initialize.</p></li>
+<li><p><strong>threads_per_worker</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of threads per worker. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An instance of the Dask distributed client.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Client</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.data_access</span> <span class="kn">import</span> <span class="n">initialize_dask_client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">initialize_dask_client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+<span class="go">&lt;distributed.client.Client object at 0x...&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="module-centralized_nlp_package.data_processing.spark_utils"></span><dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">convert_columns_to_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns_formats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#convert_columns_to_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts specified columns in a Spark DataFrame to timestamp type using provided formats.</p>
+<p>This function iterates over the provided dictionary of column names and their corresponding
+timestamp formats, applying the ‘to_timestamp’ transformation to each specified column.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>DataFrame</em>) – The input Spark DataFrame.</p></li>
+<li><p><strong>columns_formats</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em>) – <p>A dictionary where keys are column names to be converted,
+and values are the corresponding timestamp formats.
+.. rubric:: Example</p>
+<dl class="simple">
+<dt>{</dt><dd><p>“DATE”: “yyyy-MM-dd”,
+“REPORT_DATE”: “yyyy-MM-dd HH mm ss”,
+“EVENT_DATETIME_UTC”: “yyyy-MM-dd HH mm ss”</p>
+</dd>
+</dl>
+<p>}</p>
+</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to overwrite the existing column with the transformed column.
+If ‘False’, a new column with a suffix (e.g., ‘_ts’) will be created.
+Defaults to ‘True’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The Spark DataFrame with specified columns converted to timestamp type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If ‘columns_formats’ is empty.</p></li>
+<li><p><strong>KeyError</strong> – If a specified column does not exist in the DataFrame.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;ExampleApp&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;2023-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01 12 00 00&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-01-01 12 00 00&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s2">&quot;2023-02-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01 13 30 45&quot;</span><span class="p">,</span> <span class="s2">&quot;2023-02-01 13 30 45&quot;</span><span class="p">)</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DATE&quot;</span><span class="p">,</span> <span class="s2">&quot;REPORT_DATE&quot;</span><span class="p">,</span> <span class="s2">&quot;EVENT_DATETIME_UTC&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">columns_to_convert</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;DATE&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyy-MM-dd&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;REPORT_DATE&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyy-MM-dd HH mm ss&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s2">&quot;EVENT_DATETIME_UTC&quot;</span><span class="p">:</span> <span class="s2">&quot;yyyy-MM-dd HH mm ss&quot;</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">converted_df</span> <span class="o">=</span> <span class="n">convert_columns_to_timestamp</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">columns_to_convert</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">converted_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="go">root</span>
+<span class="go"> |-- DATE: timestamp (nullable = true)</span>
+<span class="go"> |-- REPORT_DATE: timestamp (nullable = true)</span>
+<span class="go"> |-- EVENT_DATETIME_UTC: timestamp (nullable = true)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">converted_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="go">+-------------------+-------------------+---------------------+</span>
+<span class="go">|DATE               |REPORT_DATE        |EVENT_DATETIME_UTC   |</span>
+<span class="go">+-------------------+-------------------+---------------------+</span>
+<span class="go">|2023-01-01 00:00:00|2023-01-01 12:00:00|2023-01-01 12:00:00  |</span>
+<span class="go">|2023-02-01 00:00:00|2023-02-01 13:30:45|2023-02-01 13:30:45  |</span>
+<span class="go">+-------------------+-------------------+---------------------+</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.define_structure">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">define_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pandas_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#define_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.define_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a StructField for a Spark StructType schema.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_name</strong> (<em>str</em>) – Name of the column.</p></li>
+<li><p><strong>pandas_dtype</strong> (<em>str</em>) – Pandas dtype of the column.</p></li>
+<li><p><strong>column_mapping</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Mapping from column names to type identifier keywords.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>StructField with column name and determined Spark DataType.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>StructField</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.equivalent_type">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">equivalent_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pandas_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#equivalent_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.equivalent_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines the Spark DataType for a given column based on column name and Pandas dtype.
+Priority is given to column name mapping over dtype mapping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_name</strong> (<em>str</em>) – Name of the column.</p></li>
+<li><p><strong>pandas_dtype</strong> (<em>str</em>) – Pandas dtype of the column.</p></li>
+<li><p><strong>column_mapping</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>]</em>) – Mapping from column names to type identifier keywords.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Corresponding Spark DataType.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataType</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">get_default_dtype_mapping</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#get_default_dtype_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the default mapping from Pandas dtypes to Spark DataTypes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mapping of Pandas dtypes to Spark DataTypes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, DataType]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">keyword_to_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#keyword_to_datatype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a keyword to the corresponding Spark DataType.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>keyword</strong> (<em>str</em>) – The type identifier keyword.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The corresponding Spark DataType, or None if keyword is invalid.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[DataType]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.pandas_to_spark">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">pandas_to_spark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pandas_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spark</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_type_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#pandas_to_spark"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.pandas_to_spark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.</p>
+<p>If a column name is present in the ‘column_type_mapping’, its Spark DataType will be determined
+based on the provided type identifier keyword. If a column name is not present in the mapping,
+its type will be determined based on the Pandas dtype using a predefined dtype mapping.</p>
+<dl class="simple">
+<dt>Predefined Pandas dtype to Spark DataType mapping:</dt><dd><ul class="simple">
+<li><p>‘object’            -&gt; StringType()</p></li>
+<li><p>‘int64’             -&gt; LongType()</p></li>
+<li><p>‘int32’             -&gt; IntegerType()</p></li>
+<li><p>‘float64’           -&gt; DoubleType()</p></li>
+<li><p>‘float32’           -&gt; FloatType()</p></li>
+<li><p>‘bool’              -&gt; BooleanType()</p></li>
+<li><p>‘datetime64[ns]’    -&gt; TimestampType()</p></li>
+<li><p>‘timedelta[ns]’     -&gt; StringType()</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pandas_df</strong> (<em>pd.DataFrame</em>) – The Pandas DataFrame to convert.</p></li>
+<li><p><strong>spark</strong> (<em>SparkSession</em>) – The active SparkSession.</p></li>
+<li><p><strong>column_type_mapping</strong> (<em>Optional</em><em>[</em><em>Dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>]</em>) – <p>Optional mapping from column names to type identifier keywords.
+Example: {‘FILT_MD’: ‘arr_str’, ‘stats’: ‘map_str_int’}</p>
+<p>custom keyword to Spark DataType mapping:</p>
+<ul>
+<li><p>’arr_str’     -&gt; ArrayType(StringType())</p></li>
+<li><p>’arr_int’     -&gt; ArrayType(IntegerType())</p></li>
+<li><p>’arr_long’    -&gt; ArrayType(LongType())</p></li>
+<li><p>’arr_float’   -&gt; ArrayType(FloatType())</p></li>
+<li><p>’arr_double’  -&gt; ArrayType(DoubleType())</p></li>
+<li><p>’arr_bool’    -&gt; ArrayType(BooleanType())</p></li>
+<li><p>’map_str_int’ -&gt; MapType(StringType(), IntegerType())</p></li>
+<li><p>’map_str_str’ -&gt; MapType(StringType(), StringType())</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The resulting Spark DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If there’s an issue during the conversion process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.sparkdf_apply_transformations">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">sparkdf_apply_transformations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_on_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#sparkdf_apply_transformations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.sparkdf_apply_transformations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a series of transformations to a PySpark DataFrame based on the provided specifications.</p>
+<dl class="simple">
+<dt>Each transformation is defined by a tuple containing:</dt><dd><ul class="simple">
+<li><p>The name of the new or existing column to be created or overwritten.</p></li>
+<li><p>The name(s) of the column(s) to be used as input for the transformation.</p></li>
+<li><p>The transformation function to apply.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spark_df</strong> (<em>DataFrame</em>) – The input PySpark DataFrame to transform.</p></li>
+<li><p><strong>transformations</strong> (<em>List</em><em>[</em><em>Tuple</em><em>[</em><em>str</em><em>, </em><em>Union</em><em>[</em><em>str</em><em>, </em><em>List</em><em>[</em><em>str</em><em>]</em><em>]</em><em>, </em><em>Callable</em><em>[</em><em>...</em><em>, </em><em>Any</em><em>]</em><em>]</em><em>]</em>) – <dl class="simple">
+<dt>A list of transformation specifications. Each specification is a tuple:</dt><dd><p>(new_column_name, input_columns, transformation_function)</p>
+<ul>
+<li><p>’new_column_name’ (str): The name of the column to create or overwrite.</p></li>
+<li><p>’input_columns’ (str or List[str]): The column name(s) to pass as arguments to the transformation function.</p></li>
+<li><p>’transformation_function’ (Callable): A function that takes one or more ‘Column’ objects and returns a ‘Column’.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>error_on_missing</strong> (<em>bool</em><em>, </em><em>optional</em>) – If ‘True’, the function will raise a ‘KeyError’ if any of the specified input columns are missing in the DataFrame.
+If ‘False’, missing columns will be skipped with a warning.
+Defaults to ‘True’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The transformed PySpark DataFrame with all specified transformations applied.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>KeyError</strong> – If ‘error_on_missing’ is ‘True’ and any specified input columns are missing.</p></li>
+<li><p><strong>TypeError</strong> – If ‘transformations’ is not a list of tuples with the required structure.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType</p>
+<p># Initialize SparkSession
+spark = SparkSession.builder.appName(“TransformationExample”).getOrCreate()</p>
+<p># Sample DataFrame
+data = [</p>
+<blockquote>
+<div><p>(“Hello World”, “2023-01-01”),
+(“PySpark Transformations”, “2023-02-01”)</p>
+</div></blockquote>
+<p>]
+columns = [“text_column”, “date_column”]
+df = spark.createDataFrame(data, schema=columns)</p>
+<p># Define UDFs
+def to_upper(text):</p>
+<blockquote>
+<div><p>return text.upper() if text else text</p>
+</div></blockquote>
+<dl class="simple">
+<dt>def extract_year(date_str):</dt><dd><p>return date_str.split(“-“)[0] if date_str else None</p>
+</dd>
+</dl>
+<p>to_upper_udf = udf(to_upper, StringType())
+extract_year_udf = udf(extract_year, StringType())</p>
+<p># Define transformations
+transformations = [</p>
+<blockquote>
+<div><p>(“text_upper”, “text_column”, to_upper_udf),
+(“year_extracted”, “date_column”, extract_year_udf),
+(“combined”, [“text_column”, “date_column”], lambda text, date: F.concat(text, F.lit(” - “), date))</p>
+</div></blockquote>
+<p>]</p>
+<p># Apply transformations
+transformed_df = apply_transformations(df, transformations)</p>
+<p># Show results
+transformed_df.show(truncate=False)
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p><strong>Output:</strong>
+<code class="docutils literal notranslate"><span class="pre">`</span>
+<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="pre">|text_column</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|date_column|text_upper</span> <span class="pre">|year_extracted</span> <span class="pre">|combined</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="pre">|Hello</span> <span class="pre">World</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|2023-01-01</span> <span class="pre">|HELLO</span> <span class="pre">WORLD|2023</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|Hello</span> <span class="pre">World</span> <span class="pre">-</span> <span class="pre">2023-01-01|</span>
+<span class="pre">|PySpark</span> <span class="pre">Transformations</span>&#160; <span class="pre">|2023-02-01</span> <span class="pre">|PYSPARK</span> <span class="pre">TRANSFORMATIONS|2023</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|PySpark</span> <span class="pre">Transformations</span> <span class="pre">-</span> <span class="pre">2023-02-01|</span>
+<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
+<span class="pre">`</span></code></p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -348,7 +816,15 @@
       <footer>
         
         <div class="related-pages">
-          
+          <a class="next-page" href="nli_utils.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">NLI utilities</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
           <a class="prev-page" href="common_utils.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -391,8 +867,20 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Data Processing</a><ul>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.check_dataframe_for_records"><code class="docutils literal notranslate"><span class="pre">check_dataframe_for_records()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.concatenate_and_reset_index"><code class="docutils literal notranslate"><span class="pre">concatenate_and_reset_index()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.df_apply_transformations"><code class="docutils literal notranslate"><span class="pre">df_apply_transformations()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.df_remove_rows_with_keywords"><code class="docutils literal notranslate"><span class="pre">df_remove_rows_with_keywords()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.save_report"><code class="docutils literal notranslate"><span class="pre">save_report()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.dask_utils.dask_compute_with_progress"><code class="docutils literal notranslate"><span class="pre">dask_compute_with_progress()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.dask_utils.initialize_dask_client"><code class="docutils literal notranslate"><span class="pre">initialize_dask_client()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp"><code class="docutils literal notranslate"><span class="pre">convert_columns_to_timestamp()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.define_structure"><code class="docutils literal notranslate"><span class="pre">define_structure()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.equivalent_type"><code class="docutils literal notranslate"><span class="pre">equivalent_type()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping"><code class="docutils literal notranslate"><span class="pre">get_default_dtype_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype"><code class="docutils literal notranslate"><span class="pre">keyword_to_datatype()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.pandas_to_spark"><code class="docutils literal notranslate"><span class="pre">pandas_to_spark()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.sparkdf_apply_transformations"><code class="docutils literal notranslate"><span class="pre">sparkdf_apply_transformations()</span></code></a></li>
 </ul>
 </li>
 </ul>

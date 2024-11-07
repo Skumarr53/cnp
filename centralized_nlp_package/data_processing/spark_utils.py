@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List, Tuple, Callable, Any
+from typing import Dict, Optional, List, Tuple, Callable, Any, Union
 import pandas as pd
 from pyspark.sql import SparkSession, DataFrame
 import pyspark.sql.functions as F
@@ -84,15 +84,26 @@ def equivalent_type(
         DataType: Corresponding Spark DataType.
     """
     # Check if column name has a custom keyword mapping
-    if column_mapping and column_name in column_mapping:
-        keyword = column_mapping[column_name]
-        spark_type = keyword_to_datatype(keyword)
-        if spark_type:
-            logger.debug(f"Column '{column_name}' uses custom keyword '{keyword}' mapped to '{spark_type}'.")
-            return spark_type
+    if column_mapping:
+        if column_name in column_mapping:
+                keyword = column_mapping[column_name]
+                spark_type = keyword_to_datatype(keyword)
+                if spark_type:
+                    logger.debug(f"Column '{column_name}' uses custom keyword '{keyword}' mapped to '{spark_type}'.")
+                    return spark_type
+                else:
+                    logger.warning(f"Column '{column_name}' has an invalid keyword '{keyword}'. Falling back to default mapping.")
         else:
-            logger.warning(f"Column '{column_name}' has an invalid keyword '{keyword}'. Falling back to default mapping.")
-    
+            key = [key in column_name for key in column_mapping]
+            if key:
+                keyword = column_mapping[key[0]] if isinstance(key, list) else column_mapping[key]
+                spark_type = keyword_to_datatype(keyword)
+                if spark_type:
+                    logger.debug(f"Column '{column_name}' uses custom keyword '{keyword}' mapped to '{spark_type}'.")
+                    return spark_type
+                else:
+                    logger.warning(f"Column '{column_name}' has an invalid keyword '{keyword}'. Falling back to default mapping.")
+
     # Fallback to default dtype mapping
     default_dtype_mapping = get_default_dtype_mapping()
     if pandas_dtype in default_dtype_mapping:
@@ -130,7 +141,7 @@ def pandas_to_spark(
     """
     Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.
 
-    If a column name is present in the `column_type_mapping`, its Spark DataType will be determined
+    If a column name is present in the 'column_type_mapping', its Spark DataType will be determined
     based on the provided type identifier keyword. If a column name is not present in the mapping,
     its type will be determined based on the Pandas dtype using a predefined dtype mapping.
 
@@ -200,7 +211,7 @@ def convert_columns_to_timestamp(
     Converts specified columns in a Spark DataFrame to timestamp type using provided formats.
 
     This function iterates over the provided dictionary of column names and their corresponding
-    timestamp formats, applying the `to_timestamp` transformation to each specified column.
+    timestamp formats, applying the 'to_timestamp' transformation to each specified column.
 
     Args:
         df (DataFrame): The input Spark DataFrame.
@@ -213,14 +224,14 @@ def convert_columns_to_timestamp(
                                                   "EVENT_DATETIME_UTC": "yyyy-MM-dd HH mm ss"
                                               }
         overwrite (bool, optional): Whether to overwrite the existing column with the transformed column.
-                                    If `False`, a new column with a suffix (e.g., `_ts`) will be created.
-                                    Defaults to `True`.
+                                    If 'False', a new column with a suffix (e.g., '_ts') will be created.
+                                    Defaults to 'True'.
 
     Returns:
         DataFrame: The Spark DataFrame with specified columns converted to timestamp type.
 
     Raises:
-        ValueError: If `columns_formats` is empty.
+        ValueError: If 'columns_formats' is empty.
         KeyError: If a specified column does not exist in the DataFrame.
 
     Example:
@@ -253,7 +264,7 @@ def convert_columns_to_timestamp(
     """
     if not columns_formats:
         logger.error("No columns and formats provided for timestamp conversion.")
-        raise ValueError("The `columns_formats` dictionary cannot be empty.")
+        raise ValueError("The 'columns_formats' dictionary cannot be empty.")
 
     for column, fmt in columns_formats.items():
         if column not in df.columns:
@@ -292,20 +303,21 @@ def sparkdf_apply_transformations(
         transformations (List[Tuple[str, Union[str, List[str]], Callable[..., Any]]]):
             A list of transformation specifications. Each specification is a tuple:
                 (new_column_name, input_columns, transformation_function)
-            - `new_column_name` (str): The name of the column to create or overwrite.
-            - `input_columns` (str or List[str]): The column name(s) to pass as arguments to the transformation function.
-            - `transformation_function` (Callable): A function that takes one or more `Column` objects and returns a `Column`.
+                
+                - 'new_column_name' (str): The name of the column to create or overwrite.
+                - 'input_columns' (str or List[str]): The column name(s) to pass as arguments to the transformation function.
+                - 'transformation_function' (Callable): A function that takes one or more 'Column' objects and returns a 'Column'.
         error_on_missing (bool, optional): 
-            If `True`, the function will raise a `KeyError` if any of the specified input columns are missing in the DataFrame.
-            If `False`, missing columns will be skipped with a warning.
-            Defaults to `True`.
+            If 'True', the function will raise a 'KeyError' if any of the specified input columns are missing in the DataFrame.
+            If 'False', missing columns will be skipped with a warning.
+            Defaults to 'True'.
 
     Returns:
         DataFrame: The transformed PySpark DataFrame with all specified transformations applied.
 
     Raises:
-        KeyError: If `error_on_missing` is `True` and any specified input columns are missing.
-        TypeError: If `transformations` is not a list of tuples with the required structure.
+        KeyError: If 'error_on_missing' is 'True' and any specified input columns are missing.
+        TypeError: If 'transformations' is not a list of tuples with the required structure.
 
     Example:
         ```python

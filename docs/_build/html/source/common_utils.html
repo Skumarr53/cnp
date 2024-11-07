@@ -208,6 +208,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Common Utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -266,7 +267,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">format_date</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">format_date</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
 <span class="go">&#39;2023-09-15&#39;</span>
 </pre></div>
@@ -292,7 +294,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">get_date_range</span><span class="p">(</span><span class="n">years_back</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">months_back</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1">## exmaple current date is 2023-10-01</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">get_date_range</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">get_date_range</span><span class="p">(</span><span class="n">years_back</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">months_back</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1">## exmaple current date is 2023-10-01</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
 <span class="go">&#39;2022-08-01&#39; &#39;2023-10-01&#39;</span>
 </pre></div>
@@ -318,7 +321,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">content</span> <span class="o">=</span> <span class="n">load_content_from_txt</span><span class="p">(</span><span class="s2">&quot;data/sample.txt&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">load_content_from_txt</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">content</span> <span class="o">=</span> <span class="n">load_content_from_txt</span><span class="p">(</span><span class="s2">&quot;data/sample.txt&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
 <span class="go">&#39;This is a sample text file.&#39;</span>
 </pre></div>
@@ -347,7 +351,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;Hello, </span><span class="si">{name}</span><span class="s2">! Today is </span><span class="si">{day}</span><span class="s2">.&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">format_string_template</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;Hello, </span><span class="si">{name}</span><span class="s2">! Today is </span><span class="si">{day}</span><span class="s2">.&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">format_string_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="s2">&quot;Monday&quot;</span><span class="p">)</span>
 <span class="go">&#39;Hello, Alice! Today is Monday.&#39;</span>
 </pre></div>
@@ -379,7 +384,8 @@
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM users WHERE signup_date &gt; &#39;</span><span class="si">{start_date}</span><span class="s2">&#39; AND signup_date &lt; &#39;</span><span class="si">{end_date}</span><span class="s2">&#39;;&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">query_constructor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM users WHERE signup_date &gt; &#39;</span><span class="si">{start_date}</span><span class="s2">&#39; AND signup_date &lt; &#39;</span><span class="si">{end_date}</span><span class="s2">&#39;;&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">query</span> <span class="o">=</span> <span class="n">query_constructor</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="s2">&quot;2022-01-01&quot;</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="s2">&quot;2022-12-31&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 <span class="go">&quot;SELECT * FROM users WHERE signup_date &gt; &#39;2022-01-01&#39; AND signup_date &lt; &#39;2022-12-31&#39;;&quot;</span>

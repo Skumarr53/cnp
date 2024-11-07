@@ -1,4 +1,5 @@
 # centralized_nlp_package/utils/dataframe_utils.py
+import os
 from typing import Any, Callable, List, Tuple, Union
 import pandas as pd
 import dask.dataframe as dd
@@ -116,9 +117,9 @@ def df_apply_transformations(
                 # Multiple columns transformation
                 logger.debug(f"Applying transformation on multiple columns {columns_to_use} to create '{new_column}'.")
                 if isinstance(df, dd.DataFrame):
-                    df[new_column] = df[columns_to_use].apply(func, axis=1, meta=(new_column, object))
+                    df[new_column] = df.apply(lambda row: func(*[row[col] for col in columns_to_use]), axis=1, meta=(new_column, object))
                 else:
-                    df[new_column] = df[columns_to_use].apply(func, axis=1)
+                    df[new_column] = df.apply(lambda row: func(*[row[col] for col in columns_to_use]), axis=1)
             else:
                 logger.error(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
                 raise ValueError(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
@@ -150,8 +151,8 @@ def concatenate_and_reset_index(dataframes: List[pd.DataFrame], drop_column: str
         pd.DataFrame: The concatenated DataFrame with the index reset and the old index column dropped.
 
     Raises:
-        ValueError: If the input list `dataframes` is empty.
-        KeyError: If the `drop_column` does not exist in the concatenated DataFrame.
+        ValueError: If the input list 'dataframes' is empty.
+        KeyError: If the 'drop_column' does not exist in the concatenated DataFrame.
 
     Example:
         >>> rdf = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
@@ -188,3 +189,106 @@ def concatenate_and_reset_index(dataframes: List[pd.DataFrame], drop_column: str
         raise KeyError(f"Column '{drop_column}' not found in the DataFrame.")
 
     return concatenated_df
+
+
+def check_dataframe_for_records(
+    df: pd.DataFrame,
+    datetime_col: str = 'PARSED_DATETIME_EASTERN_TZ',
+    exit_on_empty: bool = True,
+    exit_method: str = 'both',
+) -> None:
+    """
+    Checks if the provided DataFrame is non-empty and prints relevant information.
+    If the DataFrame is empty, prints a message and optionally exits the program.
+    
+    Args:
+        df (pd.DataFrame): The DataFrame to check.
+        datetime_col (str, optional): The name of the datetime column to determine the data span.
+            Defaults to 'PARSED_DATETIME_EASTERN_TZ'.
+        exit_on_empty (bool, optional): Whether to exit the program if the DataFrame is empty.
+            Defaults to True.
+        exit_method (str, optional): Method to exit the program. Options are 'dbutils', 'os', or 'both'.
+            Defaults to 'both'.
+    
+    Raises:
+        ValueError: If the specified datetime column does not exist in the DataFrame.
+    """
+    if not isinstance(df, pd.DataFrame):
+        raise TypeError(f"The provided 'df' must be a pandas DataFrame, got {type(df)} instead.")
+    
+    if len(df) > 0:
+        if datetime_col not in df.columns:
+            raise ValueError(f"The specified datetime column '{datetime_col}' does not exist in the DataFrame.")
+        
+        try:
+            start_date = df[datetime_col].min()
+            end_date = df[datetime_col].max()
+        except Exception as e:
+            raise ValueError(f"Error processing datetime column '{datetime_col}': {e}")
+        
+        num_rows, num_cols = df.shape
+        logger.info(
+            f"The data spans from {start_date} to {end_date} and has {num_rows} rows and {num_cols} columns."
+        )
+    else:
+        logger.info("Exiting due to empty DataFrame. No new records to process")
+        if exit_on_empty:
+            if exit_method.lower() in ['dbutils', 'both']:
+                try:
+                    from pyspark.dbutils import DBUtils
+                    dbutils = DBUtils(spark)
+                    dbutils.notebook.exit(1)
+                except (ImportError, NameError):
+                    pass  # dbutils not available
+            if exit_method.lower() in ['os', 'both']:
+                try:
+                    os._exit(1)
+                except:
+                    pass  # In some environments, os._exit might not be permitted
+
+
+import pandas as pd
+import os
+
+def save_report(df: pd.DataFrame, path: str):
+    """
+    Saves the report DataFrame to a CSV or Parquet file based on the file extension.
+
+    Args:
+        df (pd.DataFrame): DataFrame to be saved.
+        path (str): File path to save the report. The format is inferred from the file extension.
+                    Supported formats are '.csv' and '.parquet'.
+
+    Raises:
+        ValueError: If the file extension is not supported.
+        ImportError: If the required engine for Parquet is not installed.
+
+    Usage Examples:
+        >>> import pandas as pd
+        >>> from save_report_module import save_report  # Assuming the function is in save_report_module.py
+        >>> 
+        >>> # Create a sample DataFrame
+        >>> data = {'Name': ['Alice', 'Bob', 'Charlie'], 'Score': [85, 92, 78]}
+        >>> df = pd.DataFrame(data)
+        >>> 
+        >>> # Save as CSV
+        >>> save_report(df, 'report.csv')
+        >>> 
+        >>> # Save as Parquet
+        >>> save_report(df, 'report.parquet')
+    """
+    _, ext = os.path.splitext(path)
+    ext = ext.lower()
+
+    if ext == '.csv':
+        df.to_csv(path, index=False)
+        print(f"DataFrame successfully saved to CSV at '{path}'.")
+    elif ext == '.parquet':
+        try:
+            # Attempt to use pyarrow as the engine for Parquet
+            df.to_parquet(path, index=False, engine='pyarrow')
+            print(f"DataFrame successfully saved to Parquet at '{path}'.")
+        except ImportError:
+            raise ImportError("Saving to Parquet requires the 'pyarrow' library. Install it via 'pip install pyarrow'.")
+    else:
+        raise ValueError(f"Unsupported file extension '{ext}'. Supported formats are '.csv' and '.parquet'.")

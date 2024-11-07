@@ -9,7 +9,6 @@ from centralized_nlp_package.text_processing import (
     validate_and_format_text,
     expand_contractions,
     tokenize_text,
-    load_set_from_txt,
 )
 from centralized_nlp_package.utils import FilesNotLoadedException
 
@@ -92,10 +91,10 @@ def remove_unwanted_phrases_and_validate(
                 ["good morning", "good afternoon", "good evening"]
 
     Returns:
-        Optional[str]: Cleaned sentence or `None` if invalid.
+        Optional[str]: Cleaned sentence or 'None' if invalid.
 
     Raises:
-        TypeError: If `sentence` is not a string.
+        TypeError: If 'sentence' is not a string.
         Exception: For unexpected processing errors.
 
     Example:
