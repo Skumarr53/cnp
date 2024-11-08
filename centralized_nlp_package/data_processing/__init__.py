@@ -2,7 +2,7 @@ from .dataframe_utils import (
     df_apply_transformations,
     df_remove_rows_with_keywords,
     concatenate_and_reset_index,
-    check_dataframe_for_records
+    check_pd_dataframe_for_records
 )
 
 from .dask_utils import (
@@ -21,5 +21,5 @@ __all__ = [
     "initialize_dask_client",
     "dask_compute_with_progress",
     "pandas_to_spark",
-    "check_dataframe_for_records"
+    "check_pd_dataframe_for_records"
 ]

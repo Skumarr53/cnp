@@ -25,3 +25,9 @@ NLI utilities
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+.. automodule:: centralized_nlp_package.nli_utils.nli_inference
+    :members:
+    :undoc-members:
+    :show-inheritance:

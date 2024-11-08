@@ -11,6 +11,7 @@ from .nli_trainer import (
     predict
 )
 from .run_glue import run_glue, main
+from .nli_inference import initialize_nli_infer_pipeline
 
 __all__ = [
     "ModelArguments",
@@ -25,6 +26,7 @@ __all__ = [
     "predict",
     "run_glue",
     "main",
+    "initialize_nli_infer_pipeline"
 ]
 
 

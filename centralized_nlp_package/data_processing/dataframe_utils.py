@@ -191,7 +191,7 @@ def concatenate_and_reset_index(dataframes: List[pd.DataFrame], drop_column: str
     return concatenated_df
 
 
-def check_dataframe_for_records(
+def check_pd_dataframe_for_records(
     df: pd.DataFrame,
     datetime_col: str = 'PARSED_DATETIME_EASTERN_TZ',
     exit_on_empty: bool = True,
@@ -246,9 +246,6 @@ def check_dataframe_for_records(
                 except:
                     pass  # In some environments, os._exit might not be permitted
 
-
-import pandas as pd
-import os
 
 def save_report(df: pd.DataFrame, path: str):
     """

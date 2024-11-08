@@ -20,16 +20,69 @@ from loguru import logger
 
 # Define the keyword to Spark DataType mapping
 KEYWORD_TO_SPARK_TYPE: Dict[str, DataType] = {
-    'arr_str': ArrayType(StringType()),
-    'arr_int': ArrayType(IntegerType()),
-    'arr_long': ArrayType(LongType()),
-    'arr_float': ArrayType(FloatType()),
-    'arr_double': ArrayType(DoubleType()),
-    'arr_bool': ArrayType(BooleanType()),
-    'map_str_int': MapType(StringType(), IntegerType()),
-    'map_str_str': MapType(StringType(), StringType()),
+    'arr[str]': ArrayType(StringType()),
+    'arr[int]': ArrayType(IntegerType()),
+    'arr[long]': ArrayType(LongType()),
+    'arr[float]': ArrayType(FloatType()),
+    'arr[double]': ArrayType(DoubleType()),
+    'arr[bool]': ArrayType(BooleanType()),
+    'map[str,int]': MapType(StringType(), IntegerType()),
+    'map[str,str]': MapType(StringType(), StringType()),
     # Add more mappings as needed
 }
+
+# Configure logging
+
+def initialize_spark_session(app_name="Optimized_NLI_Inference", 
+                     shuffle_partitions="200", gpu_amount="1", 
+                     task_gpu_amount="0.8", executor_memory="4g", 
+                     driver_memory="2g", executor_cores="1", 
+                     memory_overhead="512m", dynamic_allocation="false"):
+    """
+    Initializes a Spark session with specified configurations.
+    
+    Args:
+        spark (SparkSession, optional): An existing Spark session to use. 
+                                         If None, a new session will be created.
+        app_name (str): The name of the Spark application.
+        shuffle_partitions (int, optional): Number of partitions to use for shuffle operations.
+        gpu_amount (float, optional): Amount of GPU resources to allocate to executors.
+        task_gpu_amount (float, optional): Amount of GPU resources to allocate to tasks.
+        executor_memory (str, optional): Memory allocated to each executor (e.g., '4g').
+        driver_memory (str, optional): Memory allocated to the driver (e.g., '2g').
+        executor_cores (int, optional): Number of cores allocated to each executor.
+        memory_overhead (str, optional): Amount of memory overhead to allocate per executor (e.g., '512m').
+        dynamic_allocation (bool, optional): Enable dynamic allocation of executors (default is False).
+    
+    Returns:
+        SparkSession: The initialized or existing Spark session.
+    
+    Raises:
+        Exception: If the Spark session initialization fails.
+    """
+    try:
+        spark = (SparkSession.builder.appName(app_name)
+                    .config("spark.sql.shuffle.partitions", shuffle_partitions)
+                    .config("spark.executor.resource.gpu.amount", gpu_amount)
+                    .config("spark.task.resource.gpu.amount", task_gpu_amount)
+                    .config("spark.executor.memory", executor_memory)
+                    .config("spark.driver.memory", driver_memory)
+                    .config("spark.executor.cores", executor_cores)
+                    .config("spark.yarn.executor.memoryOverhead", memory_overhead)
+                    .config("spark.dynamicAllocation.enabled", dynamic_allocation)
+                    .getOrCreate())
+        
+        spark.sparkContext.setLogLevel("DEBUG")
+        logger.info("Spark session initialized successfully.")
+        return spark
+    
+    except Exception as e:
+        logger.error(f"Failed to initialize Spark session: {e}")
+        raise e
+
+# Example usage
+# spark_session = initialize_spark()  # To create a new session
+# spark_session = initialize_spark(spark=spark_session)  # To reuse an existing session
 
 def get_default_dtype_mapping() -> Dict[str, DataType]:
     """
@@ -320,7 +373,6 @@ def sparkdf_apply_transformations(
         TypeError: If 'transformations' is not a list of tuples with the required structure.
 
     Example:
-        ```python
         from pyspark.sql import SparkSession
         from pyspark.sql.functions import udf
         from pyspark.sql.types import StringType
@@ -358,17 +410,14 @@ def sparkdf_apply_transformations(
 
         # Show results
         transformed_df.show(truncate=False)
-        ```
 
         **Output:**
-        ```
         +-------------------------+-----------+-----------+-----------------------------+
         |text_column              |date_column|text_upper |year_extracted |combined              |
         +-------------------------+-----------+-----------+-----------------------------+
         |Hello World              |2023-01-01 |HELLO WORLD|2023           |Hello World - 2023-01-01|
         |PySpark Transformations  |2023-02-01 |PYSPARK TRANSFORMATIONS|2023           |PySpark Transformations - 2023-02-01|
         +-------------------------+-----------+-----------+-----------------------------+
-        ```
 
     """
     if not isinstance(transformations, list):
@@ -426,3 +475,66 @@ def sparkdf_apply_transformations(
 
     logger.info("All transformations have been applied successfully.")
     return spark_df
+
+
+def create_spark_udf(function, return_type_key: str = 'arr[str]'):
+    """
+    Creates a Spark User Defined Function (UDF) from a given Python function.
+
+    Args:
+        function (callable): The Python function to be converted into a UDF.
+        return_type_key (str): The return type of the UDF, specified as a key.
+                                Default is 'arr[str]' for an array of strings.
+
+    Returns:
+        pyspark.sql.functions.UserDefinedFunction: The created Spark UDF.
+
+    Raises:
+        ValueError: If the return_type_key is not valid.
+        Exception: If the UDF creation fails for any other reason.
+    """
+    # Validate the return_type_key
+    if return_type_key.lower() not in KEYWORD_TO_SPARK_TYPE:
+        logger.error(f"Invalid return type key: '{return_type_key}'. Valid keys are: {list(KEYWORD_TO_SPARK_TYPE.keys())}")
+        raise ValueError(f"Invalid return type key: '{return_type_key}'. Valid keys are: {list(KEYWORD_TO_SPARK_TYPE.keys())}")
+
+    try:
+        spark_udf = F.udf(function, KEYWORD_TO_SPARK_TYPE[return_type_key.lower()])
+        logger.info(f"Successfully created Spark UDF with return type: {return_type_key}")
+        return spark_udf
+    except Exception as e:
+        logger.error(f"Failed to create Spark UDF: {e}")
+        raise e
+
+
+def check_spark_dataframe_for_records(spark_df: DataFrame,
+                                      datetime_col: str = 'PARSED_DATETIME_EASTERN_TZ') -> None:
+    """
+    Checks if the provided Spark DataFrame contains records.
+    If records are present, logs the minimum and maximum parsed date, 
+    the row count, and the column count. If no records are found, 
+    logs a warning and exits the notebook.
+
+    Args:
+        spark_df (DataFrame): The Spark DataFrame to check.
+
+    Raises:
+        ValueError: If the input is not a valid Spark DataFrame.
+    """
+    if not isinstance(spark_df, DataFrame):
+        raise ValueError("The provided input is not a valid Spark DataFrame.")
+
+    if spark_df.head(1):  # Check if the DataFrame is not empty
+        # Calculate min and max parsed datetime
+        min_parsed_date = spark_df.agg({datetime_col: "min"}).collect()[0][0]
+        max_parsed_date = spark_df.agg({datetime_col: "max"}).collect()[0][0]
+        row_count = spark_df.count()
+        col_count = len(spark_df.columns)
+
+        # Log the information
+        logger.info(f'The data spans from {min_parsed_date} to {max_parsed_date} '
+                    f'and has {row_count} rows and {col_count} columns.')
+    else:
+        logger.warning('No new transcripts to parse.')
+        dbutils.notebook.exit(1)  # Exit the notebook with a non-zero status
+        os._exit(1)  # Terminate the process 
