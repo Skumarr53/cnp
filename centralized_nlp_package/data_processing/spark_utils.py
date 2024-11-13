@@ -28,6 +28,8 @@ KEYWORD_TO_SPARK_TYPE: Dict[str, DataType] = {
     'arr[bool]': ArrayType(BooleanType()),
     'map[str,int]': MapType(StringType(), IntegerType()),
     'map[str,str]': MapType(StringType(), StringType()),
+    'double': DoubleType(),
+    'float64': DoubleType()
     # Add more mappings as needed
 }
 
@@ -216,14 +218,14 @@ def pandas_to_spark(
             
             custom keyword to Spark DataType mapping:
 
-            - 'arr_str'     -> ArrayType(StringType())
-            - 'arr_int'     -> ArrayType(IntegerType())
-            - 'arr_long'    -> ArrayType(LongType())
-            - 'arr_float'   -> ArrayType(FloatType())
-            - 'arr_double'  -> ArrayType(DoubleType())
-            - 'arr_bool'    -> ArrayType(BooleanType())
-            - 'map_str_int' -> MapType(StringType(), IntegerType())
-            - 'map_str_str' -> MapType(StringType(), StringType())
+            - 'arr[str]'     -> ArrayType(StringType())
+            - 'arr[int]'     -> ArrayType(IntegerType())
+            - 'arr[long]'    -> ArrayType(LongType())
+            - 'arr[float]'   -> ArrayType(FloatType())
+            - 'arr[double]'  -> ArrayType(DoubleType())
+            - 'arr[bool]'    -> ArrayType(BooleanType())
+            - 'map[str,int]' -> MapType(StringType(), IntegerType())
+            - 'map[str,str]' -> MapType(StringType(), StringType())
             
 
     Returns:
