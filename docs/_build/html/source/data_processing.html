@@ -518,6 +518,26 @@ Supported formats are ‘.csv’ and ‘.parquet’.</p></li>
 </dd></dl>
 
 <span class="target" id="module-centralized_nlp_package.data_processing.spark_utils"></span><dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.check_spark_dataframe_for_records">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">check_spark_dataframe_for_records</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spark_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datetime_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PARSED_DATETIME_EASTERN_TZ'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#check_spark_dataframe_for_records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.check_spark_dataframe_for_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the provided Spark DataFrame contains records.
+If records are present, logs the minimum and maximum parsed date,
+the row count, and the column count. If no records are found,
+logs a warning and exits the notebook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>spark_df</strong> (<em>DataFrame</em>) – The Spark DataFrame to check.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the input is not a valid Spark DataFrame.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">convert_columns_to_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns_formats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#convert_columns_to_timestamp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts specified columns in a Spark DataFrame to timestamp type using provided formats.</p>
@@ -588,6 +608,33 @@ Defaults to ‘True’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.create_spark_udf">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">create_spark_udf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'arr[str]'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#create_spark_udf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.create_spark_udf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Spark User Defined Function (UDF) from a given Python function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<em>callable</em>) – The Python function to be converted into a UDF.</p></li>
+<li><p><strong>return_type_key</strong> (<em>str</em>) – The return type of the UDF, specified as a key.
+Default is ‘arr[str]’ for an array of strings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The created Spark UDF.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyspark.sql.functions.UserDefinedFunction</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the return_type_key is not valid.</p></li>
+<li><p><strong>Exception</strong> – If the UDF creation fails for any other reason.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.define_structure">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">define_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pandas_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_mapping</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#define_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.define_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a StructField for a Spark StructType schema.</p>
@@ -645,6 +692,38 @@ Priority is given to column name mapping over dtype mapping.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.initialize_spark_session">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">initialize_spark_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Optimized_NLI_Inference'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle_partitions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'200'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gpu_amount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_gpu_amount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'0.8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'4g'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driver_memory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'2g'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">executor_cores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_overhead</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'512m'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_allocation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'false'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#initialize_spark_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.initialize_spark_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a Spark session with specified configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spark</strong> (<em>SparkSession</em><em>, </em><em>optional</em>) – An existing Spark session to use.
+If None, a new session will be created.</p></li>
+<li><p><strong>app_name</strong> (<em>str</em>) – The name of the Spark application.</p></li>
+<li><p><strong>shuffle_partitions</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of partitions to use for shuffle operations.</p></li>
+<li><p><strong>gpu_amount</strong> (<em>float</em><em>, </em><em>optional</em>) – Amount of GPU resources to allocate to executors.</p></li>
+<li><p><strong>task_gpu_amount</strong> (<em>float</em><em>, </em><em>optional</em>) – Amount of GPU resources to allocate to tasks.</p></li>
+<li><p><strong>executor_memory</strong> (<em>str</em><em>, </em><em>optional</em>) – Memory allocated to each executor (e.g., ‘4g’).</p></li>
+<li><p><strong>driver_memory</strong> (<em>str</em><em>, </em><em>optional</em>) – Memory allocated to the driver (e.g., ‘2g’).</p></li>
+<li><p><strong>executor_cores</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of cores allocated to each executor.</p></li>
+<li><p><strong>memory_overhead</strong> (<em>str</em><em>, </em><em>optional</em>) – Amount of memory overhead to allocate per executor (e.g., ‘512m’).</p></li>
+<li><p><strong>dynamic_allocation</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable dynamic allocation of executors (default is False).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The initialized or existing Spark session.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SparkSession</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If the Spark session initialization fails.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.data_processing.spark_utils.</span></span><span class="sig-name descname"><span class="pre">keyword_to_datatype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keyword</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/data_processing/spark_utils.html#keyword_to_datatype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a keyword to the corresponding Spark DataType.</p>
@@ -690,14 +769,14 @@ its type will be determined based on the Pandas dtype using a predefined dtype m
 Example: {‘FILT_MD’: ‘arr_str’, ‘stats’: ‘map_str_int’}</p>
 <p>custom keyword to Spark DataType mapping:</p>
 <ul>
-<li><p>’arr_str’     -&gt; ArrayType(StringType())</p></li>
-<li><p>’arr_int’     -&gt; ArrayType(IntegerType())</p></li>
-<li><p>’arr_long’    -&gt; ArrayType(LongType())</p></li>
-<li><p>’arr_float’   -&gt; ArrayType(FloatType())</p></li>
-<li><p>’arr_double’  -&gt; ArrayType(DoubleType())</p></li>
-<li><p>’arr_bool’    -&gt; ArrayType(BooleanType())</p></li>
-<li><p>’map_str_int’ -&gt; MapType(StringType(), IntegerType())</p></li>
-<li><p>’map_str_str’ -&gt; MapType(StringType(), StringType())</p></li>
+<li><p>’arr[str]’     -&gt; ArrayType(StringType())</p></li>
+<li><p>’arr[int]’     -&gt; ArrayType(IntegerType())</p></li>
+<li><p>’arr[long]’    -&gt; ArrayType(LongType())</p></li>
+<li><p>’arr[float]’   -&gt; ArrayType(FloatType())</p></li>
+<li><p>’arr[double]’  -&gt; ArrayType(DoubleType())</p></li>
+<li><p>’arr[bool]’    -&gt; ArrayType(BooleanType())</p></li>
+<li><p>’map[str,int]’ -&gt; MapType(StringType(), IntegerType())</p></li>
+<li><p>’map[str,str]’ -&gt; MapType(StringType(), StringType())</p></li>
 </ul>
 </p></li>
 </ul>
@@ -759,8 +838,7 @@ Defaults to ‘True’.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
-from pyspark.sql import SparkSession
+<p>from pyspark.sql import SparkSession
 from pyspark.sql.functions import udf
 from pyspark.sql.types import StringType</p>
 <p># Initialize SparkSession
@@ -796,17 +874,14 @@ transformations = [</p>
 <p># Apply transformations
 transformed_df = apply_transformations(df, transformations)</p>
 <p># Show results
-transformed_df.show(truncate=False)
-<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+transformed_df.show(truncate=False)</p>
 <p><strong>Output:</strong>
-<code class="docutils literal notranslate"><span class="pre">`</span>
-<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
-<span class="pre">|text_column</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|date_column|text_upper</span> <span class="pre">|year_extracted</span> <span class="pre">|combined</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|</span>
-<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
-<span class="pre">|Hello</span> <span class="pre">World</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|2023-01-01</span> <span class="pre">|HELLO</span> <span class="pre">WORLD|2023</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|Hello</span> <span class="pre">World</span> <span class="pre">-</span> <span class="pre">2023-01-01|</span>
-<span class="pre">|PySpark</span> <span class="pre">Transformations</span>&#160; <span class="pre">|2023-02-01</span> <span class="pre">|PYSPARK</span> <span class="pre">TRANSFORMATIONS|2023</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">|PySpark</span> <span class="pre">Transformations</span> <span class="pre">-</span> <span class="pre">2023-02-01|</span>
-<span class="pre">+-------------------------+-----------+-----------+-----------------------------+</span>
-<span class="pre">`</span></code></p>
++————————-+———–+———–+—————————–+
+<a href="#id1"><span class="problematic" id="id2">|text_column              |date_column|text_upper |year_extracted |combined              |
++-------------------------+-----------+-----------+-----------------------------+
+|Hello World              |2023-01-01 |HELLO WORLD|2023           |Hello World - 2023-01-01|</span></a>
+<a href="#id3"><span class="problematic" id="id4">|PySpark Transformations  |2023-02-01 |PYSPARK TRANSFORMATIONS|2023           |PySpark Transformations - 2023-02-01|</span></a>
++————————-+———–+———–+—————————–+</p>
 </dd></dl>
 
 </section>
@@ -874,10 +949,13 @@ transformed_df.show(truncate=False)
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.dataframe_utils.save_report"><code class="docutils literal notranslate"><span class="pre">save_report()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.dask_utils.dask_compute_with_progress"><code class="docutils literal notranslate"><span class="pre">dask_compute_with_progress()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.dask_utils.initialize_dask_client"><code class="docutils literal notranslate"><span class="pre">initialize_dask_client()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.check_spark_dataframe_for_records"><code class="docutils literal notranslate"><span class="pre">check_spark_dataframe_for_records()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.convert_columns_to_timestamp"><code class="docutils literal notranslate"><span class="pre">convert_columns_to_timestamp()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.create_spark_udf"><code class="docutils literal notranslate"><span class="pre">create_spark_udf()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.define_structure"><code class="docutils literal notranslate"><span class="pre">define_structure()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.equivalent_type"><code class="docutils literal notranslate"><span class="pre">equivalent_type()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping"><code class="docutils literal notranslate"><span class="pre">get_default_dtype_mapping()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.initialize_spark_session"><code class="docutils literal notranslate"><span class="pre">initialize_spark_session()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype"><code class="docutils literal notranslate"><span class="pre">keyword_to_datatype()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.pandas_to_spark"><code class="docutils literal notranslate"><span class="pre">pandas_to_spark()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.data_processing.spark_utils.sparkdf_apply_transformations"><code class="docutils literal notranslate"><span class="pre">sparkdf_apply_transformations()</span></code></a></li>

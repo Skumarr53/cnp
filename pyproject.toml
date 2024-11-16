@@ -1,15 +1,16 @@
 [tool.poetry]
 name = "centralized-nlp-package"
 version = "0.1.0"
-description = ""
+description = "A centralized, modular Python package for NLP pipelines on Databricks."
 authors = ["santhosh <skumarr53@gmail.com>"]
 readme = "README.md"
+homepage = "https://github.com/your_username/centralized_nlp_package"
+repository = "https://github.com/your_username/centralized_nlp_package"
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "3.8.20"
-sphinx = "^7.1.1"
-sphinx-autodoc-typehints = "^2.0"
-furo = "^2024.8.6"
+# Runtime dependencies
 loguru = "^0.7.2"
 hydra-core = "^1.3"
 python-dotenv = "^1.0.1"
@@ -25,6 +26,18 @@ transformers = "^4.46.2"
 pyarrow = "^16.0.0"
 datasets = "^3.1.0"
 evaluate = "^0.4.3"
+
+[tool.poetry.scripts]
+centralized_nlp = "centralized_nlp_package.__main__:main"
+
+[tool.poetry.group.dev.dependencies]
+black = "^20.0.0"
+pytest = "^6.0.0"
+sphinx = "^7.1.1"
+sphinx-autodoc-typehints = "^2.0"
+furo = "^2024.8.6"
+flake8 = "^6.0.0"
+mypy = "^1.5.0"
 
 [build-system]
 requires = ["poetry-core"]
