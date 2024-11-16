@@ -4,8 +4,8 @@ version = "0.1.0"
 description = "A centralized, modular Python package for NLP pipelines on Databricks."
 authors = ["santhosh <skumarr53@gmail.com>"]
 readme = "README.md"
-homepage = "https://github.com/your_username/centralized_nlp_package"
-repository = "https://github.com/your_username/centralized_nlp_package"
+homepage = "https://github.com/skumarr53/centralized_nlp_package"
+repository = "https://github.com/skumarr53/centralized_nlp_package"
 license = "MIT"
 
 [tool.poetry.dependencies]
