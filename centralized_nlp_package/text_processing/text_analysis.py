@@ -7,13 +7,13 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from loguru import logger
-from centralized_nlp_package.text_processing import (
+from centralized_nlp_package.text_processing.text_utils import (
     generate_ngrams,
-    load_syllable_counts
+    load_syllable_counts,
+    load_set_from_txt, 
+    combine_sentiment_scores
 )
-from centralized_nlp_package.text_processing import load_set_from_txt, combine_sentiment_scores
-
-from centralized_nlp_package.preprocessing import (
+from centralized_nlp_package.text_processing.text_preprocessing import (
     preprocess_text,
     preprocess_text_list,
     tokenize_matched_words,

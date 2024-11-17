@@ -5,7 +5,7 @@ from typing import List, Tuple, Optional, Union, Dict
 import spacy
 from loguru import logger
 from centralized_nlp_package import config
-from centralized_nlp_package.text_processing import (
+from centralized_nlp_package.text_processing.text_utils import (
     validate_and_format_text,
     expand_contractions,
     tokenize_text,
@@ -42,7 +42,7 @@ def initialize_spacy(
         Exception: If there is a general error initializing the SpaCy model.
     
     Example:
-        >>> from centralized_nlp_package.preprocessing import initialize_spacy
+        >>> from centralized_nlp_package.text_processing import initialize_spacy
         >>> nlp = initialize_spacy(
         ...     model="en_core_web_md",
         ...     max_length=2000000000,
@@ -116,11 +116,11 @@ def remove_unwanted_phrases_and_validate(
     
     # Assign default phrases from config if not provided
     if cleanup_phrases is None:
-        cleanup_phrases = config.lib_config.preprocessing.cleanup_phrases
+        cleanup_phrases = config.lib_config.text_processing.cleanup_phrases
         logger.debug(f"Using default cleanup phrases: {cleanup_phrases}")
     
     if greeting_phrases is None:
-        greeting_phrases = config.lib_config.preprocessing.greeting_phrases
+        greeting_phrases = config.lib_config.text_processing.greeting_phrases
         logger.debug(f"Using default greeting phrases: {greeting_phrases}")
     
     # Remove cleanup phrases

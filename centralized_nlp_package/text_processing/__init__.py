@@ -1,4 +1,14 @@
-# centralized_nlp_package/text_processing/__init__.py
+# centralized_nlp_package/preprocessing/__init__.py
+
+from .text_preprocessing import (
+    initialize_spacy,
+    remove_unwanted_phrases_and_validate,
+    tokenize_and_lemmatize_text,
+    tokenize_matched_words,
+    preprocess_text,
+    preprocess_text_list,
+    clean_text
+)
 
 from .text_analysis import (
     load_word_set,
@@ -30,7 +40,18 @@ from .text_utils import (
     load_syllable_counts,
 )
 
+
+
+
 __all__ = [
+    'initialize_spacy',
+    'remove_unwanted_phrases_and_validate',
+    'tokenize_and_lemmatize_text',
+    'tokenize_matched_words',
+    'preprocess_text',
+    'preprocess_text_list',
+    'clean_text',
+
     # From text_analysis.py
     'load_word_set',
     'check_negation',

@@ -12,7 +12,6 @@ Welcome to Centralized NLP Package's documentation!
 
    source/data_access
    source/embedding
-   source/preprocessing
    source/text_processing
    source/utils
    source/common_utils
