@@ -203,7 +203,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data_access.html">Data Access</a></li>
 <li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
-<li class="toctree-l1"><a class="reference internal" href="preprocessing.html">Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common_utils.html">Common Utils</a></li>
@@ -272,6 +271,31 @@ If not provided, the environment will be auto-detected.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.utils.helper.load_config_from_file">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.utils.helper.</span></span><span class="sig-name descname"><span class="pre">load_config_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/utils/helper.html#load_config_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.utils.helper.load_config_from_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a configuration file using Hydra.</p>
+<p>This function takes a full file path to a configuration file, extracts the directory
+and filename, and uses Hydra to initialize and compose the configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The full path to the configuration file (e.g., ‘/path/to/config.yaml’).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded configuration as a DictConfig object.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DictConfig</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If there is an error loading the configuration, including issues with
+    the file path or the contents of the configuration file.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>config = get_config(“/path/to/your/config.yaml”)</p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -331,6 +355,7 @@ If not provided, the environment will be auto-detected.</p>
             <ul>
 <li><a class="reference internal" href="#">Utilities</a><ul>
 <li><a class="reference internal" href="#centralized_nlp_package.utils.helper.determine_environment"><code class="docutils literal notranslate"><span class="pre">determine_environment()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.utils.helper.load_config_from_file"><code class="docutils literal notranslate"><span class="pre">load_config_from_file()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -1,5 +1,9 @@
+
 from loguru import logger
-from typing import Any, Tuple, Union, List, Callable, Optional
+import os
+from omegaconf import DictConfig
+import hydra
+from typing import Optional
 
 def determine_environment(provided_env: Optional[str] = None) -> str:
     """
@@ -49,3 +53,39 @@ def determine_environment(provided_env: Optional[str] = None) -> str:
     
     logger.info(f"Environment auto-detected based on workspace name: {env}")
     return env
+
+
+
+def load_config_from_file(file_path: str) -> DictConfig:
+    """
+    Load a configuration file using Hydra.
+
+    This function takes a full file path to a configuration file, extracts the directory
+    and filename, and uses Hydra to initialize and compose the configuration.
+
+    Args:
+        file_path (str): The full path to the configuration file (e.g., '/path/to/config.yaml').
+
+    Returns:
+        DictConfig: The loaded configuration as a DictConfig object.
+
+    Raises:
+        RuntimeError: If there is an error loading the configuration, including issues with
+                      the file path or the contents of the configuration file.
+    
+    Example:
+        config = get_config("/path/to/your/config.yaml")
+    """
+    try:
+        # Extract directory and filename from the full file path
+        config_dir = os.path.dirname(file_path)
+        config_name = os.path.splitext(os.path.basename(file_path))[0]
+
+        # Initialize Hydra with the specified config directory
+        with hydra.initialize(config_path=config_dir):
+            _config = hydra.compose(config_name=config_name)
+    
+    except Exception as e:
+        raise RuntimeError(f"Error loading configuration: {e}")
+
+    return _config

@@ -1,7 +1,7 @@
 Text processing
 ===============
 
-.. automodule:: centralized_nlp_package.preprocessing.text_preprocessing
+.. automodule:: centralized_nlp_package.text_processing.text_preprocessing
     :members:
     :undoc-members:
     :show-inheritance:

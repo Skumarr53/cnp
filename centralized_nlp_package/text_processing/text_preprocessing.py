@@ -157,7 +157,12 @@ def tokenize_and_lemmatize_text(
         doc (str): The input text to tokenize.
         nlp (spacy.Language): Initialized SpaCy model.
         pos_exclude (Optional[List[str]]): List of part-of-speech tags to exclude. Defaults to None.
+            For available POS tags, refer to SpaCy's documentation:
+            https://spacy.io/usage/linguistic-features#pos-tagging
         ent_type_exclude (Optional[List[str]]): List of named entity types to exclude. Defaults to None.
+            For available entity types, refer to SpaCy's documentation:
+            https://www.restack.io/p/entity-recognition-answer-spacy-entity-types-list-cat-ai
+
 
     Returns:
         List[str]: List of lemmatized and filtered tokens.

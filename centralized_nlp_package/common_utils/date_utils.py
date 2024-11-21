@@ -49,3 +49,12 @@ def format_date(date: datetime) -> str:
     formatted_date = date.strftime('%Y-%m-%d')
     logger.debug(f"Formatted date: {formatted_date}")
     return formatted_date
+
+def get_current_date_str() -> str:
+    """
+    Returns the current date in 'YYYYMMDD' format.
+
+    Returns:
+        str: The current date in 'YYYYMMDD' format.
+    """
+    return datetime.today().strftime('%Y%m%d')

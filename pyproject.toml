@@ -29,6 +29,7 @@ evaluate = "^0.4.3"
 pyspark = "^3.5.3"
 dask = {version = "^2023", extras = ["dataframe", "distributed"]}
 torch = "^1.5.0"
+mlflow = "^1.0.0"
 
 [tool.poetry.scripts]
 centralized_nlp = "centralized_nlp_package.__main__:main"
