@@ -66,13 +66,13 @@ from dotenv import load_dotenv
 #     blob_filenames: BlobFilenameConfig = BlobFilenameConfig()
 #     paths: PathsConfig = PathsConfig()
 
-_config: Optional[DictConfig] = None
+# _config: Optional[DictConfig] = None
 
 def get_config() -> DictConfig:
-    global _config
+    # global _config
     # If the configuration is not already loaded, initialize and compose it
 
-    # load_dotenv()
+    _config = None
     if _config is None:
         try:
             with hydra.initialize(config_path="../configs"):
