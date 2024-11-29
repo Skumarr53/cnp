@@ -36,10 +36,14 @@ class ModelTransition:
         logger.info(f"Model {self.model_name} transitioned to stage: {stage}")
 
     def _register_model(self, run) -> int:
-        client = mlflow.tracking.MlflowClient()
+        # Ensure you have set the model name somewhere in your class
         model_uri = f"runs:/{run.info.run_id}/model"
+        print(model_uri)
         logger.info(f"Registering model from run: {run.info.run_id}")
-        model_version = client.register_model(model_uri, self.model_name)
+
+        # Use mlflow.register_model instead of client.register_model
+        model_version = mlflow.register_model(model_uri, self.model_name)
+        
         logger.info(f"Model registered with version: {model_version.version}")
         return int(model_version.version)
 

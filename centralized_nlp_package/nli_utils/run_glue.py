@@ -6,7 +6,7 @@
 import logging
 import os
 import sys
-from typing import Optional
+from typing import Optional, Dict, Any, Tuple
 from loguru import logger
 import transformers
 from transformers import (
@@ -94,15 +94,7 @@ def run_glue(
 
     set_seed(training_args.seed)
 
-    raw_datasets = prepare_datasets(data_args, model_args)
-    tokenizer = AutoTokenizer.from_pretrained(
-        model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
-        cache_dir=model_args.cache_dir,
-        use_fast=model_args.use_fast_tokenizer,
-        revision=model_args.model_revision,
-        trust_remote_code=model_args.trust_remote_code,
-    )
-    tokenized_datasets = preprocess_datasets(raw_datasets, data_args, tokenizer)
+    raw_datasets = prepare_datasets(data_args, model_args, training_args)
 
     if data_args.task_name is not None:
         is_regression = data_args.task_name.lower() == "stsb"
@@ -119,6 +111,15 @@ def run_glue(
             label_list = raw_datasets["train"].unique("label")
             label_list.sort()
             num_labels = len(label_list)
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_args.tokenizer_name if model_args.tokenizer_name else model_args.model_name_or_path,
+        cache_dir=model_args.cache_dir,
+        use_fast=model_args.use_fast_tokenizer,
+        revision=model_args.model_revision,
+        token=model_args.token,
+        trust_remote_code=model_args.trust_remote_code,
+    )
 
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
@@ -138,23 +139,33 @@ def run_glue(
         ignore_mismatched_sizes=model_args.ignore_mismatched_sizes,
     )
 
-    train_dataset = tokenized_datasets["train"] if training_args.do_train else None
-    if training_args.do_train and data_args.max_train_samples is not None:
-        train_dataset = train_dataset.select(range(min(len(train_dataset), data_args.max_train_samples)))
 
-    eval_dataset = (
-        tokenized_datasets["validation_matched" if data_args.task_name == "mnli" else "validation"]
-        if training_args.do_eval
-        else None
-    )
-    if training_args.do_eval and data_args.max_eval_samples is not None:
-        eval_dataset = eval_dataset.select(range(min(len(eval_dataset), data_args.max_eval_samples)))
+    raw_datasets = preprocess_datasets(model, raw_datasets, data_args, training_args, tokenizer, num_labels, is_regression, config, label_list)
 
-    predict_dataset = (
-        tokenized_datasets["test_matched" if data_args.task_name == "mnli" else "test"]
-        if training_args.do_predict
-        else None
-    )
+
+    if training_args.do_train:
+        if "train" not in raw_datasets:
+            raise ValueError("--do_train requires a train dataset")
+        train_dataset = raw_datasets["train"]
+        if data_args.max_train_samples is not None:
+            max_train_samples = min(len(train_dataset), data_args.max_train_samples)
+            train_dataset = train_dataset.select(range(max_train_samples))
+
+    if training_args.do_eval:
+        if "validation" not in raw_datasets and "validation_matched" not in raw_datasets:
+            raise ValueError("--do_eval requires a validation dataset")
+        eval_dataset = raw_datasets["validation_matched" if data_args.task_name == "mnli" else "validation"]
+        if data_args.max_eval_samples is not None:
+            max_eval_samples = min(len(eval_dataset), data_args.max_eval_samples)
+            eval_dataset = eval_dataset.select(range(max_eval_samples))
+
+    if training_args.do_predict or data_args.task_name is not None or data_args.test_file is not None:
+        if "test" not in raw_datasets and "test_matched" not in raw_datasets:
+            raise ValueError("--do_predict requires a test dataset")
+        predict_dataset = raw_datasets["test_matched" if data_args.task_name == "mnli" else "test"]
+        if data_args.max_predict_samples is not None:
+            max_predict_samples = min(len(predict_dataset), data_args.max_predict_samples)
+            predict_dataset = predict_dataset.select(range(max_predict_samples))
     if training_args.do_predict and data_args.max_predict_samples is not None:
         predict_dataset = predict_dataset.select(range(min(len(predict_dataset), data_args.max_predict_samples)))
 
@@ -170,26 +181,120 @@ def run_glue(
     trainer = initialize_trainer(
         model=model,
         training_args=training_args,
-        train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
+        train_dataset=train_dataset if training_args.do_train else None,
+        eval_dataset=eval_dataset if training_args.do_eval else None,
         tokenizer=tokenizer,
         data_collator=data_collator,
         compute_metrics=compute_metrics,
     )
 
+    trained_model = None
+    eval_metrics = {}
+
     if training_args.do_train:
-        train(trainer, data_args, model_args)
+        train_metrics = train(trainer, data_args, model_args, training_args)
+        print(f"***** Train metrics *****")
+        print(train_metrics)
+        eval_metrics.update(train_metrics)
 
     if training_args.do_eval:
-        evaluate(trainer, data_args, model_args, task_name=data_args.task_name)
-
-    if training_args.do_predict:
-        predict(trainer, data_args, model_args, task_name=data_args.task_name)
+        evaluation = evaluate(trainer, data_args, model_args, task_name=data_args.task_name)
+        print(f"***** evaluate metrics *****")
+        print(evaluation)
+        eval_metrics.update(evaluation)
 
     if training_args.push_to_hub:
         trainer.push_to_hub()
     else:
         trainer.create_model_card()
+
+    trained_model = trainer.model
+    print(eval_metrics)
+    return trained_model, eval_metrics
+
+def run_finetune(
+    base_model_path: str,
+    train_file: str,
+    output_dir: str,
+    validation_file: Optional[str] = None,
+    param_dict: Optional[Dict[str, Any]] = None
+) -> Tuple[AutoModelForSequenceClassification, Dict[str, float]]:
+    """
+    Fine-tunes a pre-trained model on a given dataset.
+
+    Args:
+        base_model_path (str): Path to the base pre-trained model.
+        train_file (str): Path to the training data file.
+        output_dir (str): Directory to save the fine-tuned model and outputs.
+        validation_file (Optional[str], optional): Path to the validation data file. Defaults to None.
+        param_dict (Optional[Dict[str, Any]], optional): Dictionary of custom hyperparameters. Defaults to None.
+
+    Returns:
+        Tuple[AutoModelForSequenceClassification, Dict[str, float]]: The trained model and evaluation metrics.
+    """
+    if param_dict is None:
+        param_dict = {}
+
+    logger.info("Starting fine-tuning process for the model.")
+
+    try:
+        # Prepare ModelArguments
+        model_args = ModelArguments(
+            model_name_or_path=base_model_path,
+            cache_dir=param_dict.get("cache_dir")
+        )
+        logger.debug(f"ModelArguments: {model_args}")
+
+        # Prepare DataTrainingArguments
+        data_args = DataTrainingArguments(
+            task_name=param_dict.get("task_name"),
+            train_file=train_file,
+            validation_file=validation_file,
+            max_seq_length=param_dict.get("max_seq_length", 128),
+            pad_to_max_length=param_dict.get("pad_to_max_length", True),
+            overwrite_cache=param_dict.get("overwrite_cache", False),
+            max_train_samples=param_dict.get("max_train_samples"),
+            max_eval_samples=param_dict.get("max_eval_samples"),
+            max_predict_samples=param_dict.get("max_predict_samples")
+        )
+        logger.debug(f"DataTrainingArguments: {data_args}")
+
+        # Prepare TrainingArguments
+        training_args = TrainingArguments(
+            output_dir=output_dir,
+            do_train=True,
+            do_eval=True,
+            num_train_epochs=param_dict.get("n_epochs", 3),
+            learning_rate=param_dict.get("learning_rate", 2e-5),
+            weight_decay=param_dict.get("weight_decay", 0.01),
+            per_device_train_batch_size=param_dict.get("train_batch_size", 16),
+            per_device_eval_batch_size=param_dict.get("eval_batch_size", 16),
+            fp16=param_dict.get("fp16", True),
+            report_to=param_dict.get("report_to", "none"),
+            overwrite_output_dir=param_dict.get("overwrite_output_dir", True),
+            push_to_hub=param_dict.get("push_to_hub", False),
+            seed=param_dict.get("seed", 42),
+            logging_dir=param_dict.get("logging_dir", f"{output_dir}/logs"),
+            logging_steps=param_dict.get("logging_steps", 500),
+            evaluation_strategy=param_dict.get("evaluation_strategy", "steps"),
+            save_strategy=param_dict.get("save_strategy", "steps"),
+            save_steps=param_dict.get("save_steps", 1000),
+            load_best_model_at_end=param_dict.get("load_best_model_at_end", True),
+            metric_for_best_model=param_dict.get("metric_for_best_model", "accuracy")
+        )
+        logger.debug(f"TrainingArguments: {training_args}")
+
+        # Call run_glue (ensure that run_glue is correctly implemented)
+        finetuned_model, eval_metrics = run_glue(model_args, data_args, training_args)
+        
+        logger.info("Fine-tuning completed successfully.")
+        logger.info(f"Evaluation Metrics: {eval_metrics}")
+
+        return finetuned_model, eval_metrics
+
+    except Exception as e:
+        logger.error(f"An error occurred during fine-tuning: {e}", exc_info=True)
+        raise
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataTrainingArguments, TrainingArguments))

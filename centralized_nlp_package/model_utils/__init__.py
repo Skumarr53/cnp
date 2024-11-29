@@ -5,7 +5,7 @@ from .model_selector import ModelSelector
 from .model_transition import ModelTransition
 from .models import get_model
 from .base_model import BaseModel
-from .utils import validate_path, get_current_date
+from ..common_utils import validate_path, get_current_date_str
 
 __all__ = [
     "ExperimentManager",
@@ -15,4 +15,5 @@ __all__ = [
     "BaseModel",
     "validate_path",
     "get_current_date",
+    "get_current_date_str"
 ]
