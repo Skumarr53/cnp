@@ -66,7 +66,7 @@ from dotenv import load_dotenv
 #     blob_filenames: BlobFilenameConfig = BlobFilenameConfig()
 #     paths: PathsConfig = PathsConfig()
 
-# _config: Optional[DictConfig] = None
+_config: Optional[DictConfig] = None
 
 def get_config() -> DictConfig:
     global _config
