@@ -174,7 +174,7 @@ def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 
 
     determined_env = determine_environment()
     _config = config.lib_config.snowflake[determined_env]
-    private_key = retrieve_snowflake_private_key()
+    private_key = retrieve_snowflake_private_key(_config)
 
     
     snowflake_options = {

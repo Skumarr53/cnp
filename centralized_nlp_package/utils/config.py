@@ -71,14 +71,10 @@ from dotenv import load_dotenv
 def get_config() -> DictConfig:
     # global _config
     # If the configuration is not already loaded, initialize and compose it
-
-    _config = None
-    if _config is None:
-        try:
-            with hydra.initialize(config_path="../configs"):
-                _config = hydra.compose(config_name="config.yaml")
-        except Exception as e:
-            logger.error(f"Error loading configuration: {e}")
-            raise
+    try:
+        with hydra.initialize(config_path="../configs"):
+            _config = hydra.compose(config_name="config.yaml")
+    except Exception as e:
+        logger.error(f"Error loading configuration: {e}")
+        raise
     return _config
-# config = get_config()
