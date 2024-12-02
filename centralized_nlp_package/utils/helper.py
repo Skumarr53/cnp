@@ -5,7 +5,7 @@ from omegaconf import DictConfig
 import hydra
 from typing import Optional
 
-def determine_environment(provided_env: Optional[str] = None) -> str:
+def determine_environment(provided_env: Optional[str] = 'quant') -> str:
     """
     Determines the environment based on the provided argument or auto-detects it using the DataBricks workspace name.
     
@@ -21,9 +21,9 @@ def determine_environment(provided_env: Optional[str] = None) -> str:
     """
     if provided_env:
         env = provided_env.lower()
-        if env not in ['dev', 'stg', 'prod']:
-            logger.error(f"Invalid environment provided: {provided_env}. Must be one of 'dev', 'stg', 'prod'.")
-            raise ValueError(f"Invalid environment: {provided_env}. Choose from 'dev', 'stg', 'prod'.")
+        if env not in ['quant', 'quant_stg', 'quant_live']:
+            logger.error(f"Invalid environment provided: {provided_env}. Must be one of 'quant', 'quant_stg', 'quant_live'.")
+            raise ValueError(f"Invalid environment: {provided_env}. Choose from 'quant', 'quant_stg', 'quant_live'.")
         logger.info(f"Environment provided by user: {env}")
         return env
     
@@ -42,11 +42,11 @@ def determine_environment(provided_env: Optional[str] = None) -> str:
     prod_workspace_name = "/Users/prod_user/prod_workspace"
     
     if workspace_name == '2762743938046900':
-        env = 'dev'
+        env = 'quant'
     elif workspace_name.startswith(stg_workspace_name):
-        env = 'stg'
+        env = 'quant_stg'
     elif workspace_name.startswith(prod_workspace_name):
-        env = 'prod'
+        env = 'quant_live'
     else:
         logger.error(f"Workspace name '{workspace_name}' does not match any known environments.")
         raise ValueError(f"Unknown workspace name: {workspace_name}. Cannot determine environment.")

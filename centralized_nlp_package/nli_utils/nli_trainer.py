@@ -2,9 +2,10 @@
 
 import logging
 import os
-from typing import Optional
+from typing import Optional, Dict
 
 import numpy as np
+import transformers 
 from transformers import Trainer, TrainingArguments, AutoModelForSequenceClassification, PreTrainedTokenizer
 from transformers import default_data_collator, DataCollatorWithPadding
 from transformers.trainer_utils import get_last_checkpoint, is_main_process
@@ -78,6 +79,7 @@ def train(
     trainer: Trainer,
     data_args: DataTrainingArguments,
     model_args: ModelArguments,
+    training_args: TrainingArguments
 ) -> None:
     """
     Train the model using the Trainer.
@@ -86,16 +88,24 @@ def train(
         trainer (Trainer): The Trainer instance.
         data_args (DataTrainingArguments): Data-related arguments.
         model_args (ModelArguments): Model-related arguments.
+    
+    Returns:
+        Dict[str, float]: Training metrics.
 
     Usage Example:
         >>> train(trainer, data_args, model_args)
     """
+    last_checkpoint = None
+    if os.path.isdir(training_args.output_dir) and training_args.do_train and not training_args.overwrite_output_dir:
+        last_checkpoint = get_last_checkpoint(training_args.output_dir)
+
     checkpoint = None
     if training_args.resume_from_checkpoint is not None:
         checkpoint = training_args.resume_from_checkpoint
-    else:
-        checkpoint = get_last_checkpoint(training_args.output_dir)
+    elif last_checkpoint is not None:
+        checkpoint = last_checkpoint
     
+    print(f"last checkpoint: {checkpoint}")
     train_result = trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_model()  # Saves the tokenizer too
 
@@ -105,7 +115,14 @@ def train(
     trainer.save_metrics("train", metrics)
     trainer.save_state()
 
-def evaluate(trainer: Trainer, data_args: DataTrainingArguments, model_args: ModelArguments, task_name: Optional[str] = None) -> None:
+    return metrics
+
+def evaluate(
+    trainer: Trainer, 
+    data_args: DataTrainingArguments, 
+    model_args: ModelArguments, 
+    task_name: Optional[str] = None
+) -> Dict[str, float]:
     """
     Evaluate the model using the Trainer.
 
@@ -115,8 +132,8 @@ def evaluate(trainer: Trainer, data_args: DataTrainingArguments, model_args: Mod
         model_args (ModelArguments): Model-related arguments.
         task_name (Optional[str]): The name of the task for evaluation.
 
-    Usage Example:
-        >>> evaluate(trainer, data_args, model_args, task_name="mnli")
+    Returns:
+        Dict[str, float]: Evaluation metrics.
     """
     logger.info("*** Evaluate ***")
     metrics = trainer.evaluate()
@@ -124,7 +141,9 @@ def evaluate(trainer: Trainer, data_args: DataTrainingArguments, model_args: Mod
     trainer.log_metrics("eval", metrics)
     trainer.save_metrics("eval", metrics)
 
-def predict(trainer: Trainer, data_args: DataTrainingArguments, model_args: ModelArguments, task_name: Optional[str] = None) -> None:
+    return metrics
+
+def predict(trainer: Trainer, training_args, task_name: Optional[str] = None) -> None:
     """
     Run predictions using the Trainer.
 

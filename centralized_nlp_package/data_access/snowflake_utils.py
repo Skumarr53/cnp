@@ -157,7 +157,7 @@ def retrieve_snowflake_private_key(config) -> str:
 
 
 @with_spark_session
-def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 'QUANT', env: str = None) -> Dict[str, str]:
+def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 'QUANT') -> Dict[str, str]:
     """
     Constructs and returns a dictionary of Snowflake connection options.
 
@@ -172,9 +172,9 @@ def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 
     """
     global _spark_session  # Access Spark session if needed
 
-    determined_env = determine_environment(env)
+    determined_env = determine_environment()
     _config = config.lib_config.snowflake[determined_env]
-    private_key = retrieve_snowflake_private_key()
+    private_key = retrieve_snowflake_private_key(_config)
 
     
     snowflake_options = {

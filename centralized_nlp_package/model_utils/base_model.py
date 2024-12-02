@@ -12,7 +12,7 @@ class BaseModel(ABC):
         self.model_name = model_name
         self.model_path = model_path
         self.device = device if torch.cuda.is_available() else -1
-        self.model = self.load_model()
+        # self.model = self.load_model()
 
     @abstractmethod
     def load_model(self):

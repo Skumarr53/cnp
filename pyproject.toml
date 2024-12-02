@@ -9,7 +9,7 @@ repository = "https://github.com/Skumarr53/cnp"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.8.20"
+python = ">=3.9, <3.11"
 # Runtime dependencies
 loguru = "^0.7.2"
 hydra-core = "^1.3"
@@ -18,18 +18,20 @@ numpy = "^1.24.4"
 cryptography = "^43.0.1"
 gensim = "^4.3.3"
 cython = "^3.0.11"
-spacy = "3.0.4"
-thinc = "8.0.0"
+spacy = "^3.0.4"
+thinc = "^8.1.7"
 pandas = "^2.0.0"
 snowflake-connector-python = "^3.12.2"
-transformers = "^4.46.2"
+transformers = "4.46.1"
 pyarrow = "^16.0.0"
 datasets = "^3.1.0"
 evaluate = "^0.4.3"
 pyspark = "^3.5.3"
 dask = {version = "^2023", extras = ["dataframe", "distributed"]}
-torch = "^1.5.0"
+torch = "^2.0.0"
 mlflow = "^1.0.0"
+cymem = "2.0.8"
+scikit-learn = "^1.1.0"
 
 [tool.poetry.scripts]
 centralized_nlp = "centralized_nlp_package.__main__:main"
@@ -42,6 +44,8 @@ sphinx-autodoc-typehints = "^2.0"
 furo = "^2024.8.6"
 flake8 = "^6.0.0"
 mypy = "^1.5.0"
+tox = "^4.23.2"
+
 
 [build-system]
 requires = ["poetry-core"]
