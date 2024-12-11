@@ -1,7 +1,7 @@
 snowflake:
   quant:
-    key:  SA_EDS_PROD_QUANT #${oc.env:SNOWFLAKE_KEY}
-    password: ROLE_EDS_PROD_DDLADMIN_QUANT #${oc.env:SNOWFLAKE_PWD}
+    key:  eds-prod-quant-key #${oc.env:SNOWFLAKE_KEY}
+    password: eds-prod-quant-pwd #${oc.env:SNOWFLAKE_PWD}
     account: voya.east-us-2.privatelink
     user: SA_EDS_PROD_QUANT
     role: ROLE_EDS_PROD_DDLADMIN_QUANT

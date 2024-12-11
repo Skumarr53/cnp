@@ -47,7 +47,7 @@ class ModelSelector:
             best_run_row = group.sort_values(by=f"metrics.{self.metric}", ascending=False).iloc[0]
             best_run_id = best_run_row["run_id"]
             best_run = mlflow.get_run(best_run_id)
-            logger.info(f"Best run for {self.tag}={group_name}: Run ID {best_run_id} with {self.metric}: {best_run_row[f'metrics.{self.metric}']}")
+            logger.info(f"Best run for {tag}={group_name}: Run ID {best_run_id} with {self.metric}: {best_run_row[f'metrics.{self.metric}']}")
             best_runs.append(best_run)
 
         return best_runs

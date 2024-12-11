@@ -11,7 +11,9 @@ from .dask_utils import (
 )
 
 from .spark_utils import (
-    pandas_to_spark
+    pandas_to_spark,
+    convert_columns_to_timestamp,
+    create_spark_udf
 )
 
 __all__ = [
@@ -21,5 +23,7 @@ __all__ = [
     "initialize_dask_client",
     "dask_compute_with_progress",
     "pandas_to_spark",
-    "check_pd_dataframe_for_records"
+    "check_pd_dataframe_for_records",
+    "convert_columns_to_timestamp",
+    "create_spark_udf"
 ]
