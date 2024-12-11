@@ -1,5 +1,6 @@
 # mlflow_utils/experiment_manager.py
 import os
+import gc
 import torch
 import pandas as pd
 from loguru import logger
@@ -7,11 +8,15 @@ from centralized_nlp_package.common_utils import get_current_date_str
 from centralized_nlp_package.nli_utils import get_nli_model_metrics
 from datetime import datetime
 import mlflow
+import mlflow.transformers
+from accelerate import Accelerator
 # from .utils import format_experiment_name, format_run_name, get_current_date, validate_path
 from typing import List, Dict, Any
-from transformers import pipeline
+from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from .models import get_model
 
+
+# mlflow.set_tracking_uri("http://localhost:5000")
 
 class ExperimentManager:
     def __init__(
@@ -21,11 +26,11 @@ class ExperimentManager:
         dataset_versions: List[str],
         hyperparameters: List[Dict[str, Any]],
         base_model_versions: str,
-        output_dir: str,
         train_file: str,
         validation_file: str,
-        user_id: str = 'santhosh.kumar3@voya.com',
         evalute_pretrained_model: bool = True,
+        user_id: str = 'santhosh.kumar3@voya.com',
+        output_dir: str = "/dbfs/mnt/access_work/UC25/Topic Modeling/NLI Models/Fine-tune NLI models/trained_RD_deberta-v3-base-zeroshot-v2_Santhosh_test/",
         **kwargs
     ):
 
@@ -38,6 +43,7 @@ class ExperimentManager:
         self.validation_file = validation_file
         self.train_file = train_file
         self.evalute_pretrained_model = evalute_pretrained_model
+        self.accelerator = Accelerator()
          
         
         mlflow.set_experiment(self.experiment_name)
@@ -49,16 +55,18 @@ class ExperimentManager:
             base_model_name = base_model.split('/')[-1]
 
             if self.evalute_pretrained_model:
-                self.evaluate_pretrained_model(base_model, param_set)
+                self.evaluate_pretrained_model(base_model)
 
             for dataset_version in self.dataset_versions:
                 for idx, param_set in enumerate(self.hyperparameters):
-                    run_name = f"{base_model_name}_{dataset_version}_param_set{idx+1}"
+                    dataset_name = dataset_version.split('.')[0]
+
+                    run_name = f"{base_model_name}_{dataset_name}_param_set{idx+1}"
                     with mlflow.start_run(run_name=run_name) as run:
                         logger.info(f"Starting finetuning run: {run_name}")
                         mlflow.set_tag("run_date", self.run_date)
                         mlflow.set_tag("base_model_name", base_model_name)
-                        mlflow.set_tag("dataset_version", dataset_version)
+                        mlflow.set_tag("dataset_version", dataset_name)
                         mlflow.set_tag("run_type", "finetuned")
 
                         # Log hyperparameters
@@ -77,25 +85,43 @@ class ExperimentManager:
                         
                         # Train model
                         train_file_path = self.train_file.format(data_version=dataset_version)
-                        trained_model, eval_metrics = model.train(
+                        ft_model, tokenizer, eval_metrics = model.train(
                             train_file=train_file_path,
                             validation_file=self.validation_file,
-                            param_dict=param_set
+                            param_dict=param_set,
+                            output_dir = self.output_dir
                         )
                         
-                        # Save and log model
-                        # output_path = os.path.join(self.output_dir, run_name)
-                        # os.makedirs(output_path, exist_ok=True)
-                        # trained_model.save_model(output_path)
-
-                        mlflow.pytorch.log_model(trained_model, "model")
-                    
-                        # for metric_name, metric_value in metrics.items():
-                        mlflow.log_metric('accuracy', eval_metrics['eval_accuracy'])
+                        components = {
+                            "model": ft_model,
+                            "tokenizer": tokenizer
+                            }
                         
-                        logger.info(f"Run {run_name} completed with metrics: {eval_metrics['eval_accuracy']}")
+                        mlflow.transformers.log_model(
+                            transformers_model=components,
+                            task="zero-shot-classification",
+                            artifact_path="model")
+                        logger.info(f"Model logged successfully")
+                        # except Exception as e:
+                        #     logger.error(f"Failed to log model: {e}")
 
-    def evaluate_pretrained_model(self, base_model, param_set):
+                        # Example metrics dictionary
+                        metrics = {
+                            "accuracy": eval_metrics['eval_accuracy'],
+                            "f1_score": eval_metrics['eval_f1_score'],
+                            "precision": eval_metrics['eval_precision'],
+                            "recall": eval_metrics['eval_recall'],
+                            "roc_auc": eval_metrics['eval_roc_auc']
+                        }
+
+                        # Log multiple metrics at once
+                        mlflow.log_metrics(metrics)
+                        
+                        logger.info(f"Run {run_name} completed with accuracy: {eval_metrics['eval_accuracy']}")
+
+
+
+    def evaluate_pretrained_model(self, base_model):
 
         base_model_name = base_model.split('/')[-1]
 
@@ -116,18 +142,32 @@ class ExperimentManager:
                 "num_train_epochs": 0,  # No training
                 "learning_rate": 0.0,
                 "weight_decay": 0.0,
-                "per_device_train_batch_size": param_set.get("train_batch_size", 16)
+                "per_device_train_batch_size": 16
             })
 
-            nli_pipeline = pipeline("zero-shot-classification", model = base_model, device= 0 if torch.cuda.is_available() else -1)
+            ## load model
+            tokenizer = AutoTokenizer.from_pretrained(base_model)
+            model = AutoModelForSequenceClassification.from_pretrained(base_model)
+
+            nli_pipeline = pipeline("zero-shot-classification", model=model, tokenizer=tokenizer, device= 0 if torch.cuda.is_available() else -1)
 
             metrics = get_nli_model_metrics(nli_pipeline, eval_df)
             
-            mlflow.pytorch.log_model(nli_pipeline.model, "model")
+            print("metrics",metrics)
+
+            components = {
+                "model": model,
+                "tokenizer": tokenizer
+                }
+
+            mlflow.transformers.log_model(
+                            transformers_model=components,
+                            task="zero-shot-classification",
+                            artifact_path="model")
+
             
-            # for metric_name, metric_value in metrics.items():
-            for name, value in metrics.items():
-                mlflow.log_metric(name, value)
+            # Log metrics 
+            mlflow.log_metrics(metrics)
 
             logger.info(f"Run {pretrained_run_name} completed with metrics: {metrics}")
             

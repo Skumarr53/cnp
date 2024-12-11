@@ -6,7 +6,7 @@ from loguru import logger
 from typing import Optional
 
 class ModelTransition:
-    def __init__(self, model_name: str, registry_uri: str = "models"):
+    def __init__(self, model_name: str, registry_uri: str = "databricks"):
         self.model_name = model_name
         self.registry_uri = registry_uri
         mlflow.set_registry_uri(self.registry_uri)

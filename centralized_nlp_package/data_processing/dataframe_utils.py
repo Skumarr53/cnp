@@ -117,9 +117,9 @@ def df_apply_transformations(
                 # Multiple columns transformation
                 logger.debug(f"Applying transformation on multiple columns {columns_to_use} to create '{new_column}'.")
                 if isinstance(df, dd.DataFrame):
-                    df[new_column] = df.apply(lambda row: func(*[row[col] for col in columns_to_use]), axis=1, meta=(new_column, object))
+                    df[new_column] = df.apply(lambda row: func(row), axis=1, meta=(new_column, object))
                 else:
-                    df[new_column] = df.apply(lambda row: func(*[row[col] for col in columns_to_use]), axis=1)
+                    df[new_column] = df.apply(lambda row: func(row), axis=1)
             else:
                 logger.error(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
                 raise ValueError(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")

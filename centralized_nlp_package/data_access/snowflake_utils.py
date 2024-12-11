@@ -14,6 +14,7 @@ from snowflake.connector import connect
 from loguru import logger
 from pyspark.sql import SparkSession, DataFrame
 from functools import wraps
+from databricks.sdk.runtime import *
 
 from centralized_nlp_package import config
 from centralized_nlp_package.utils import determine_environment
@@ -117,8 +118,8 @@ def retrieve_snowflake_private_key(config) -> str:
 
     # Retrieve encrypted private key and password from AKV
     try:
-        key_file = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.snowflake_key)
-        pwd = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.snowflake_pwd)
+        key_file = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.key)
+        pwd = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.password)
         logger.debug("Retrieved secrets from AKV successfully.")
     except Exception as e:
         logger.error(f"Error retrieving secrets from AKV: {e}")
