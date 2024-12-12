@@ -35,7 +35,8 @@ from centralized_nlp_package.nli_utils import (
 def run_glue(
     model_args: ModelArguments,
     data_args: DataTrainingArguments,
-    training_args: TrainingArguments
+    training_args: TrainingArguments,
+    eval_entailment_thresold: float = 0.5
 ) -> None:
     
     """
@@ -195,7 +196,7 @@ def run_glue(
     else:
         data_collator = None
 
-    compute_metrics = get_compute_metrics(is_regression, data_args.task_name)
+    compute_metrics = get_compute_metrics(is_regression, data_args.task_name, eval_entailment_thresold)
 
     trainer = initialize_trainer(
         model=model,
