@@ -102,6 +102,7 @@ def get_default_dtype_mapping() -> Dict[str, DataType]:
         'bool': BooleanType(),
         'datetime64[ns]': TimestampType(),
         'timedelta[ns]': StringType(),  # Spark does not have a timedelta type
+        'string': StringType()
     }
 
 def keyword_to_datatype(keyword: str) -> Optional[DataType]:
@@ -138,32 +139,28 @@ def equivalent_type(
     Returns:
         DataType: Corresponding Spark DataType.
     """
-    # Check if column name has a custom keyword mapping
-    if column_mapping:
-        if column_name in column_mapping:
-                keyword = column_mapping[column_name]
-                spark_type = keyword_to_datatype(keyword)
-                if spark_type:
-                    logger.debug(f"Column '{column_name}' uses custom keyword '{keyword}' mapped to '{spark_type}'.")
-                    return spark_type
-                else:
-                    logger.warning(f"Column '{column_name}' has an invalid keyword '{keyword}'. Falling back to default mapping.")
-        else:
-            key = [key in column_name for key in column_mapping]
-            if key:
-                keyword = column_mapping[key[0]] if isinstance(key, list) else column_mapping[key]
-                spark_type = keyword_to_datatype(keyword)
-                if spark_type:
-                    logger.debug(f"Column '{column_name}' uses custom keyword '{keyword}' mapped to '{spark_type}'.")
-                    return spark_type
-                else:
-                    logger.warning(f"Column '{column_name}' has an invalid keyword '{keyword}'. Falling back to default mapping.")
+
 
     # Fallback to default dtype mapping
     default_dtype_mapping = get_default_dtype_mapping()
     if pandas_dtype in default_dtype_mapping:
         logger.debug(f"Pandas dtype '{pandas_dtype}' for column '{column_name}' mapped to default Spark type '{default_dtype_mapping[pandas_dtype]}'.")
         return default_dtype_mapping[pandas_dtype]
+    
+    # Check if column name has a custom keyword mapping
+    if column_mapping:
+        if column_name in column_mapping:
+            spark_type = column_mapping[column_name]
+            # spark_type = keyword_to_datatype(keyword)
+            if spark_type:
+                logger.debug(f"Column '{column_name}'  mapped to '{spark_type}'.")
+                return spark_type
+        else:
+            for key in column_mapping:
+                if key.lower() in column_name.lower():
+                    spark_type = column_mapping[key]
+                    logger.debug(f"Column '{column_name}' mapped to '{spark_type}'.")
+                    return spark_type
     
     # Fallback to StringType if no mapping is found
     logger.warning(f"No mapping found for column '{column_name}' with Pandas dtype '{pandas_dtype}'. Using StringType.")
@@ -190,8 +187,8 @@ def define_structure(
 
 def pandas_to_spark(
     pandas_df: pd.DataFrame,
-    spark: SparkSession,
     column_type_mapping: Optional[Dict[str, str]] = None,
+    spark: None
 ) -> DataFrame:
     """
     Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.
@@ -236,6 +233,9 @@ def pandas_to_spark(
     """
     logger.info("Starting conversion from Pandas to Spark DataFrame.")
     
+    if spark in None:
+        spark = (SparkSession.builder.appName('test').getOrCreate())
+
     columns = pandas_df.columns
     dtypes = pandas_df.dtypes
 

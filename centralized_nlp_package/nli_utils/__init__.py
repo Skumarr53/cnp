@@ -2,7 +2,7 @@
 
 from .arguments import DataTrainingArguments, ModelArguments
 from .data import prepare_datasets, preprocess_datasets
-from .metrics import get_compute_metrics, evaluate_nli_models, compute_metrics, get_nli_model_metrics
+from .metrics import get_compute_metrics, evaluate_nli_models_from_path, evaluate_nli_models_mlflow, compute_metrics, get_nli_model_metrics
 from .nli_trainer import (
     setup_logging,
     initialize_trainer,
@@ -27,7 +27,8 @@ __all__ = [
     "predict",
     "run_glue",
     "initialize_nli_infer_pipeline",
-    "evaluate_nli_models",
+    "evaluate_nli_models_mlflow",
+    "evaluate_nli_models_from_path",
     "run_finetune",
     "get_nli_model_metrics",
     "compute_metrics"

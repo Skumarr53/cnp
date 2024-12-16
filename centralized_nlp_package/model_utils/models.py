@@ -13,7 +13,7 @@ class DeBERTaModel(BaseModel):
         logger.info(f"Loading DeBERTa model from {self.model_path}")
         return pipeline("zero-shot-classification", model=self.model_path, device=self.device)
 
-    def train(self, train_file: str, validation_file: str, param_dict: Dict[str, Any], output_dir: str) -> Tuple[AutoModelForSequenceClassification, Dict[str, float]]:
+    def train(self, train_file: str, validation_file: str, param_dict: Dict[str, Any], output_dir: str, eval_entailment_thresold: float = 0.5) -> Tuple[AutoModelForSequenceClassification, Dict[str, float]]:
         logger.info("Starting training for DeBERTa model")
 
         # Prepare ModelArguments
@@ -57,7 +57,7 @@ class DeBERTaModel(BaseModel):
         )
 
         # Call run_glue
-        trained_model, tokenizer, eval_metrics = run_glue(model_args, data_args, training_args)
+        trained_model, tokenizer, eval_metrics = run_glue(model_args, data_args, training_args, eval_entailment_thresold=eval_entailment_thresold)
 
         logger.info("Training completed for DeBERTa model")
         return trained_model, tokenizer, eval_metrics
