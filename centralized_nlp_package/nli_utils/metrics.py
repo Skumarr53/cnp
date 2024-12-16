@@ -63,10 +63,7 @@ def compute_metrics(preds: np.ndarray, labels: np.ndarray, entailment_threshold:
         Dict[str, Any]: Dictionary of computed metrics.
     """
     
-    print('Entailment scores with threshold: {}'.format(entailment_threshold),preds)
     pred_labels = (preds > entailment_threshold).astype(int)
-    print("predicted labels", pred_labels)
-    print("true labels", labels)
 
 
     accuracy = accuracy_score(labels, pred_labels)

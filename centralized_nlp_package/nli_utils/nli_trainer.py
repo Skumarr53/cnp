@@ -111,6 +111,7 @@ def train(
 
     metrics = train_result.metrics
     metrics["train_samples"] = len(trainer.train_dataset) if data_args.max_train_samples is None else min(data_args.max_train_samples, len(trainer.train_dataset))
+    print(f"Computed metrics are: {metrics}")
     trainer.log_metrics("train", metrics)
     trainer.save_metrics("train", metrics)
     trainer.save_state()
@@ -138,10 +139,16 @@ def evaluate(
     logger.info("*** Evaluate ***")
     metrics = trainer.evaluate()
     metrics["eval_samples"] = len(trainer.eval_dataset) if data_args.max_eval_samples is None else min(data_args.max_eval_samples, len(trainer.eval_dataset))
+    
+    eval_metrics = metrics.copy()
+    
+    for key in ["eval_predictions", "eval_scores"]:
+        metrics.pop(key, None)
+    print(f"Computed metrics are: {eval_metrics}")
     trainer.log_metrics("eval", metrics)
     trainer.save_metrics("eval", metrics)
 
-    return metrics
+    return eval_metrics
 
 def predict(trainer: Trainer, training_args, task_name: Optional[str] = None) -> None:
     """

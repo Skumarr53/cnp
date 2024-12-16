@@ -188,7 +188,7 @@ def define_structure(
 def pandas_to_spark(
     pandas_df: pd.DataFrame,
     column_type_mapping: Optional[Dict[str, str]] = None,
-    spark: None
+    spark: Optional[SparkSession] =  None
 ) -> DataFrame:
     """
     Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.
