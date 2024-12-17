@@ -11,12 +11,14 @@ from .dask_utils import (
 )
 
 from .spark_utils import (
+    initialize_spark_session,
     pandas_to_spark,
     convert_columns_to_timestamp,
     create_spark_udf
 )
 
 __all__ = [
+    "initialize_spark_session",
     "df_apply_transformations",
     "df_remove_rows_with_keywords",
     "concatenate_and_reset_index",

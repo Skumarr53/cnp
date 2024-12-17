@@ -53,6 +53,89 @@ class ExperimentManager:
         mlflow.set_experiment(self.experiment_name)
         logger.info(f"Experiment set to {self.experiment_name}")
 
+    def run_single_experiment(self, run_name, base_model, base_model_name, dataset_version, dataset_name, param_set):
+        torch.cuda.empty_cache()
+
+        try:
+            logger.info(f"Starting finetuning run: {run_name}")
+            mlflow.set_tag("run_date", self.run_date)
+            mlflow.set_tag("base_model_name", base_model_name)
+            mlflow.set_tag("dataset_version", dataset_name)
+            mlflow.set_tag("run_type", "finetuned")
+
+            # Log hyperparameters
+            mlflow.log_params({
+                "eval_entailment_thresold": self.eval_entailment_thresold,
+                "num_train_epochs": param_set.get("n_epochs", 3),
+                "learning_rate": param_set.get("learning_rate", 2e-5),
+                "weight_decay": param_set.get("weight_decay", 0.01),
+                "per_device_train_batch_size": param_set.get("train_batch_size", 16)
+            })
+            
+            # Initialize model
+            model = get_model(
+                model_path=base_model,
+                device=0 if torch.cuda.is_available() else -1
+            )
+            
+            # Train model
+            train_file_path = self.train_file.format(data_version=dataset_version)
+            ft_model, tokenizer, eval_metrics = model.train(
+                train_file=train_file_path,
+                validation_file=self.validation_file,
+                param_dict=param_set,
+                output_dir = self.output_dir,
+                eval_entailment_thresold=self.eval_entailment_thresold
+            )
+
+
+            ## Prepare logging metrics
+
+            nli_pipeline = pipeline("zero-shot-classification", model=ft_model, 
+                                    tokenizer=tokenizer, batch_size=2,
+                                    device= 0 if torch.cuda.is_available() else -1)
+
+            eval_df = self.eval_df.copy()
+            metrics = get_nli_model_metrics(nli_pipeline, eval_df, self.eval_entailment_thresold)
+                    
+            # Example metrics dictionary
+
+            eval_df['entailment_scores'] = metrics['scores']  
+            eval_df['predictions'] = metrics['predictions']
+            eval_df.to_csv(self.pred_path, index=False)
+
+
+            components = {
+                "model": ft_model,
+                "tokenizer": tokenizer
+                }
+
+            # Log multiple metrics at once
+            mlflow.log_metrics({
+                "accuracy": metrics['accuracy'],
+                "f1_score": metrics['f1_score'],
+                "precision": metrics['precision'],
+                "recall": metrics['recall'],
+                "roc_auc": metrics['roc_auc']
+            })
+            mlflow.log_artifact(self.pred_path)
+            mlflow.transformers.log_model(
+                transformers_model=components,
+                task="zero-shot-classification",
+                artifact_path="model")
+            logger.info(f"Model Artifacts logged successfully")
+            
+            logger.info(f"Run {run_name} completed with accuracy: {eval_metrics['eval_accuracy']}")
+        except Exception as e:
+            logger.error(f"Failed during run {run_name}: {e}")
+
+        finally:
+            # Cleanup to free memory
+            del ft_model
+            del model
+            torch.cuda.empty_cache()
+            gc.collect()
+
     def run_experiments(self):
         
         for base_model in self.base_model_versions:
@@ -68,81 +151,21 @@ class ExperimentManager:
 
                     run_name = f"{base_model_name}_{dataset_name}_param_set{idx+1}"
                     with mlflow.start_run(run_name=run_name) as run:
-                        # try:
-                        logger.info(f"Starting finetuning run: {run_name}")
-                        mlflow.set_tag("run_date", self.run_date)
-                        mlflow.set_tag("base_model_name", base_model_name)
-                        mlflow.set_tag("dataset_version", dataset_name)
-                        mlflow.set_tag("run_type", "finetuned")
-
-                        # Log hyperparameters
-                        mlflow.log_params({
-                            "eval_entailment_thresold": self.eval_entailment_thresold,
-                            "num_train_epochs": param_set.get("n_epochs", 3),
-                            "learning_rate": param_set.get("learning_rate", 2e-5),
-                            "weight_decay": param_set.get("weight_decay", 0.01),
-                            "per_device_train_batch_size": param_set.get("train_batch_size", 16)
-                        })
-                        
-                        # Initialize model
-                        model = get_model(
-                            model_path=base_model,
-                            device=0 if torch.cuda.is_available() else -1
-                        )
-                        
-                        # Train model
-                        train_file_path = self.train_file.format(data_version=dataset_version)
-                        ft_model, tokenizer, eval_metrics = model.train(
-                            train_file=train_file_path,
-                            validation_file=self.validation_file,
-                            param_dict=param_set,
-                            output_dir = self.output_dir,
-                            eval_entailment_thresold=self.eval_entailment_thresold
+                        self.run_single_experiment(
+                            run_name, 
+                            base_model, 
+                            base_model_name, 
+                            dataset_version, 
+                            dataset_name, 
+                            param_set
                         )
 
 
-                        ## Prepare logging metrics
-                        # Example metrics dictionary
-                        metrics = {
-                            "accuracy": eval_metrics['eval_accuracy'],
-                            "f1_score": eval_metrics['eval_f1_score'],
-                            "precision": eval_metrics['eval_precision'],
-                            "recall": eval_metrics['eval_recall'],
-                            "roc_auc": eval_metrics['eval_roc_auc']
-                        }
-
-                        # Predictions
-                        eval_df = self.eval_df.copy()
-                        eval_df['entailment_scores'] = eval_metrics['eval_scores']          
-                        eval_df['predictions'] = eval_metrics['eval_predictions']
-                        eval_df.to_csv(self.pred_path, index=False)
-
-                        components = {
-                            "model": ft_model,
-                            "tokenizer": tokenizer
-                            }
-
-                        # Log multiple metrics at once
-                        mlflow.log_metrics(metrics)
-                        mlflow.log_artifact(self.pred_path)
-                        mlflow.transformers.log_model(
-                            transformers_model=components,
-                            task="zero-shot-classification",
-                            artifact_path="model")
-                        logger.info(f"Model Artifacts logged successfully")
-                        
-                        logger.info(f"Run {run_name} completed with accuracy: {eval_metrics['eval_accuracy']}")
-                        # mlflow.end_run(status="SUCCESS")
-                        # except Exception as e:
-                        #     logger.error(f"Error occurred during run {run_name}: {str(e)}")
-                        #     mlflow.end_run(status="FAILED")
 
 
     def evaluate_pretrained_model(self, base_model):
 
         base_model_name = base_model.split('/')[-1]
-
-        eval_df = pd.read_csv(self.validation_file)
         
         pretrained_run_name = f"{base_model_name}_pretrained"
         with mlflow.start_run(run_name=pretrained_run_name) as pretrained_run:
@@ -167,12 +190,16 @@ class ExperimentManager:
             tokenizer = AutoTokenizer.from_pretrained(base_model)
             model = AutoModelForSequenceClassification.from_pretrained(base_model)
 
-            nli_pipeline = pipeline("zero-shot-classification", model=model, tokenizer=tokenizer, device= 0 if torch.cuda.is_available() else -1)
+            nli_pipeline = pipeline("zero-shot-classification", 
+                                    model=model, tokenizer=tokenizer,
+                                    batch_size=2,
+                                    device= 0 if torch.cuda.is_available() else -1)
 
+            eval_df = self.eval_df.copy()
             metrics = get_nli_model_metrics(nli_pipeline, eval_df, self.eval_entailment_thresold)
             
             print("metrics",metrics)
-            eval_df = self.eval_df.copy()
+            
             eval_df['entailment_scores'] = metrics['scores']  
             eval_df['predictions'] = metrics['predictions']
             eval_df.to_csv(self.pred_path, index=False)
@@ -198,4 +225,8 @@ class ExperimentManager:
             mlflow.log_artifact(self.pred_path)
 
             logger.info(f"Run {pretrained_run_name} completed with metrics: {metrics}")
+            
+            del model
+            torch.cuda.empty_cache()
+            gc.collect()
             
