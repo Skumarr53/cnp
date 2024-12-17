@@ -36,9 +36,9 @@ KEYWORD_TO_SPARK_TYPE: Dict[str, DataType] = {
 # Configure logging
 
 def initialize_spark_session(app_name="Optimized_NLI_Inference", 
-                     shuffle_partitions="200", gpu_amount="1", 
-                     task_gpu_amount="0.8", executor_memory="4g", 
-                     driver_memory="2g", executor_cores="1", 
+                     shuffle_partitions=200, gpu_amount=1, 
+                     task_gpu_amount=0.8, executor_memory="4g", 
+                     driver_memory="2g", executor_cores=1, 
                      memory_overhead="512m", dynamic_allocation="false"):
     """
     Initializes a Spark session with specified configurations.
