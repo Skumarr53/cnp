@@ -233,7 +233,7 @@ def pandas_to_spark(
     """
     logger.info("Starting conversion from Pandas to Spark DataFrame.")
     
-    if spark in None:
+    if spark is None:
         spark = (SparkSession.builder.appName('test').getOrCreate())
 
     columns = pandas_df.columns
