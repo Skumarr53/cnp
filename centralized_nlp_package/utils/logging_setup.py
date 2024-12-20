@@ -6,7 +6,7 @@ import os
 import sys
 
 
-def setup_logging(log_file_path: str = "logs/log_file.log", env: str = "dev") -> None:
+def setup_logging( env: str = "dev") -> None:
     """
     Sets up the Loguru logger with both console and file handlers based on the environment.
 
@@ -31,8 +31,8 @@ def setup_logging(log_file_path: str = "logs/log_file.log", env: str = "dev") ->
         log_level = "DEBUG"
 
     # Ensure log directory exists
-    log_directory = Path(log_file_path).parent
-    os.makedirs(log_directory, exist_ok=True)
+    # log_directory = Path(log_file_path).parent
+    # os.makedirs(log_directory, exist_ok=True)
 
     # Console Handler
     logger.add(
@@ -50,13 +50,13 @@ def setup_logging(log_file_path: str = "logs/log_file.log", env: str = "dev") ->
     )
 
     # File Handler with Rotation and Retention
-    logger.add(
-        log_file_path,
-        level=log_level,
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level:8} | {message}",
-        rotation="10 MB",      # Rotate log file after it reaches 10 MB
-        retention="7 days",    # Keep log files for 7 days
-        compression="zip",     # Compress rotated log files
-    )
+    # logger.add(
+    #     log_file_path,
+    #     level=log_level,
+    #     format="{time:YYYY-MM-DD HH:mm:ss} | {level:8} | {message}",
+    #     rotation="10 MB",      # Rotate log file after it reaches 10 MB
+    #     retention="7 days",    # Keep log files for 7 days
+    #     compression="zip",     # Compress rotated log files
+    # )
 
     logger.info("Logging setup completed.")
