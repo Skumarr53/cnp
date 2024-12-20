@@ -14,6 +14,8 @@ from .spark_utils import (
     initialize_spark_session,
     pandas_to_spark,
     convert_columns_to_timestamp,
+    check_spark_dataframe_for_records,
+    sparkdf_apply_transformations,
     create_spark_udf
 )
 
@@ -26,6 +28,8 @@ __all__ = [
     "dask_compute_with_progress",
     "pandas_to_spark",
     "check_pd_dataframe_for_records",
+    "check_spark_dataframe_for_records",
+    "sparkdf_apply_transformations",
     "convert_columns_to_timestamp",
     "create_spark_udf"
 ]
