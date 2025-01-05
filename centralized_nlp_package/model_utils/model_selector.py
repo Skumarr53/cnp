@@ -66,9 +66,10 @@ def get_best_models_by_param(experiment_name, param, metric = "accuracy") -> Lis
 
     return best_runs
 
-def list_available_models(experiment_name, metric = "accuracy") -> List[Dict[str, Any]]:
+def list_available_models(experiment_name, metric = "accuracy"):
+    experiment = mlflow.get_experiment_by_name(experiment_name)
     runs = mlflow.search_runs(
-        experiment_ids=[experiment_name.experiment_id],
+        experiment_ids=[experiment.experiment_id],
         order_by=[f"metrics.{metric} DESC"]
     )
     models = []
@@ -80,3 +81,4 @@ def list_available_models(experiment_name, metric = "accuracy") -> List[Dict[str
         })
     logger.info(f"Total models found: {len(models)}")
     return models
+

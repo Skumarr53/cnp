@@ -13,7 +13,8 @@ from accelerate import Accelerator
 # from .utils import format_experiment_name, format_run_name, get_current_date, validate_path
 from typing import List, Dict, Any
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
-from centralized_nlp_package.model_utils import get_model, list_available_models
+from .model_selector import list_available_models
+from .models import get_model
 
 
 # mlflow.set_tracking_uri("http://localhost:5000")
@@ -48,11 +49,12 @@ class ExperimentManager:
         self.eval_df = pd.read_csv(validation_file)
         self.accelerator = Accelerator()
         self.pred_path = "predictions.csv"
-        self.runs_list = self.get_run_names()
         self.testset_name, _ = os.path.splitext(os.path.basename(self.validation_file))
          
         
         mlflow.set_experiment(self.experiment_name)
+
+        self.runs_list = self.get_run_names()
         logger.info(f"Experiment set to {self.experiment_name}")
 
     def run_single_experiment(self, run_name, base_model, base_model_name, dataset_version, dataset_name, param_set):
@@ -229,6 +231,7 @@ class ExperimentManager:
                                     "accuracy": metrics['accuracy'],
                                     "f1_score": metrics['f1_score'],
                                     "precision": metrics['precision'],
+                                    "recall": metrics['recall'],
                                     "roc_auc": metrics['roc_auc']
                                 })
                 mlflow.log_artifact(self.pred_path)

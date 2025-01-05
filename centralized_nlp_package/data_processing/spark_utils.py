@@ -422,6 +422,9 @@ def sparkdf_apply_transformations(
         +-------------------------+-----------+-----------+-----------------------------+
 
     """
+    # if spark is None:
+    spark = (SparkSession.builder.appName('test').getOrCreate())
+
     if not isinstance(transformations, list):
         logger.error("Transformations should be provided as a list of tuples.")
         raise TypeError("Transformations should be a list of tuples.")
