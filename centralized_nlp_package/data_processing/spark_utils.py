@@ -1,3 +1,4 @@
+import os
 from typing import Dict, Optional, List, Tuple, Callable, Any, Union
 import pandas as pd
 from pyspark.sql import SparkSession, DataFrame
@@ -75,11 +76,11 @@ def initialize_spark_session(app_name="Optimized_NLI_Inference",
                     .getOrCreate())
         
         spark.sparkContext.setLogLevel("DEBUG")
-        logger.info("Spark session initialized successfully.")
+        print("Spark session initialized successfully.")
         return spark
     
     except Exception as e:
-        logger.error(f"Failed to initialize Spark session: {e}")
+        print(f"Failed to initialize Spark session: {e}")
         raise e
 
 # Example usage
@@ -117,9 +118,9 @@ def keyword_to_datatype(keyword: str) -> Optional[DataType]:
     """
     dtype = KEYWORD_TO_SPARK_TYPE.get(keyword.lower())
     if dtype:
-        logger.debug(f"Keyword '{keyword}' mapped to Spark DataType '{dtype}'.")
+        print(f"Keyword '{keyword}' mapped to Spark DataType '{dtype}'.")
     else:
-        logger.warning(f"Keyword '{keyword}' is not recognized. It will be ignored.")
+        print(f"Keyword '{keyword}' is not recognized. It will be ignored.")
     return dtype
 
 def equivalent_type(
@@ -144,7 +145,7 @@ def equivalent_type(
     # Fallback to default dtype mapping
     default_dtype_mapping = get_default_dtype_mapping()
     if pandas_dtype in default_dtype_mapping:
-        logger.debug(f"Pandas dtype '{pandas_dtype}' for column '{column_name}' mapped to default Spark type '{default_dtype_mapping[pandas_dtype]}'.")
+        print(f"Pandas dtype '{pandas_dtype}' for column '{column_name}' mapped to default Spark type '{default_dtype_mapping[pandas_dtype]}'.")
         return default_dtype_mapping[pandas_dtype]
     
     # Check if column name has a custom keyword mapping
@@ -153,17 +154,17 @@ def equivalent_type(
             spark_type = column_mapping[column_name]
             # spark_type = keyword_to_datatype(keyword)
             if spark_type:
-                logger.debug(f"Column '{column_name}'  mapped to '{spark_type}'.")
+                print(f"Column '{column_name}'  mapped to '{spark_type}'.")
                 return spark_type
         else:
             for key in column_mapping:
                 if key.lower() in column_name.lower():
                     spark_type = column_mapping[key]
-                    logger.debug(f"Column '{column_name}' mapped to '{spark_type}'.")
+                    print(f"Column '{column_name}' mapped to '{spark_type}'.")
                     return spark_type
     
     # Fallback to StringType if no mapping is found
-    logger.warning(f"No mapping found for column '{column_name}' with Pandas dtype '{pandas_dtype}'. Using StringType.")
+    print(f"No mapping found for column '{column_name}' with Pandas dtype '{pandas_dtype}'. Using StringType.")
     return StringType()
 
 def define_structure(
@@ -231,7 +232,7 @@ def pandas_to_spark(
     Raises:
         ValueError: If there's an issue during the conversion process.
     """
-    logger.info("Starting conversion from Pandas to Spark DataFrame.")
+    print("Starting conversion from Pandas to Spark DataFrame.")
     
     if spark is None:
         spark = (SparkSession.builder.appName('test').getOrCreate())
@@ -246,14 +247,14 @@ def pandas_to_spark(
         struct_fields.append(field)
     
     schema = StructType(struct_fields)
-    logger.debug(f"Constructed Spark schema: {schema}")
+    print(f"Constructed Spark schema: {schema}")
     
     try:
         spark_df = spark.createDataFrame(pandas_df, schema=schema)
-        logger.info("Successfully converted Pandas DataFrame to Spark DataFrame.")
+        print("Successfully converted Pandas DataFrame to Spark DataFrame.")
         return spark_df
     except Exception as e:
-        logger.error(f"Error converting Pandas DataFrame to Spark DataFrame: {e}")
+        print(f"Error converting Pandas DataFrame to Spark DataFrame: {e}")
         raise ValueError(f"Conversion failed: {e}") from e
 
 
@@ -318,23 +319,23 @@ def convert_columns_to_timestamp(
         +-------------------+-------------------+---------------------+
     """
     if not columns_formats:
-        logger.error("No columns and formats provided for timestamp conversion.")
+        print("No columns and formats provided for timestamp conversion.")
         raise ValueError("The 'columns_formats' dictionary cannot be empty.")
 
     for column, fmt in columns_formats.items():
         if column not in df.columns:
-            logger.error(f"Column '{column}' does not exist in the DataFrame.")
+            print(f"Column '{column}' does not exist in the DataFrame.")
             raise KeyError(f"Column '{column}' not found in the DataFrame.")
 
         if overwrite:
-            logger.info(f"Converting column '{column}' to timestamp with format '{fmt}'. Overwriting existing column.")
+            print(f"Converting column '{column}' to timestamp with format '{fmt}'. Overwriting existing column.")
             df = df.withColumn(column, F.to_timestamp(F.col(column), fmt))
         else:
             new_column = f"{column}_ts"
-            logger.info(f"Converting column '{column}' to timestamp with format '{fmt}'. Creating new column '{new_column}'.")
+            print(f"Converting column '{column}' to timestamp with format '{fmt}'. Creating new column '{new_column}'.")
             df = df.withColumn(new_column, F.to_timestamp(F.col(column), fmt))
 
-    logger.info("Timestamp conversion completed successfully.")
+    print("Timestamp conversion completed successfully.")
     return df
 
 
@@ -422,16 +423,13 @@ def sparkdf_apply_transformations(
         +-------------------------+-----------+-----------+-----------------------------+
 
     """
-    # if spark is None:
-    spark = (SparkSession.builder.appName('test').getOrCreate())
-
     if not isinstance(transformations, list):
-        logger.error("Transformations should be provided as a list of tuples.")
+        print("Transformations should be provided as a list of tuples.")
         raise TypeError("Transformations should be a list of tuples.")
 
     for idx, transformation in enumerate(transformations):
         if not (isinstance(transformation, tuple) and len(transformation) == 3):
-            logger.error(
+            print(
                 f"Each transformation should be a tuple of (new_column_name, input_columns, transformation_function). "
                 f"Error at transformation index {idx}: {transformation}"
             )
@@ -446,10 +444,10 @@ def sparkdf_apply_transformations(
             input_columns = [input_columns]
         elif isinstance(input_columns, list):
             if not all(isinstance(col_name, str) for col_name in input_columns):
-                logger.error(f"All input column names must be strings. Error at transformation index {idx}: {transformation}")
+                print(f"All input column names must be strings. Error at transformation index {idx}: {transformation}")
                 raise TypeError("All input column names must be strings.")
         else:
-            logger.error(
+            print(
                 f"input_columns must be either a string or a list of strings. Error at transformation index {idx}: {transformation}"
             )
             raise TypeError("input_columns must be either a string or a list of strings.")
@@ -459,10 +457,10 @@ def sparkdf_apply_transformations(
         if missing_cols:
             message = f"Missing input columns {missing_cols} for transformation '{new_column}'."
             if error_on_missing:
-                logger.error(message)
+                print(message)
                 raise KeyError(message)
             else:
-                logger.warning(message)
+                print(message)
                 continue  # Skip this transformation
 
         # Prepare Column objects
@@ -470,15 +468,15 @@ def sparkdf_apply_transformations(
 
         # Apply the transformation function
         try:
-            logger.info(f"Applying transformation for column '{new_column}' using columns {input_columns}.")
+            print(f"Applying transformation for column '{new_column}' using columns {input_columns}.")
             transformed_column = transformation_func(*column_objs)
             spark_df = spark_df.withColumn(new_column, transformed_column)
-            logger.debug(f"Transformation for column '{new_column}' applied successfully.")
+            print(f"Transformation for column '{new_column}' applied successfully.")
         except Exception as e:
-            logger.error(f"Error applying transformation for column '{new_column}': {e}")
+            print(f"Error applying transformation for column '{new_column}': {e}")
             raise e
 
-    logger.info("All transformations have been applied successfully.")
+    print("All transformations have been applied successfully.")
     return spark_df
 
 
@@ -500,15 +498,15 @@ def create_spark_udf(function, return_type_key: str = 'arr[str]'):
     """
     # Validate the return_type_key
     if return_type_key.lower() not in KEYWORD_TO_SPARK_TYPE:
-        logger.error(f"Invalid return type key: '{return_type_key}'. Valid keys are: {list(KEYWORD_TO_SPARK_TYPE.keys())}")
+        print(1)
         raise ValueError(f"Invalid return type key: '{return_type_key}'. Valid keys are: {list(KEYWORD_TO_SPARK_TYPE.keys())}")
 
     try:
         spark_udf = F.udf(function, KEYWORD_TO_SPARK_TYPE[return_type_key.lower()])
-        logger.info(f"Successfully created Spark UDF with return type: {return_type_key}")
+        print(f"Successfully created Spark UDF with return type: {return_type_key}")
         return spark_udf
     except Exception as e:
-        logger.error(f"Failed to create Spark UDF: {e}")
+        print(f"Failed to create Spark UDF: {e}")
         raise e
 
 
@@ -537,9 +535,10 @@ def check_spark_dataframe_for_records(spark_df: DataFrame,
         col_count = len(spark_df.columns)
 
         # Log the information
-        logger.info(f'The data spans from {min_parsed_date} to {max_parsed_date} '
+        print(f'The data spans from {min_parsed_date} to {max_parsed_date} '
                     f'and has {row_count} rows and {col_count} columns.')
     else:
-        logger.warning('No new transcripts to parse.')
+        from databricks.sdk.runtime import dbutils
+        print('No new transcripts to parse.')
         dbutils.notebook.exit(1)  # Exit the notebook with a non-zero status
         os._exit(1)  # Terminate the process 

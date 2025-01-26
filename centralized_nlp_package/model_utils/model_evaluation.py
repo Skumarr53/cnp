@@ -1,8 +1,13 @@
 import pandas as pd
 import os
 from loguru import logger
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import KFold
+from sklearn.metrics import confusion_matrix
 from .experiment_manager import ExperimentManager
+
+
 
 def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hyperparameters, user_id, n_splits=5, random_state=42):
     """
@@ -69,3 +74,58 @@ def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hy
         # Run the experiment for this fold
         experiment_manager.run_experiments()
         logger.info(f"Fold {fold}: Experiment completed.")
+
+
+def generate_and_plot_confusion_matrices(data, label_col, prediction_col, topic_col, plot_func):
+    """
+    Generates and plots confusion matrices for overall data and individual topics.
+
+    Parameters:
+    - data: DataFrame containing the data.
+    - label_col: Column name for ground truth labels.
+    - prediction_col: Column name for predicted labels.
+    - topic_col: Column name for topics to generate individual confusion matrices.
+    - plot_func: Function to plot the confusion matrix.
+
+    Returns:
+    - overall_conf_matrix: Confusion matrix for the entire dataset.
+    - topic_conf_matrices: Dictionary of confusion matrices for each topic.
+    """
+    # Generate the overall confusion matrix
+    overall_conf_matrix = confusion_matrix(data[label_col], data[prediction_col])
+    
+    # Generate confusion matrices for each individual topic
+    topic_conf_matrices = {}
+    for topic in data[topic_col].unique():
+        topic_data = data[data[topic_col] == topic]
+        topic_conf_matrix = confusion_matrix(topic_data[label_col], topic_data[prediction_col])
+        topic_conf_matrices[topic] = topic_conf_matrix
+    
+    # Display and log the overall confusion matrix
+    plot_func(overall_conf_matrix, 'Overall Confusion Matrix', 'overall_confusion_matrix.png')
+    
+    # Display and log confusion matrices for each topic
+    plot_filnames = []
+    for topic, matrix in topic_conf_matrices.items():
+        plot_name = plot_func(matrix, f'Confusion Matrix for Topic: {topic}', f'confusion_matrix_{topic}.png')
+        plot_filnames.append(plot_name)
+    return plot_filnames
+
+def plot_conf_matrix(matrix, title, filename):
+    """
+    Plots a confusion matrix using seaborn heatmap and logs it as an artifact in MLflow.
+
+    Parameters:
+    - matrix: Confusion matrix to plot.
+    - title: Title for the plot.
+    - filename: Filename to save the plot.
+    """
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues')
+    plt.title(title)
+    plt.xlabel('Predicted')
+    plt.ylabel('Actual')
+    plt.savefig(filename)
+    plt.close()
+
+    return filename

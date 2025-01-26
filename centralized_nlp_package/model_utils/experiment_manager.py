@@ -15,6 +15,7 @@ from typing import List, Dict, Any
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 from .model_selector import list_available_models
 from .models import get_model
+from .model_evaluation import  plot_conf_matrix, generate_and_plot_confusion_matrices
 
 
 # mlflow.set_tracking_uri("http://localhost:5000")
@@ -123,6 +124,12 @@ class ExperimentManager:
                 "roc_auc": metrics['roc_auc']
             })
             mlflow.log_artifact(self.pred_path)
+
+            # Log the Confusion matirx plot as an artifact in MLflow
+            plot_names = generate_and_plot_confusion_matrices(eval_df, plot_conf_matrix)
+            for filename in plot_names:
+                mlflow.log_artifact(filename)
+                os.remove(filename)
             mlflow.transformers.log_model(
                 transformers_model=components,
                 task="zero-shot-classification",
@@ -169,9 +176,6 @@ class ExperimentManager:
                             dataset_name, 
                             param_set
                         )
-
-
-
 
     def evaluate_pretrained_model(self, base_model):
 

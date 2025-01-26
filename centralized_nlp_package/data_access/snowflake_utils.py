@@ -118,6 +118,7 @@ def retrieve_snowflake_private_key(config) -> str:
     # Retrieve encrypted private key and password from AKV
     try:
         from databricks.sdk.runtime import dbutils
+
         key_file = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.key)
         pwd = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.password)
         logger.debug("Retrieved secrets from AKV successfully.")
