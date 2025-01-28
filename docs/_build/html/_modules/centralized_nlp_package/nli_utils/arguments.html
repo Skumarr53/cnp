@@ -201,12 +201,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -252,23 +253,33 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Arguments pertaining to the data for training and evaluation.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        task_name (Optional[str]): The name of the task to train on. Default is &quot;mnli&quot;.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_name (Optional[str]): The name of the task to train on.</span>
 <span class="sd">        dataset_name (Optional[str]): The name of the dataset to use (via the datasets library).</span>
 <span class="sd">        dataset_config_name (Optional[str]): The configuration name of the dataset to use.</span>
-<span class="sd">        max_seq_length (int): The maximum total input sequence length after tokenization. Default is 128.</span>
-<span class="sd">        overwrite_cache (bool): Overwrite the cached preprocessed datasets or not. Default is False.</span>
-<span class="sd">        pad_to_max_length (bool): Whether to pad all samples to &#39;max_seq_length&#39;. Default is True.</span>
+<span class="sd">        max_seq_length (int): The maximum total input sequence length after tokenization.</span>
+<span class="sd">        overwrite_cache (bool): Overwrite the cached preprocessed datasets or not.</span>
+<span class="sd">        pad_to_max_length (bool): Whether to pad all samples to &#39;max_seq_length&#39;.</span>
 <span class="sd">        max_train_samples (Optional[int]): Truncate the number of training examples for debugging or quicker training.</span>
 <span class="sd">        max_eval_samples (Optional[int]): Truncate the number of evaluation examples for debugging or quicker evaluation.</span>
 <span class="sd">        max_predict_samples (Optional[int]): Truncate the number of prediction examples for debugging or quicker prediction.</span>
 <span class="sd">        train_file (Optional[str]): Path to a CSV or JSON file containing the training data.</span>
 <span class="sd">        validation_file (Optional[str]): Path to a CSV or JSON file containing the validation data.</span>
 <span class="sd">        test_file (Optional[str]): Path to a CSV or JSON file containing the test data.</span>
+
+<span class="sd">    Usage Example:</span>
+<span class="sd">        &gt;&gt;&gt; from nli_utils.arguments import DataTrainingArguments</span>
+<span class="sd">        &gt;&gt;&gt; data_args = DataTrainingArguments(</span>
+<span class="sd">        ...     task_name=&quot;mnli&quot;,</span>
+<span class="sd">        ...     max_seq_length=128,</span>
+<span class="sd">        ...     train_file=&quot;path/to/train.csv&quot;,</span>
+<span class="sd">        ...     validation_file=&quot;path/to/validation.csv&quot;</span>
+<span class="sd">        ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">task_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;mnli&quot;</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The name of the task to train on: mnli, cola, etc. Default is &#39;mnli&#39;.&quot;</span><span class="p">},</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The name of the task to train on: mnli, cola, etc.&quot;</span><span class="p">},</span>
     <span class="p">)</span>
     <span class="n">dataset_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The name of the dataset to use (via the datasets library).&quot;</span><span class="p">}</span>
@@ -348,46 +359,67 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Arguments pertaining to the model configuration.</span>
 
-<span class="sd">    Attributes:</span>
+<span class="sd">    Args:</span>
 <span class="sd">        model_name_or_path (str): Path to pretrained model or model identifier from huggingface.co/models.</span>
-<span class="sd">            Default is &quot;/dbfs/mnt/access_work/UC25/Libraries/HuggingFace/deberta-v3-large-zeroshot-v2&quot;.</span>
 <span class="sd">        config_name (Optional[str]): Pretrained config name or path if not the same as model_name.</span>
 <span class="sd">        tokenizer_name (Optional[str]): Pretrained tokenizer name or path if not the same as model_name.</span>
 <span class="sd">        cache_dir (Optional[str]): Directory to store the pretrained models downloaded from huggingface.co.</span>
-<span class="sd">            Default is &quot;/dbfs/mnt/access_work/UC25/Topic Modeling/NLI Models/Fine-tune NLI models/trained_RD_deberta-v3-large-zeroshot-v2_v3&quot;.</span>
-<span class="sd">        use_fast_tokenizer (bool): Whether to use a fast tokenizer (backed by the tokenizers library) or not. Default is True.</span>
-<span class="sd">        model_revision (str): The specific model version to use (can be a branch name, tag name, or commit id). Default is &quot;main&quot;.</span>
+<span class="sd">        use_fast_tokenizer (bool): Whether to use a fast tokenizer (backed by the tokenizers library) or not.</span>
+<span class="sd">        model_revision (str): The specific model version to use (can be a branch name, tag name, or commit id).</span>
 <span class="sd">        token (Optional[str]): The token for HTTP bearer authorization for remote files.</span>
-<span class="sd">        trust_remote_code (bool): Whether to allow custom models defined on the Hub in their own modeling files. Default is False.</span>
-<span class="sd">        ignore_mismatched_sizes (bool): Enable loading a pretrained model whose head dimensions are different. Default is False.</span>
-<span class="sd">        learning_rate (float): Learning rate for training. Default is 2e-5.</span>
-<span class="sd">        weight_decay (float): Weight decay for optimization. Default is 0.01.</span>
-<span class="sd">        per_device_train_batch_size (int): Batch size for training. Default is 16.</span>
-<span class="sd">        per_device_eval_batch_size (int): Batch size for evaluation. Default is 16.</span>
+<span class="sd">        trust_remote_code (bool): Whether to allow custom models defined on the Hub in their own modeling files.</span>
+<span class="sd">        ignore_mismatched_sizes (bool): Enable loading a pretrained model whose head dimensions are different.</span>
+
+<span class="sd">    Usage Example:</span>
+<span class="sd">        &gt;&gt;&gt; from nli_utils.arguments import ModelArguments</span>
+<span class="sd">        &gt;&gt;&gt; model_args = ModelArguments(</span>
+<span class="sd">        ...     model_name_or_path=&quot;bert-base-uncased&quot;,</span>
+<span class="sd">        ...     cache_dir=&quot;./cache&quot;,</span>
+<span class="sd">        ... )</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">model_name_or_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/dbfs/mnt/access_work/UC25/Libraries/HuggingFace/deberta-v3-large-zeroshot-v2&quot;</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Path to pretrained model or model identifier from huggingface.co/models. Default is &#39;/dbfs/mnt/access_work/UC25/Libraries/HuggingFace/deberta-v3-large-zeroshot-v2&#39;.&quot;</span><span class="p">},</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Path to pretrained model or model identifier from huggingface.co/models&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">config_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Pretrained config name or path if not the same as model_name&quot;</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">tokenizer_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Pretrained tokenizer name or path if not the same as model_name&quot;</span><span class="p">}</span>
     <span class="p">)</span>
     <span class="n">cache_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;/dbfs/mnt/access_work/UC25/Topic Modeling/NLI Models/Fine-tune NLI models/trained_RD_deberta-v3-large-zeroshot-v2_v3&quot;</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Directory to store the pretrained models downloaded from huggingface.co. Default is &#39;/dbfs/mnt/access_work/UC25/Topic Modeling/NLI Models/Fine-tune NLI models/trained_RD_deberta-v3-large-zeroshot-v2_v3&#39;.&quot;</span><span class="p">},</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Directory to store the pretrained models downloaded from huggingface.co&quot;</span><span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">learning_rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mf">2e-5</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Learning rate for training. Default is 2e-5.&quot;</span><span class="p">},</span>
+    <span class="n">use_fast_tokenizer</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Whether to use a fast tokenizer (backed by the tokenizers library) or not.&quot;</span><span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">weight_decay</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Weight decay for optimization. Default is 0.01.&quot;</span><span class="p">},</span>
+    <span class="n">model_revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;main&quot;</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The specific model version to use (can be a branch name, tag name, or commit id).&quot;</span><span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">per_device_train_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Batch size for training. Default is 16.&quot;</span><span class="p">},</span>
+    <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The token for HTTP bearer authorization for remote files. If not specified, will use the token &quot;</span>
+                <span class="s2">&quot;from `huggingface-cli login` (stored in `~/.huggingface`).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
     <span class="p">)</span>
-    <span class="n">per_device_eval_batch_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Batch size for evaluation. Default is 16.&quot;</span><span class="p">},</span>
+    <span class="n">trust_remote_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Whether to allow custom models defined on the Hub in their own modeling files. &quot;</span>
+                <span class="s2">&quot;Set to &#39;True&#39; only for trusted repositories.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">ignore_mismatched_sizes</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Enable loading a pretrained model whose head dimensions are different.&quot;</span><span class="p">},</span>
     <span class="p">)</span></div>
 </pre></div>
         </article>

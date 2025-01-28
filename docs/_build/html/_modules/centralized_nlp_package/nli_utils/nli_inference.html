@@ -201,12 +201,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -248,6 +249,65 @@
 
 
 <div class="viewcode-block" id="initialize_nli_infer_pipeline"><a class="viewcode-back" href="../../../source/nli_utils.html#centralized_nlp_package.nli_utils.nli_inference.initialize_nli_infer_pipeline">[docs]</a><span class="k">def</span> <span class="nf">initialize_nli_infer_pipeline</span><span class="p">(</span><span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">enable_quantization</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Initialize a Natural Language Inference (NLI) inference pipeline with optional model quantization.</span>
+<span class="sd">    </span>
+<span class="sd">    This function sets up a Hugging Face Transformers pipeline for zero-shot classification using the specified model. It supports dynamic quantization to optimize the model for faster inference and reduced memory usage. The pipeline is configured to run on a GPU if available; otherwise, it defaults to the CPU.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        model_path (str):</span>
+<span class="sd">            The file path or identifier of the pre-trained model to be used for the NLI pipeline. This can be a local directory containing the model files or a model identifier from the Hugging Face Model Hub.</span>
+<span class="sd">        </span>
+<span class="sd">        enable_quantization (bool, optional):</span>
+<span class="sd">            Flag indicating whether to apply dynamic quantization to the model&#39;s linear layers. Quantization can reduce the model&#39;s memory footprint and potentially increase inference speed, especially on CPU. Defaults to `False`.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        transformers.pipelines.Pipeline:</span>
+<span class="sd">            A Hugging Face Transformers pipeline configured for zero-shot classification, ready to perform NLI tasks.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        FileNotFoundError:</span>
+<span class="sd">            If the specified `model_path` does not exist or is inaccessible.</span>
+<span class="sd">        </span>
+<span class="sd">        ValueError:</span>
+<span class="sd">            If the model at `model_path` is incompatible with the zero-shot classification task.</span>
+<span class="sd">        </span>
+<span class="sd">        Exception:</span>
+<span class="sd">            For any other errors that occur during model loading, quantization, or pipeline initialization.</span>
+<span class="sd">    </span>
+<span class="sd">    Example:</span>
+<span class="sd">        ```python</span>
+<span class="sd">        from nli_finetune.metrics import initialize_nli_infer_pipeline</span>
+<span class="sd">        </span>
+<span class="sd">        # Initialize the NLI pipeline without quantization</span>
+<span class="sd">        nli_pipeline = initialize_nli_infer_pipeline(</span>
+<span class="sd">            model_path=&quot;facebook/bart-large-mnli&quot;,</span>
+<span class="sd">            enable_quantization=False</span>
+<span class="sd">        )</span>
+<span class="sd">        </span>
+<span class="sd">        # Perform a zero-shot classification inference</span>
+<span class="sd">        result = nli_pipeline(</span>
+<span class="sd">            sequences=&quot;The movie was fantastic and I loved it.&quot;,</span>
+<span class="sd">            candidate_labels=[&quot;positive&quot;, &quot;negative&quot;, &quot;neutral&quot;],</span>
+<span class="sd">            hypothesis_template=&quot;The sentiment of the review is {}.&quot;</span>
+<span class="sd">        )</span>
+<span class="sd">        </span>
+<span class="sd">        print(result)</span>
+<span class="sd">        # Output:</span>
+<span class="sd">        # {</span>
+<span class="sd">        #     &#39;sequence&#39;: &#39;The movie was fantastic and I loved it.&#39;,</span>
+<span class="sd">        #     &#39;labels&#39;: [&#39;positive&#39;, &#39;neutral&#39;, &#39;negative&#39;],</span>
+<span class="sd">        #     &#39;scores&#39;: [0.95, 0.04, 0.01]</span>
+<span class="sd">        # }</span>
+<span class="sd">        ```</span>
+<span class="sd">    </span>
+<span class="sd">    Notes:</span>
+<span class="sd">        - **Quantization**: Enabling quantization (`enable_quantization=True`) applies dynamic quantization to the model&#39;s linear layers, converting them to a lower precision (e.g., `torch.qint8`). This can lead to reduced model size and faster inference times, particularly beneficial when deploying models on CPU-only environments. However, quantization may slightly degrade model accuracy.</span>
+<span class="sd">        </span>
+<span class="sd">        - **Device Configuration**: The pipeline automatically utilizes a GPU if one is available (`device=0`). If no GPU is detected, it defaults to the CPU (`device=-1`). Ensure that the appropriate hardware is available for optimal performance.</span>
+<span class="sd">        </span>
+<span class="sd">        - **Model Compatibility**: The specified `model_path` must support the zero-shot classification task. Models fine-tuned for tasks like sentiment analysis or entailment are suitable for NLI inference pipelines.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForSequenceClassification</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>

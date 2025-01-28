@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Data Processing" href="data_processing.html" /><link rel="prev" title="Utilities" href="utils.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="Utilities" href="utils.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>Common Utils - Centralized NLP Package 0.1.0 documentation</title>
@@ -202,12 +202,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -253,23 +254,47 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.common_utils.date_utils.format_date">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.common_utils.date_utils.</span></span><span class="sig-name descname"><span class="pre">format_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/common_utils/date_utils.html#format_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.common_utils.date_utils.format_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Formats a datetime object to a string in ‘YYYY-MM-DD’ format.</p>
+<dd><p>Format a datetime object into a string with ‘YYYY-MM-DD’ format.</p>
+<p>This function takes a <cite>datetime</cite> object and returns its string representation in the ‘YYYY-MM-DD’ format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>date</strong> (<em>datetime</em>) – The date to format.</p>
+<dd class="field-odd"><p><strong>date</strong> (<em>datetime</em>) – The datetime object to format.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The formatted date string.</p>
+<dd class="field-even"><p>The formatted date string in ‘YYYY-MM-DD’ format.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">format_date</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.date_utils</span> <span class="kn">import</span> <span class="n">format_date</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">format_date</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">formatted</span> <span class="o">=</span> <span class="n">format_date</span><span class="p">(</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2023</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">formatted</span><span class="p">)</span>
 <span class="go">&#39;2023-09-15&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.common_utils.date_utils.get_current_date_str">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.common_utils.date_utils.</span></span><span class="sig-name descname"><span class="pre">get_current_date_str</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/common_utils/date_utils.html#get_current_date_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.common_utils.date_utils.get_current_date_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve the current date as a string in ‘YYYYMMDD’ format.</p>
+<p>This function returns the current date formatted as a string without any separators, following the ‘YYYYMMDD’ pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The current date in ‘YYYYMMDD’ format.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.date_utils</span> <span class="kn">import</span> <span class="n">get_current_date_str</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">current_date</span> <span class="o">=</span> <span class="n">get_current_date_str</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">current_date</span><span class="p">)</span>
+<span class="go">&#39;20250127&#39;</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -277,7 +302,8 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.common_utils.date_utils.get_date_range">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.common_utils.date_utils.</span></span><span class="sig-name descname"><span class="pre">get_date_range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">years_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">months_back</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/common_utils/date_utils.html#get_date_range"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.common_utils.date_utils.get_date_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the date range based on the current date minus specified years and/or months.</p>
+<dd><p>Calculate a date range based on the current date minus specified years and/or months.</p>
+<p>This function computes the start and end dates by subtracting the given number of years and months from the current date. The dates are returned in ‘YYYY-MM-DD’ format, representing the first day of the respective months.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -286,15 +312,17 @@
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A tuple containing the start date and end date in ‘YYYY-MM-DD’ format.</p>
+<dd class="field-even"><p>A tuple containing:
+- <cite>start_date</cite> (str): The start date in ‘YYYY-MM-DD’ format.
+- <cite>end_date</cite> (str): The end date in ‘YYYY-MM-DD’ format.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tuple[str, str]</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils</span> <span class="kn">import</span> <span class="n">get_date_range</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">get_date_range</span><span class="p">(</span><span class="n">years_back</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">months_back</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1">## exmaple current date is 2023-10-01</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.common_utils.date_utils</span> <span class="kn">import</span> <span class="n">get_date_range</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">get_date_range</span><span class="p">(</span><span class="n">years_back</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">months_back</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
 <span class="go">&#39;2022-08-01&#39; &#39;2023-10-01&#39;</span>
 </pre></div>
@@ -399,15 +427,7 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="data_processing.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Data Processing</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
+          
           <a class="prev-page" href="utils.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
@@ -451,6 +471,7 @@
             <ul>
 <li><a class="reference internal" href="#">Common Utils</a><ul>
 <li><a class="reference internal" href="#centralized_nlp_package.common_utils.date_utils.format_date"><code class="docutils literal notranslate"><span class="pre">format_date()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.common_utils.date_utils.get_current_date_str"><code class="docutils literal notranslate"><span class="pre">get_current_date_str()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.common_utils.date_utils.get_date_range"><code class="docutils literal notranslate"><span class="pre">get_date_range()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.common_utils.file_utils.load_content_from_txt"><code class="docutils literal notranslate"><span class="pre">load_content_from_txt()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.common_utils.string_utils.format_string_template"><code class="docutils literal notranslate"><span class="pre">format_string_template()</span></code></a></li>

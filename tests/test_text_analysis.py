@@ -18,7 +18,7 @@ from centralized_nlp_package.text_processing.text_analysis import (
     match_count,
     merge_counts,
     calculate_sentence_score,
-    netscore,
+    calculate_net_score,
     generate_match_count,
     generate_topic_statistics,
     generate_sentence_relevance_score
@@ -679,7 +679,7 @@ def test_netscore_valid_input():
     """
     a = [1, -1, 2]
     b = [1, 0, 1]
-    result = netscore(a, b)
+    result = calculate_net_score(a, b)
     expected_score = (1*1 + 1*0 + 1*1)
     assert result == expected_score, "Net score should be calculated correctly."
 

@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Utilities" href="utils.html" /><link rel="prev" title="Embedding" href="embedding.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Embedding" href="embedding.html" /><link rel="prev" title="Data Processing" href="data_processing.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>Text processing - Centralized NLP Package 0.1.0 documentation</title>
@@ -202,12 +202,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common_utils.html">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -700,6 +701,35 @@ If the input is a list of strings, joins them into a single string.</p>
 </dd></dl>
 
 <span class="target" id="module-centralized_nlp_package.text_processing.text_analysis"></span><dl class="py function">
+<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_analysis.calculate_net_score">
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_net_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_analysis.html#calculate_net_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_analysis.calculate_net_score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the net score based on provided counts and indicators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>counts</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – List of counts.</p></li>
+<li><p><strong>indicators</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – List of indicators.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Calculated net score or None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[float]</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.text_processing</span> <span class="kn">import</span> <span class="n">calculate_net_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">indicators</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span> <span class="o">=</span> <span class="n">calculate_net_score</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">indicators</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_analysis.calculate_polarity_score">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_analysis.</span></span><span class="sig-name descname"><span class="pre">calculate_polarity_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_words</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positive_words</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_words</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negation_words</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_analysis.html#calculate_polarity_score"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_analysis.calculate_polarity_score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the polarity score based on positive and negative word counts.</p>
@@ -1090,35 +1120,6 @@ If the input is a list of strings, joins them into a single string.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_analysis.netscore">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_analysis.</span></span><span class="sig-name descname"><span class="pre">netscore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_analysis.html#netscore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_analysis.netscore" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the net score based on provided counts and indicators.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>counts</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – List of counts.</p></li>
-<li><p><strong>indicators</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – List of indicators.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Calculated net score or None.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Optional[float]</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">centralized_nlp_package.text_processing</span> <span class="kn">import</span> <span class="n">netscore</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">indicators</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">score</span> <span class="o">=</span> <span class="n">netscore</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">indicators</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-<span class="go">1.0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.text_processing.text_analysis.polarity_score_per_section">
 <span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.text_processing.text_analysis.</span></span><span class="sig-name descname"><span class="pre">polarity_score_per_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/text_processing/text_analysis.html#polarity_score_per_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.text_processing.text_analysis.polarity_score_per_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates the polarity score for the input text to identify sentiment.</p>
@@ -1260,23 +1261,23 @@ Accounts for simple negation only for positive words, defined as negation words 
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="utils.html">
+          <a class="next-page" href="embedding.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Utilities</div>
+                <div class="title">Embedding</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="embedding.html">
+          <a class="prev-page" href="data_processing.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Embedding</div>
+                <div class="title">Data Processing</div>
                 
               </div>
             </a>
@@ -1325,6 +1326,7 @@ Accounts for simple negation only for positive words, defined as negation words 
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.load_syllable_counts"><code class="docutils literal notranslate"><span class="pre">load_syllable_counts()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.tokenize_text"><code class="docutils literal notranslate"><span class="pre">tokenize_text()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_utils.validate_and_format_text"><code class="docutils literal notranslate"><span class="pre">validate_and_format_text()</span></code></a></li>
+<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.calculate_net_score"><code class="docutils literal notranslate"><span class="pre">calculate_net_score()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.calculate_polarity_score"><code class="docutils literal notranslate"><span class="pre">calculate_polarity_score()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.calculate_sentence_score"><code class="docutils literal notranslate"><span class="pre">calculate_sentence_score()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.check_negation"><code class="docutils literal notranslate"><span class="pre">check_negation()</span></code></a></li>
@@ -1338,7 +1340,6 @@ Accounts for simple negation only for positive words, defined as negation words 
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.load_word_set"><code class="docutils literal notranslate"><span class="pre">load_word_set()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.match_count"><code class="docutils literal notranslate"><span class="pre">match_count()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.merge_counts"><code class="docutils literal notranslate"><span class="pre">merge_counts()</span></code></a></li>
-<li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.netscore"><code class="docutils literal notranslate"><span class="pre">netscore()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.polarity_score_per_section"><code class="docutils literal notranslate"><span class="pre">polarity_score_per_section()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.polarity_score_per_sentence"><code class="docutils literal notranslate"><span class="pre">polarity_score_per_sentence()</span></code></a></li>
 <li><a class="reference internal" href="#centralized_nlp_package.text_processing.text_analysis.tone_count_with_negation_check"><code class="docutils literal notranslate"><span class="pre">tone_count_with_negation_check()</span></code></a></li>

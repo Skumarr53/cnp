@@ -8,7 +8,7 @@ class DataTrainingArguments:
     """
     Arguments pertaining to the data for training and evaluation.
 
-    Attributes:
+    Args:
         task_name (Optional[str]): The name of the task to train on.
         dataset_name (Optional[str]): The name of the dataset to use (via the datasets library).
         dataset_config_name (Optional[str]): The configuration name of the dataset to use.
@@ -31,6 +31,7 @@ class DataTrainingArguments:
         ...     validation_file="path/to/validation.csv"
         ... )
     """
+
     task_name: Optional[str] = field(
         default=None,
         metadata={"help": "The name of the task to train on: mnli, cola, etc."},
@@ -113,7 +114,7 @@ class ModelArguments:
     """
     Arguments pertaining to the model configuration.
 
-    Attributes:
+    Args:
         model_name_or_path (str): Path to pretrained model or model identifier from huggingface.co/models.
         config_name (Optional[str]): Pretrained config name or path if not the same as model_name.
         tokenizer_name (Optional[str]): Pretrained tokenizer name or path if not the same as model_name.

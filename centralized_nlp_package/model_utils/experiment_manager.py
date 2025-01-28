@@ -36,6 +36,86 @@ class ExperimentManager:
         output_dir: str = "/dbfs/mnt/access_work/UC25/Topic Modeling/NLI Models/Fine-tune NLI models/trained_RD_deberta-v3-base-zeroshot-v2_Santhosh_test/",
         **kwargs
     ):
+        """
+        Initialize the ExperimentManager with the specified configuration.
+
+        This constructor sets up the ExperimentManager by initializing experiment parameters, loading the validation dataset, and configuring MLflow for experiment tracking. It also sets up necessary components such as the Accelerator for handling hardware acceleration.
+
+        Args:
+            base_name (str): 
+                The base name for the experiment.
+            data_src (str): 
+                The source of the data being used.
+            dataset_versions (List[str]): 
+                A list of dataset version identifiers to be used in the experiments.
+            hyperparameters (List[Dict[str, Any]]): 
+                A list of dictionaries, each containing a set of hyperparameters for a specific experiment run.
+            base_model_versions (str): 
+                The versions of the base models to be fine-tuned.
+            train_file (str): 
+                Path to the training data file. It should be a string that can be formatted with a dataset version.
+            validation_file (str): 
+                Path to the validation data file.
+            evalute_pretrained_model (bool, optional): 
+                Flag indicating whether to evaluate the pretrained model before fine-tuning. Defaults to True.
+            eval_entailment_thresold (float, optional): 
+                The threshold for entailment evaluation. Defaults to 0.5.
+            user_id (str, optional): 
+                The user identifier, typically an email address. Defaults to 'santhosh.kumar3@voya.com'.
+            output_dir (str, optional): 
+                Directory path where the output (e.g., trained models) will be saved. Defaults to the specified DBFS path.
+            **kwargs: 
+                Additional keyword arguments that can be used to customize the ExperimentManager.
+
+        Attributes:
+            run_date (str): 
+                The date when the experiment run was initiated, in 'YYYYMMDD' format.
+            experiment_name (str): 
+                The name of the MLflow experiment, constructed from user ID, base name, data source, and run date.
+            dataset_versions (List[str]): 
+                List of dataset versions to be used.
+            hyperparameters (List[Dict[str, Any]]): 
+                List of hyperparameter sets for experiments.
+            base_model_versions (str): 
+                Versions of base models to fine-tune.
+            output_dir (str): 
+                Directory path for saving outputs.
+            validation_file (str): 
+                Path to the validation data file.
+            train_file (str): 
+                Path to the training data file.
+            evalute_pretrained_model (bool): 
+                Flag to evaluate pretrained models.
+            eval_entailment_thresold (float): 
+                Entailment threshold for evaluation.
+            eval_df (pd.DataFrame): 
+                The validation dataset loaded into a Pandas DataFrame.
+            accelerator (Accelerator): 
+                The Accelerator instance for handling hardware acceleration.
+            pred_path (str): 
+                Path to save prediction results.
+            testset_name (str): 
+                Name of the test dataset, derived from the validation file name.
+            runs_list (List[str]): 
+                List of existing run names in the MLflow experiment.
+
+        Example:
+            >>> from mlflow_utils.experiment_manager import ExperimentManager
+            >>> hyperparams = [
+            ...     {"n_epochs": 3, "learning_rate": 2e-5, "weight_decay": 0.01, "train_batch_size": 16},
+            ...     {"n_epochs": 5, "learning_rate": 3e-5, "weight_decay": 0.02, "train_batch_size": 32}
+            ... ]
+            >>> dataset_versions = ["v1.0", "v1.1"]
+            >>> manager = ExperimentManager(
+            ...     base_name="NLI_Finetune",
+            ...     data_src="source_A",
+            ...     dataset_versions=dataset_versions,
+            ...     hyperparameters=hyperparams,
+            ...     base_model_versions="bert-base-uncased",
+            ...     train_file="path/to/train.csv",
+            ...     validation_file="path/to/validation.csv"
+            ... )
+        """
 
         self.run_date = get_current_date_str() #datetime.today().strftime('%Y%m%d') # get_current_date()
         self.experiment_name = f"/Users/{user_id}/{base_name}_{data_src}_{self.run_date}"
@@ -59,6 +139,41 @@ class ExperimentManager:
         logger.info(f"Experiment set to {self.experiment_name}")
 
     def run_single_experiment(self, run_name, base_model, base_model_name, dataset_version, dataset_name, param_set):
+        """
+        Execute a single fine-tuning experiment run.
+
+        This method performs the fine-tuning of a base model on a specified dataset using provided hyperparameters. It handles the training process, evaluates the fine-tuned model, logs metrics and artifacts to MLflow, and manages resource cleanup.
+
+        Args:
+            run_name (str): 
+                The name of the experiment run.
+            base_model (str): 
+                The path or identifier of the base model to be fine-tuned.
+            base_model_name (str): 
+                The name of the base model, extracted from its path or identifier.
+            dataset_version (str): 
+                The version identifier of the dataset to be used for training.
+            dataset_name (str): 
+                The name of the dataset, derived from the dataset version.
+            param_set (Dict[str, Any]): 
+                A dictionary containing the hyperparameters for the fine-tuning run, such as number of epochs, learning rate, weight decay, and batch size.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: 
+                If any step during the experiment run (e.g., training, evaluation, logging) fails.
+
+        Example:
+            >>> run_name = "bert-base-v1.0_param_set1"
+            >>> base_model = "bert-base-uncased"
+            >>> base_model_name = "bert-base-uncased"
+            >>> dataset_version = "v1.0"
+            >>> dataset_name = "dataset_v1"
+            >>> param_set = {"n_epochs": 3, "learning_rate": 2e-5, "weight_decay": 0.01, "train_batch_size": 16}
+            >>> manager.run_single_experiment(run_name, base_model, base_model_name, dataset_version, dataset_name, param_set)
+        """
         torch.cuda.empty_cache()
 
         try:
@@ -151,6 +266,24 @@ class ExperimentManager:
             gc.collect()
 
     def run_experiments(self):
+        """
+        Execute all configured experiments based on the provided dataset versions and hyperparameters.
+
+        This method orchestrates the entire experiment workflow by iterating over the specified base models, dataset versions, and hyperparameter sets. For each combination, it checks if the experiment run already exists, evaluates pretrained models if required, and initiates new fine-tuning runs while logging results to MLflow.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            Exception: 
+                If any experiment run fails during execution.
+
+        Example:
+            >>> manager.run_experiments()
+        """
         
         for base_model in self.base_model_versions:
 
@@ -178,6 +311,26 @@ class ExperimentManager:
                         )
 
     def evaluate_pretrained_model(self, base_model):
+        """
+        Evaluate the performance of a pretrained model without fine-tuning.
+
+        This method assesses the pretrained base model on the validation dataset using the specified entailment threshold. It logs the evaluation metrics and artifacts to MLflow, enabling comparison between pretrained and fine-tuned models.
+
+        Args:
+            base_model (str): 
+                The path or identifier of the pretrained model to be evaluated.
+
+        Returns:
+            None
+
+        Raises:
+            Exception: 
+                If the evaluation process fails, such as issues with model loading or metric computation.
+
+        Example:
+            >>> base_model = "bert-base-uncased"
+            >>> manager.evaluate_pretrained_model(base_model)
+        """
 
         base_model_name = base_model.split('/')[-1]
         
@@ -250,6 +403,27 @@ class ExperimentManager:
                 gc.collect()
     
     def get_run_names(self):
+        """
+        Retrieve a list of existing run names from the configured MLflow experiment.
+
+        This method queries MLflow to obtain the names of all runs associated with the current experiment. It is used to prevent duplicate runs by checking if a run with the same name already exists.
+
+        Args:
+            None
+
+        Returns:
+            List[str]: 
+                A list of run names present in the MLflow experiment.
+
+        Raises:
+            Exception: 
+                If there is an issue accessing MLflow runs.
+
+        Example:
+            >>> existing_runs = manager.get_run_names()
+            >>> print(existing_runs)
+            ['bert-base-v1.0_param_set1', 'bert-base-v1.0_param_set2']
+        """
         runs_list = list_available_models(self.experiment_name)
         return [run['run_name'] for run in runs_list]
 

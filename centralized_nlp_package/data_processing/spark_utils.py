@@ -19,21 +19,6 @@ from pyspark.sql.types import (
 )
 from loguru import logger
 
-# Define the keyword to Spark DataType mapping
-KEYWORD_TO_SPARK_TYPE: Dict[str, DataType] = {
-    'arr[str]': ArrayType(StringType()),
-    'arr[int]': ArrayType(IntegerType()),
-    'arr[long]': ArrayType(LongType()),
-    'arr[float]': ArrayType(FloatType()),
-    'arr[double]': ArrayType(DoubleType()),
-    'arr[bool]': ArrayType(BooleanType()),
-    'map[str,int]': MapType(StringType(), IntegerType()),
-    'map[str,str]': MapType(StringType(), StringType()),
-    'double': DoubleType(),
-    'float64': DoubleType()
-    # Add more mappings as needed
-}
-
 # Configure logging
 
 def initialize_spark_session(app_name="Optimized_NLI_Inference", 
@@ -42,26 +27,47 @@ def initialize_spark_session(app_name="Optimized_NLI_Inference",
                      driver_memory="2g", executor_cores=1, 
                      memory_overhead="512m", dynamic_allocation="false"):
     """
-    Initializes a Spark session with specified configurations.
-    
+    Initialize a Spark session with specified configurations.
+
+    This function initializes a new Spark session using the provided configuration parameters. 
+    If a Spark session with the specified `app_name` already exists, it returns the existing session.
+
     Args:
-        spark (SparkSession, optional): An existing Spark session to use. 
-                                         If None, a new session will be created.
-        app_name (str): The name of the Spark application.
-        shuffle_partitions (int, optional): Number of partitions to use for shuffle operations.
-        gpu_amount (float, optional): Amount of GPU resources to allocate to executors.
-        task_gpu_amount (float, optional): Amount of GPU resources to allocate to tasks.
-        executor_memory (str, optional): Memory allocated to each executor (e.g., '4g').
-        driver_memory (str, optional): Memory allocated to the driver (e.g., '2g').
-        executor_cores (int, optional): Number of cores allocated to each executor.
-        memory_overhead (str, optional): Amount of memory overhead to allocate per executor (e.g., '512m').
-        dynamic_allocation (bool, optional): Enable dynamic allocation of executors (default is False).
-    
+        app_name (str, optional): 
+            The name of the Spark application. Defaults to "Optimized_NLI_Inference".
+        shuffle_partitions (int, optional): 
+            Number of partitions to use for shuffle operations. Defaults to 200.
+        gpu_amount (float, optional): 
+            Amount of GPU resources to allocate to each executor. Defaults to 1.
+        task_gpu_amount (float, optional): 
+            Amount of GPU resources to allocate to each task. Defaults to 0.8.
+        executor_memory (str, optional): 
+            Memory allocated to each executor (e.g., '4g'). Defaults to "4g".
+        driver_memory (str, optional): 
+            Memory allocated to the driver (e.g., '2g'). Defaults to "2g".
+        executor_cores (int, optional): 
+            Number of CPU cores allocated to each executor. Defaults to 1.
+        memory_overhead (str, optional): 
+            Amount of memory overhead to allocate per executor (e.g., '512m'). Defaults to "512m".
+        dynamic_allocation (str, optional): 
+            Enable dynamic allocation of executors ('true' or 'false'). Defaults to "false".
+
     Returns:
-        SparkSession: The initialized or existing Spark session.
-    
+        SparkSession: 
+            The initialized Spark session.
+
     Raises:
-        Exception: If the Spark session initialization fails.
+        Exception: 
+            If the Spark session initialization fails.
+
+    Example:
+        >>> spark_session = initialize_spark_session(
+        ...     app_name="MySparkApp",
+        ...     shuffle_partitions=100,
+        ...     executor_memory="8g"
+        ... )
+        >>> print(spark_session)
+        <pyspark.sql.session.SparkSession object at 0x...>
     """
     try:
         spark = (SparkSession.builder.appName(app_name)
@@ -89,10 +95,20 @@ def initialize_spark_session(app_name="Optimized_NLI_Inference",
 
 def get_default_dtype_mapping() -> Dict[str, DataType]:
     """
-    Returns the default mapping from Pandas dtypes to Spark DataTypes.
-    
+    Retrieve the default mapping from Pandas dtypes to Spark DataTypes.
+
+    This function provides a predefined dictionary that maps common Pandas data types to their 
+    corresponding Spark DataTypes. This mapping is used to facilitate the conversion of 
+    Pandas DataFrames to Spark DataFrames with appropriate schema definitions.
+
     Returns:
-        Dict[str, DataType]: Mapping of Pandas dtypes to Spark DataTypes.
+        Dict[str, DataType]: 
+            A dictionary mapping Pandas dtype strings to Spark `DataType` objects.
+
+    Example:
+        >>> dtype_mapping = get_default_dtype_mapping()
+        >>> print(dtype_mapping['int64'])
+        LongType()
     """
     return {
         'object': StringType(),
@@ -106,39 +122,40 @@ def get_default_dtype_mapping() -> Dict[str, DataType]:
         'string': StringType()
     }
 
-def keyword_to_datatype(keyword: str) -> Optional[DataType]:
-    """
-    Converts a keyword to the corresponding Spark DataType.
-    
-    Args:
-        keyword (str): The type identifier keyword.
-    
-    Returns:
-        Optional[DataType]: The corresponding Spark DataType, or None if keyword is invalid.
-    """
-    dtype = KEYWORD_TO_SPARK_TYPE.get(keyword.lower())
-    if dtype:
-        print(f"Keyword '{keyword}' mapped to Spark DataType '{dtype}'.")
-    else:
-        print(f"Keyword '{keyword}' is not recognized. It will be ignored.")
-    return dtype
-
 def equivalent_type(
     column_name: str,
     pandas_dtype: str,
     column_mapping: Optional[Dict[str, str]] = None,
 ) -> DataType:
     """
-    Determines the Spark DataType for a given column based on column name and Pandas dtype.
-    Priority is given to column name mapping over dtype mapping.
-    
+    Determine the Spark DataType for a given column based on column name and Pandas dtype.
+
+    This function maps a Pandas dtype to the corresponding Spark DataType. If a `column_mapping` 
+    is provided, it prioritizes mapping based on the column name. If no specific mapping is found, 
+    it falls back to the default dtype mapping. If still unresolved, it defaults to `StringType`.
+
     Args:
-        column_name (str): Name of the column.
-        pandas_dtype (str): Pandas dtype of the column.
-        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.
-    
+        column_name (str): 
+            The name of the column.
+        pandas_dtype (str): 
+            The Pandas dtype of the column.
+        column_mapping (Optional[Dict[str, str]], optional): 
+            A dictionary mapping column names to Spark type identifier keywords. 
+            This allows for custom type mappings based on column names. Defaults to None.
+
     Returns:
-        DataType: Corresponding Spark DataType.
+        DataType: 
+            The corresponding Spark `DataType` for the column.
+
+    Example:
+        >>> dtype = equivalent_type("age", "int64")
+        >>> print(dtype)
+        LongType()
+        
+        >>> custom_mapping = {"price": "float"}
+        >>> dtype = equivalent_type("price", "int64", column_mapping=custom_mapping)
+        >>> print(dtype)
+        FloatType()
     """
 
 
@@ -152,7 +169,6 @@ def equivalent_type(
     if column_mapping:
         if column_name in column_mapping:
             spark_type = column_mapping[column_name]
-            # spark_type = keyword_to_datatype(keyword)
             if spark_type:
                 print(f"Column '{column_name}'  mapped to '{spark_type}'.")
                 return spark_type
@@ -173,15 +189,34 @@ def define_structure(
     column_mapping: Optional[Dict[str, str]] = None,
 ) -> StructField:
     """
-    Creates a StructField for a Spark StructType schema.
-    
+    Create a StructField for a Spark StructType schema based on column name and Pandas dtype.
+
+    This function determines the appropriate Spark `DataType` for a given column by utilizing 
+    the `equivalent_type` function. It then constructs a `StructField` with the column name, 
+    determined `DataType`, and sets it as nullable.
+
     Args:
-        column_name (str): Name of the column.
-        pandas_dtype (str): Pandas dtype of the column.
-        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.
-    
+        column_name (str): 
+            The name of the column.
+        pandas_dtype (str): 
+            The Pandas dtype of the column.
+        column_mapping (Optional[Dict[str, str]], optional): 
+            A dictionary mapping column names to Spark type identifier keywords for custom type mappings. 
+            Defaults to None.
+
     Returns:
-        StructField: StructField with column name and determined Spark DataType.
+        StructField: 
+            A Spark `StructField` object with the column name, determined `DataType`, and nullable set to True.
+
+    Example:
+        >>> field = define_structure("age", "int64")
+        >>> print(field)
+        StructField("age", LongType(), True)
+        
+        >>> custom_mapping = {"price": "float"}
+        >>> field = define_structure("price", "int64", column_mapping=custom_mapping)
+        >>> print(field)
+        StructField("price", FloatType(), True)
     """
     spark_type = equivalent_type(column_name, pandas_dtype, column_mapping)
     return StructField(column_name, spark_type, nullable=True)
@@ -192,11 +227,11 @@ def pandas_to_spark(
     spark: Optional[SparkSession] =  None
 ) -> DataFrame:
     """
-    Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.
+    Convert a Pandas DataFrame to a Spark DataFrame with customizable type mappings.
 
-    If a column name is present in the 'column_type_mapping', its Spark DataType will be determined
-    based on the provided type identifier keyword. If a column name is not present in the mapping,
-    its type will be determined based on the Pandas dtype using a predefined dtype mapping.
+    This function transforms a Pandas DataFrame into a Spark DataFrame by defining a Spark schema 
+    based on the Pandas dtypes and any provided custom column type mappings. It ensures that each 
+    column in the resulting Spark DataFrame has an appropriate `DataType`.
 
     Predefined Pandas dtype to Spark DataType mapping:
         - 'object'            -> StringType()
@@ -207,30 +242,34 @@ def pandas_to_spark(
         - 'bool'              -> BooleanType()
         - 'datetime64[ns]'    -> TimestampType()
         - 'timedelta[ns]'     -> StringType()  
+        - 'string'            -> StringType()
+
+    Custom keyword to Spark DataType mapping:
+        - 'arr[str]'          -> ArrayType(StringType())
+        - 'arr[int]'          -> ArrayType(IntegerType())
+        - 'arr[long]'         -> ArrayType(LongType())
+        - 'arr[float]'        -> ArrayType(FloatType())
+        - 'arr[double]'       -> ArrayType(DoubleType())
+        - 'arr[bool]'         -> ArrayType(BooleanType())
+        - 'map[str,int]'      -> MapType(StringType(), IntegerType())
+        - 'map[str,str]'      -> MapType(StringType(), StringType())
 
     Args:
-        pandas_df (pd.DataFrame): The Pandas DataFrame to convert.
-        spark (SparkSession): The active SparkSession.
-        column_type_mapping (Optional[Dict[str, str]]): Optional mapping from column names to type identifier keywords.
+        pandas_df (pd.DataFrame): 
+            The Pandas DataFrame to convert.
+        column_type_mapping (Optional[Dict[str, str]], optional): 
+            Optional mapping from column names to type identifier keywords.
             Example: {'FILT_MD': 'arr_str', 'stats': 'map_str_int'}
-            
-            custom keyword to Spark DataType mapping:
-
-            - 'arr[str]'     -> ArrayType(StringType())
-            - 'arr[int]'     -> ArrayType(IntegerType())
-            - 'arr[long]'    -> ArrayType(LongType())
-            - 'arr[float]'   -> ArrayType(FloatType())
-            - 'arr[double]'  -> ArrayType(DoubleType())
-            - 'arr[bool]'    -> ArrayType(BooleanType())
-            - 'map[str,int]' -> MapType(StringType(), IntegerType())
-            - 'map[str,str]' -> MapType(StringType(), StringType())
-            
+        spark (Optional[SparkSession], optional): 
+            The active SparkSession. If None, a new SparkSession will be created. Defaults to None.
 
     Returns:
-        DataFrame: The resulting Spark DataFrame.
-
+        DataFrame: 
+            The resulting Spark DataFrame with the defined schema.
+    
     Raises:
-        ValueError: If there's an issue during the conversion process.
+        ValueError: 
+            If there's an issue during the conversion process.
     """
     print("Starting conversion from Pandas to Spark DataFrame.")
     
@@ -264,35 +303,41 @@ def convert_columns_to_timestamp(
     overwrite: bool = True
 ) -> DataFrame:
     """
-    Converts specified columns in a Spark DataFrame to timestamp type using provided formats.
+    Convert specified columns in a Spark DataFrame to timestamp type using provided formats.
 
-    This function iterates over the provided dictionary of column names and their corresponding
-    timestamp formats, applying the 'to_timestamp' transformation to each specified column.
+    This function applies the `to_timestamp` transformation to each column specified in the 
+    `columns_formats` dictionary. It either overwrites the existing columns with the converted 
+    timestamp values or creates new columns with a '_ts' suffix based on the `overwrite` parameter.
 
     Args:
-        df (DataFrame): The input Spark DataFrame.
-        columns_formats (Dict[str, str]): A dictionary where keys are column names to be converted,
-                                          and values are the corresponding timestamp formats.
-                                          Example:
-                                              {
-                                                  "DATE": "yyyy-MM-dd",
-                                                  "REPORT_DATE": "yyyy-MM-dd HH mm ss",
-                                                  "EVENT_DATETIME_UTC": "yyyy-MM-dd HH mm ss"
-                                              }
-        overwrite (bool, optional): Whether to overwrite the existing column with the transformed column.
-                                    If 'False', a new column with a suffix (e.g., '_ts') will be created.
-                                    Defaults to 'True'.
+        df (DataFrame): 
+            The input Spark DataFrame.
+        columns_formats (Dict[str, str]): 
+            A dictionary where keys are column names to be converted, and values are the corresponding 
+            timestamp formats.
+            Example:
+                {
+                    "DATE": "yyyy-MM-dd",
+                    "REPORT_DATE": "yyyy-MM-dd HH mm ss",
+                    "EVENT_DATETIME_UTC": "yyyy-MM-dd HH mm ss"
+                }
+        overwrite (bool, optional): 
+            Whether to overwrite the existing column with the transformed column. 
+            If `False`, a new column with a '_ts' suffix will be created. Defaults to `True`.
 
     Returns:
-        DataFrame: The Spark DataFrame with specified columns converted to timestamp type.
+        DataFrame: 
+            The Spark DataFrame with specified columns converted to timestamp type.
 
     Raises:
-        ValueError: If 'columns_formats' is empty.
-        KeyError: If a specified column does not exist in the DataFrame.
+        ValueError: 
+            If `columns_formats` is empty.
+        KeyError: 
+            If a specified column does not exist in the DataFrame.
 
     Example:
         >>> from pyspark.sql import SparkSession
-        >>> spark = SparkSession.builder.appName("ExampleApp").getOrCreate()
+        >>> spark = SparkSession.builder.appName("TimestampConversion").getOrCreate()
         >>> data = [
         ...     ("2023-01-01", "2023-01-01 12 00 00", "2023-01-01 12 00 00"),
         ...     ("2023-02-01", "2023-02-01 13 30 45", "2023-02-01 13 30 45")
@@ -347,7 +392,7 @@ def sparkdf_apply_transformations(
     error_on_missing: bool = True
 ) -> DataFrame:
     """
-    Applies a series of transformations to a PySpark DataFrame based on the provided specifications.
+    Apply a series of transformations to a PySpark DataFrame based on provided specifications.
 
     Each transformation is defined by a tuple containing:
         - The name of the new or existing column to be created or overwritten.
@@ -480,49 +525,37 @@ def sparkdf_apply_transformations(
     return spark_df
 
 
-def create_spark_udf(function, return_type_key: str = 'arr[str]'):
-    """
-    Creates a Spark User Defined Function (UDF) from a given Python function.
-
-    Args:
-        function (callable): The Python function to be converted into a UDF.
-        return_type_key (str): The return type of the UDF, specified as a key.
-                                Default is 'arr[str]' for an array of strings.
-
-    Returns:
-        pyspark.sql.functions.UserDefinedFunction: The created Spark UDF.
-
-    Raises:
-        ValueError: If the return_type_key is not valid.
-        Exception: If the UDF creation fails for any other reason.
-    """
-    # Validate the return_type_key
-    if return_type_key.lower() not in KEYWORD_TO_SPARK_TYPE:
-        print(1)
-        raise ValueError(f"Invalid return type key: '{return_type_key}'. Valid keys are: {list(KEYWORD_TO_SPARK_TYPE.keys())}")
-
-    try:
-        spark_udf = F.udf(function, KEYWORD_TO_SPARK_TYPE[return_type_key.lower()])
-        print(f"Successfully created Spark UDF with return type: {return_type_key}")
-        return spark_udf
-    except Exception as e:
-        print(f"Failed to create Spark UDF: {e}")
-        raise e
-
-
 def check_spark_dataframe_for_records(spark_df: DataFrame,
                                       datetime_col: str = 'PARSED_DATETIME_EASTERN_TZ') -> None:
     """
-    Checks if the provided Spark DataFrame contains records.
-    If records are present, logs the minimum and maximum parsed date, 
-    the row count, and the column count. If no records are found, 
-    logs a warning and exits the notebook.
+    Check if the provided Spark DataFrame contains records and log relevant information.
+
+    This function verifies the presence of records in the Spark DataFrame. If records are present, it logs the minimum and maximum dates based on the specified datetime column, along with the row and column counts. If no records are found, it logs a warning and exits the notebook or process.
 
     Args:
-        spark_df (DataFrame): The Spark DataFrame to check.
+        spark_df (DataFrame): 
+            The Spark DataFrame to check.
+        datetime_col (str, optional): 
+            The name of the datetime column to use for calculating date ranges. 
+            Defaults to 'PARSED_DATETIME_EASTERN_TZ'.
 
     Raises:
-        ValueError: If the input is not a valid Spark DataFrame.
+        ValueError: 
+            If the input is not a valid Spark DataFrame.
+        KeyError: 
+            If the specified `datetime_col` does not exist in the DataFrame.
+
+    Example:
+        >>> from pyspark.sql import SparkSession
+        >>> spark = SparkSession.builder.appName("DataFrameCheckExample").getOrCreate()
+        >>> data = [
+        ...     ("2023-01-01 08:00:00"),
+        ...     ("2023-02-01 09:30:00")
+        ... ]
+        >>> columns = ["PARSED_DATETIME_EASTERN_TZ"]
+        >>> df = spark.createDataFrame(data, schema=columns)
+        >>> check_spark_dataframe_for_records(df)
+        The data spans from 2023-01-01 08:00:00 to 2023-02-01 09:30:00 and has 2 rows and 1 columns.
     """
     if not isinstance(spark_df, DataFrame):
         raise ValueError("The provided input is not a valid Spark DataFrame.")

@@ -11,17 +11,62 @@ from .experiment_manager import ExperimentManager
 
 def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hyperparameters, user_id, n_splits=5, random_state=42):
     """
-    Performs K-Fold cross-validation training for NLI tasks using specified model and hyperparameters.
+    Perform K-Fold cross-validation training for Natural Language Inference (NLI) tasks using the specified model and hyperparameters.
 
-    Parameters:
-    - data_path (str): Path to the CSV data file.
-    - base_exp_name (str): Base name for the experiment.
-    - data_src (str): Data source identifier.
-    - model_version (str): Model version to use.
-    - hyperparameters (dict): Hyperparameters for training.
-    - user_id (str): User ID for the experiment.
-    - n_splits (int): Number of splits for K-Fold cross-validation.
-    - random_state (int): Random state for reproducibility.
+    This function executes K-Fold cross-validation by splitting the dataset into training and testing subsets for each fold. For each split, it initializes an `ExperimentManager` instance to manage the experiment run, conducts training, evaluates the model, and logs the results using MLflow.
+
+    Args:
+        data_path (str):
+            Path to the CSV data file containing the dataset.
+        base_exp_name (str):
+            Base name for the experiment, used to construct the MLflow experiment name.
+        data_src (str):
+            Identifier for the data source.
+        model_version (str):
+            Version identifier of the base model to be fine-tuned.
+        hyperparameters (Dict[str, Any]):
+            Dictionary containing hyperparameters for training, such as learning rate, number of epochs, weight decay, and batch size.
+        user_id (str):
+            User identifier, typically an email address, used in constructing the experiment name.
+        n_splits (int, optional):
+            Number of folds for K-Fold cross-validation. Defaults to 5.
+        random_state (int, optional):
+            Seed for random number generator to ensure reproducibility. Defaults to 42.
+
+    Returns:
+        None
+
+    Raises:
+        FileNotFoundError:
+            If the data file specified by `data_path` does not exist.
+        pd.errors.EmptyDataError:
+            If the data file is empty.
+        Exception:
+            If any error occurs during data loading, splitting, or experiment execution.
+
+    Example:
+        >>> perform_kfold_training(
+        ...     data_path="data/nli_dataset.csv",
+        ...     base_exp_name="NLI_Experiment",
+        ...     data_src="source_A",
+        ...     model_version="bert-base-uncased",
+        ...     hyperparameters={
+        ...         "n_epochs": 3,
+        ...         "learning_rate": 2e-5,
+        ...         "weight_decay": 0.01,
+        ...         "train_batch_size": 16
+        ...     },
+        ...     user_id="user@example.com",
+        ...     n_splits=5,
+        ...     random_state=42
+        ... )
+        INFO - Initialized KFold with 5 splits.
+        INFO - Fold 0: Training and test data prepared.
+        INFO - Experiment set to /Users/user@example.com/NLI_Experiment_source_A_20250127
+        INFO - Starting finetuning run: bert-base-uncased_dataset_v1_param_set1
+        ...
+        INFO - Fold 0: Experiment completed.
+        ...
     """
     # Load data
     data = pd.read_csv(data_path)
@@ -78,18 +123,53 @@ def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hy
 
 def generate_and_plot_confusion_matrices(data, label_col, prediction_col, topic_col, plot_func):
     """
-    Generates and plots confusion matrices for overall data and individual topics.
+    Generate and plot confusion matrices for the overall dataset and individual topics.
 
-    Parameters:
-    - data: DataFrame containing the data.
-    - label_col: Column name for ground truth labels.
-    - prediction_col: Column name for predicted labels.
-    - topic_col: Column name for topics to generate individual confusion matrices.
-    - plot_func: Function to plot the confusion matrix.
+    This function computes the confusion matrix for the entire dataset and for each unique topic within the dataset. It utilizes the provided plotting function to visualize and save each confusion matrix. The filenames of the generated plots are returned for further use or logging.
+
+    Args:
+        data (pd.DataFrame):
+            The DataFrame containing the evaluation results with true labels and predictions.
+        label_col (str):
+            The column name in `data` that contains the ground truth labels.
+        prediction_col (str):
+            The column name in `data` that contains the predicted labels.
+        topic_col (str):
+            The column name in `data` that contains topic identifiers for generating per-topic confusion matrices.
+        plot_func (Callable[[Any, str, str], str]):
+            A function that takes a confusion matrix, a title, and a filename as input, generates the plot, saves it to the specified filename, and returns the filename.
 
     Returns:
-    - overall_conf_matrix: Confusion matrix for the entire dataset.
-    - topic_conf_matrices: Dictionary of confusion matrices for each topic.
+        List[str]:
+            A list of filenames for the generated confusion matrix plots.
+
+    Raises:
+        KeyError:
+            If any of the specified columns (`label_col`, `prediction_col`, `topic_col`) are not present in the DataFrame.
+        ValueError:
+            If the DataFrame is empty or does not contain any unique topics.
+
+    Example:
+        >>> import pandas as pd
+        >>> def custom_plot(matrix, title, filename):
+        ...     import matplotlib.pyplot as plt
+        ...     import seaborn as sns
+        ...     plt.figure(figsize=(6,4))
+        ...     sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues')
+        ...     plt.title(title)
+        ...     plt.xlabel('Predicted')
+        ...     plt.ylabel('Actual')
+        ...     plt.savefig(filename)
+        ...     plt.close()
+        ...     return filename
+        >>> data = pd.DataFrame({
+        ...     'label': ['entailment', 'contradiction', 'neutral', 'entailment'],
+        ...     'prediction': ['entailment', 'neutral', 'neutral', 'contradiction'],
+        ...     'topic': ['topic1', 'topic1', 'topic2', 'topic2']
+        ... })
+        >>> filenames = generate_and_plot_confusion_matrices(data, 'label', 'prediction', 'topic', custom_plot)
+        >>> print(filenames)
+        ['overall_confusion_matrix.png', 'confusion_matrix_topic1.png', 'confusion_matrix_topic2.png']
     """
     # Generate the overall confusion matrix
     overall_conf_matrix = confusion_matrix(data[label_col], data[prediction_col])
@@ -113,12 +193,39 @@ def generate_and_plot_confusion_matrices(data, label_col, prediction_col, topic_
 
 def plot_conf_matrix(matrix, title, filename):
     """
-    Plots a confusion matrix using seaborn heatmap and logs it as an artifact in MLflow.
+    Plot a confusion matrix using seaborn's heatmap and save it as an artifact.
 
-    Parameters:
-    - matrix: Confusion matrix to plot.
-    - title: Title for the plot.
-    - filename: Filename to save the plot.
+    This function visualizes the provided confusion matrix with annotations and saves the plot to the specified filename. It ensures the plot is closed after saving to free up memory resources.
+
+    Args:
+        matrix (Any):
+            The confusion matrix to plot, typically a 2D array or matrix structure.
+        title (str):
+            The title of the confusion matrix plot.
+        filename (str):
+            The filename (including path) where the plot image will be saved.
+
+    Returns:
+        str:
+            The filename of the saved confusion matrix plot.
+
+    Raises:
+        ValueError:
+            If the provided `matrix` is not in a plottable format.
+        IOError:
+            If the plot cannot be saved to the specified `filename`.
+
+    Example:
+        >>> import numpy as np
+        >>> def mock_log_artifact(file_path):
+        ...     print(f"Artifact logged: {file_path}")
+        >>> sns = __import__('seaborn')
+        >>> plt = __import__('matplotlib.pyplot')
+        >>> matrix = np.array([[50, 2], [5, 43]])
+        >>> filename = plot_conf_matrix(matrix, "Confusion Matrix Example", "confusion_matrix_example.png")
+        >>> print(filename)
+        confusion_matrix_example.png
+        Artifact logged: confusion_matrix_example.png
     """
     plt.figure(figsize=(8, 6))
     sns.heatmap(matrix, annot=True, fmt='d', cmap='Blues')

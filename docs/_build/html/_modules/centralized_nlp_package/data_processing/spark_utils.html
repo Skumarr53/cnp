@@ -201,12 +201,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/utils.html">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../source/common_utils.html">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../source/nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -242,7 +243,8 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for centralized_nlp_package.data_processing.spark_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span><span class="p">,</span> <span class="n">DataFrame</span>
 <span class="kn">import</span> <span class="nn">pyspark.sql.functions</span> <span class="k">as</span> <span class="nn">F</span>
@@ -262,49 +264,55 @@
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
 
-<span class="c1"># Define the keyword to Spark DataType mapping</span>
-<span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;arr[str]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">StringType</span><span class="p">()),</span>
-    <span class="s1">&#39;arr[int]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">IntegerType</span><span class="p">()),</span>
-    <span class="s1">&#39;arr[long]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">LongType</span><span class="p">()),</span>
-    <span class="s1">&#39;arr[float]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">FloatType</span><span class="p">()),</span>
-    <span class="s1">&#39;arr[double]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">DoubleType</span><span class="p">()),</span>
-    <span class="s1">&#39;arr[bool]&#39;</span><span class="p">:</span> <span class="n">ArrayType</span><span class="p">(</span><span class="n">BooleanType</span><span class="p">()),</span>
-    <span class="s1">&#39;map[str,int]&#39;</span><span class="p">:</span> <span class="n">MapType</span><span class="p">(</span><span class="n">StringType</span><span class="p">(),</span> <span class="n">IntegerType</span><span class="p">()),</span>
-    <span class="s1">&#39;map[str,str]&#39;</span><span class="p">:</span> <span class="n">MapType</span><span class="p">(</span><span class="n">StringType</span><span class="p">(),</span> <span class="n">StringType</span><span class="p">()),</span>
-    <span class="s1">&#39;double&#39;</span><span class="p">:</span> <span class="n">DoubleType</span><span class="p">(),</span>
-    <span class="s1">&#39;float64&#39;</span><span class="p">:</span> <span class="n">DoubleType</span><span class="p">()</span>
-    <span class="c1"># Add more mappings as needed</span>
-<span class="p">}</span>
-
 <span class="c1"># Configure logging</span>
 
 <div class="viewcode-block" id="initialize_spark_session"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.initialize_spark_session">[docs]</a><span class="k">def</span> <span class="nf">initialize_spark_session</span><span class="p">(</span><span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;Optimized_NLI_Inference&quot;</span><span class="p">,</span> 
-                     <span class="n">shuffle_partitions</span><span class="o">=</span><span class="s2">&quot;200&quot;</span><span class="p">,</span> <span class="n">gpu_amount</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> 
-                     <span class="n">task_gpu_amount</span><span class="o">=</span><span class="s2">&quot;0.8&quot;</span><span class="p">,</span> <span class="n">executor_memory</span><span class="o">=</span><span class="s2">&quot;4g&quot;</span><span class="p">,</span> 
-                     <span class="n">driver_memory</span><span class="o">=</span><span class="s2">&quot;2g&quot;</span><span class="p">,</span> <span class="n">executor_cores</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> 
+                     <span class="n">shuffle_partitions</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">gpu_amount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                     <span class="n">task_gpu_amount</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">executor_memory</span><span class="o">=</span><span class="s2">&quot;4g&quot;</span><span class="p">,</span> 
+                     <span class="n">driver_memory</span><span class="o">=</span><span class="s2">&quot;2g&quot;</span><span class="p">,</span> <span class="n">executor_cores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
                      <span class="n">memory_overhead</span><span class="o">=</span><span class="s2">&quot;512m&quot;</span><span class="p">,</span> <span class="n">dynamic_allocation</span><span class="o">=</span><span class="s2">&quot;false&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Initializes a Spark session with specified configurations.</span>
-<span class="sd">    </span>
+<span class="sd">    Initialize a Spark session with specified configurations.</span>
+
+<span class="sd">    This function initializes a new Spark session using the provided configuration parameters. </span>
+<span class="sd">    If a Spark session with the specified `app_name` already exists, it returns the existing session.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        spark (SparkSession, optional): An existing Spark session to use. </span>
-<span class="sd">                                         If None, a new session will be created.</span>
-<span class="sd">        app_name (str): The name of the Spark application.</span>
-<span class="sd">        shuffle_partitions (int, optional): Number of partitions to use for shuffle operations.</span>
-<span class="sd">        gpu_amount (float, optional): Amount of GPU resources to allocate to executors.</span>
-<span class="sd">        task_gpu_amount (float, optional): Amount of GPU resources to allocate to tasks.</span>
-<span class="sd">        executor_memory (str, optional): Memory allocated to each executor (e.g., &#39;4g&#39;).</span>
-<span class="sd">        driver_memory (str, optional): Memory allocated to the driver (e.g., &#39;2g&#39;).</span>
-<span class="sd">        executor_cores (int, optional): Number of cores allocated to each executor.</span>
-<span class="sd">        memory_overhead (str, optional): Amount of memory overhead to allocate per executor (e.g., &#39;512m&#39;).</span>
-<span class="sd">        dynamic_allocation (bool, optional): Enable dynamic allocation of executors (default is False).</span>
-<span class="sd">    </span>
+<span class="sd">        app_name (str, optional): </span>
+<span class="sd">            The name of the Spark application. Defaults to &quot;Optimized_NLI_Inference&quot;.</span>
+<span class="sd">        shuffle_partitions (int, optional): </span>
+<span class="sd">            Number of partitions to use for shuffle operations. Defaults to 200.</span>
+<span class="sd">        gpu_amount (float, optional): </span>
+<span class="sd">            Amount of GPU resources to allocate to each executor. Defaults to 1.</span>
+<span class="sd">        task_gpu_amount (float, optional): </span>
+<span class="sd">            Amount of GPU resources to allocate to each task. Defaults to 0.8.</span>
+<span class="sd">        executor_memory (str, optional): </span>
+<span class="sd">            Memory allocated to each executor (e.g., &#39;4g&#39;). Defaults to &quot;4g&quot;.</span>
+<span class="sd">        driver_memory (str, optional): </span>
+<span class="sd">            Memory allocated to the driver (e.g., &#39;2g&#39;). Defaults to &quot;2g&quot;.</span>
+<span class="sd">        executor_cores (int, optional): </span>
+<span class="sd">            Number of CPU cores allocated to each executor. Defaults to 1.</span>
+<span class="sd">        memory_overhead (str, optional): </span>
+<span class="sd">            Amount of memory overhead to allocate per executor (e.g., &#39;512m&#39;). Defaults to &quot;512m&quot;.</span>
+<span class="sd">        dynamic_allocation (str, optional): </span>
+<span class="sd">            Enable dynamic allocation of executors (&#39;true&#39; or &#39;false&#39;). Defaults to &quot;false&quot;.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        SparkSession: The initialized or existing Spark session.</span>
-<span class="sd">    </span>
+<span class="sd">        SparkSession: </span>
+<span class="sd">            The initialized Spark session.</span>
+
 <span class="sd">    Raises:</span>
-<span class="sd">        Exception: If the Spark session initialization fails.</span>
+<span class="sd">        Exception: </span>
+<span class="sd">            If the Spark session initialization fails.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; spark_session = initialize_spark_session(</span>
+<span class="sd">        ...     app_name=&quot;MySparkApp&quot;,</span>
+<span class="sd">        ...     shuffle_partitions=100,</span>
+<span class="sd">        ...     executor_memory=&quot;8g&quot;</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &gt;&gt;&gt; print(spark_session)</span>
+<span class="sd">        &lt;pyspark.sql.session.SparkSession object at 0x...&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="n">app_name</span><span class="p">)</span>
@@ -319,11 +327,11 @@
                     <span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
         
         <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">setLogLevel</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Spark session initialized successfully.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Spark session initialized successfully.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">spark</span>
     
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to initialize Spark session: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to initialize Spark session: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span></div>
 
 <span class="c1"># Example usage</span>
@@ -332,10 +340,20 @@
 
 <div class="viewcode-block" id="get_default_dtype_mapping"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.get_default_dtype_mapping">[docs]</a><span class="k">def</span> <span class="nf">get_default_dtype_mapping</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataType</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the default mapping from Pandas dtypes to Spark DataTypes.</span>
-<span class="sd">    </span>
+<span class="sd">    Retrieve the default mapping from Pandas dtypes to Spark DataTypes.</span>
+
+<span class="sd">    This function provides a predefined dictionary that maps common Pandas data types to their </span>
+<span class="sd">    corresponding Spark DataTypes. This mapping is used to facilitate the conversion of </span>
+<span class="sd">    Pandas DataFrames to Spark DataFrames with appropriate schema definitions.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        Dict[str, DataType]: Mapping of Pandas dtypes to Spark DataTypes.</span>
+<span class="sd">        Dict[str, DataType]: </span>
+<span class="sd">            A dictionary mapping Pandas dtype strings to Spark `DataType` objects.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; dtype_mapping = get_default_dtype_mapping()</span>
+<span class="sd">        &gt;&gt;&gt; print(dtype_mapping[&#39;int64&#39;])</span>
+<span class="sd">        LongType()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="s1">&#39;object&#39;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">(),</span>
@@ -346,24 +364,8 @@
         <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">BooleanType</span><span class="p">(),</span>
         <span class="s1">&#39;datetime64[ns]&#39;</span><span class="p">:</span> <span class="n">TimestampType</span><span class="p">(),</span>
         <span class="s1">&#39;timedelta[ns]&#39;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">(),</span>  <span class="c1"># Spark does not have a timedelta type</span>
+        <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="n">StringType</span><span class="p">()</span>
     <span class="p">}</span></div>
-
-<div class="viewcode-block" id="keyword_to_datatype"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.keyword_to_datatype">[docs]</a><span class="k">def</span> <span class="nf">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DataType</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a keyword to the corresponding Spark DataType.</span>
-<span class="sd">    </span>
-<span class="sd">    Args:</span>
-<span class="sd">        keyword (str): The type identifier keyword.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        Optional[DataType]: The corresponding Spark DataType, or None if keyword is invalid.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">keyword</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="k">if</span> <span class="n">dtype</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to Spark DataType &#39;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; is not recognized. It will be ignored.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dtype</span></div>
 
 <div class="viewcode-block" id="equivalent_type"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.equivalent_type">[docs]</a><span class="k">def</span> <span class="nf">equivalent_type</span><span class="p">(</span>
     <span class="n">column_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -371,46 +373,59 @@
     <span class="n">column_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataType</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines the Spark DataType for a given column based on column name and Pandas dtype.</span>
-<span class="sd">    Priority is given to column name mapping over dtype mapping.</span>
-<span class="sd">    </span>
+<span class="sd">    Determine the Spark DataType for a given column based on column name and Pandas dtype.</span>
+
+<span class="sd">    This function maps a Pandas dtype to the corresponding Spark DataType. If a `column_mapping` </span>
+<span class="sd">    is provided, it prioritizes mapping based on the column name. If no specific mapping is found, </span>
+<span class="sd">    it falls back to the default dtype mapping. If still unresolved, it defaults to `StringType`.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        column_name (str): Name of the column.</span>
-<span class="sd">        pandas_dtype (str): Pandas dtype of the column.</span>
-<span class="sd">        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.</span>
-<span class="sd">    </span>
+<span class="sd">        column_name (str): </span>
+<span class="sd">            The name of the column.</span>
+<span class="sd">        pandas_dtype (str): </span>
+<span class="sd">            The Pandas dtype of the column.</span>
+<span class="sd">        column_mapping (Optional[Dict[str, str]], optional): </span>
+<span class="sd">            A dictionary mapping column names to Spark type identifier keywords. </span>
+<span class="sd">            This allows for custom type mappings based on column names. Defaults to None.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        DataType: Corresponding Spark DataType.</span>
+<span class="sd">        DataType: </span>
+<span class="sd">            The corresponding Spark `DataType` for the column.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; dtype = equivalent_type(&quot;age&quot;, &quot;int64&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(dtype)</span>
+<span class="sd">        LongType()</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; custom_mapping = {&quot;price&quot;: &quot;float&quot;}</span>
+<span class="sd">        &gt;&gt;&gt; dtype = equivalent_type(&quot;price&quot;, &quot;int64&quot;, column_mapping=custom_mapping)</span>
+<span class="sd">        &gt;&gt;&gt; print(dtype)</span>
+<span class="sd">        FloatType()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Check if column name has a custom keyword mapping</span>
-    <span class="k">if</span> <span class="n">column_mapping</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">:</span>
-                <span class="n">keyword</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
-                <span class="n">spark_type</span> <span class="o">=</span> <span class="n">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">spark_type</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; uses custom keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">spark_type</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; has an invalid keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39;. Falling back to default mapping.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">key</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="ow">in</span> <span class="n">column_name</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
-                <span class="n">keyword</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="k">else</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">spark_type</span> <span class="o">=</span> <span class="n">keyword_to_datatype</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">spark_type</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; uses custom keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39; mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">spark_type</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; has an invalid keyword &#39;</span><span class="si">{</span><span class="n">keyword</span><span class="si">}</span><span class="s2">&#39;. Falling back to default mapping.&quot;</span><span class="p">)</span>
+
 
     <span class="c1"># Fallback to default dtype mapping</span>
     <span class="n">default_dtype_mapping</span> <span class="o">=</span> <span class="n">get_default_dtype_mapping</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">pandas_dtype</span> <span class="ow">in</span> <span class="n">default_dtype_mapping</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39; for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; mapped to default Spark type &#39;</span><span class="si">{</span><span class="n">default_dtype_mapping</span><span class="p">[</span><span class="n">pandas_dtype</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39; for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; mapped to default Spark type &#39;</span><span class="si">{</span><span class="n">default_dtype_mapping</span><span class="p">[</span><span class="n">pandas_dtype</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">default_dtype_mapping</span><span class="p">[</span><span class="n">pandas_dtype</span><span class="p">]</span>
     
+    <span class="c1"># Check if column name has a custom keyword mapping</span>
+    <span class="k">if</span> <span class="n">column_mapping</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">column_name</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">:</span>
+            <span class="n">spark_type</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">column_name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">spark_type</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39;  mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">spark_type</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">column_mapping</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">column_name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                    <span class="n">spark_type</span> <span class="o">=</span> <span class="n">column_mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; mapped to &#39;</span><span class="si">{</span><span class="n">spark_type</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">spark_type</span>
+    
     <span class="c1"># Fallback to StringType if no mapping is found</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No mapping found for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; with Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39;. Using StringType.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No mapping found for column &#39;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">&#39; with Pandas dtype &#39;</span><span class="si">{</span><span class="n">pandas_dtype</span><span class="si">}</span><span class="s2">&#39;. Using StringType.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">StringType</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="define_structure"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.define_structure">[docs]</a><span class="k">def</span> <span class="nf">define_structure</span><span class="p">(</span>
@@ -419,30 +434,49 @@
     <span class="n">column_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StructField</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Creates a StructField for a Spark StructType schema.</span>
-<span class="sd">    </span>
+<span class="sd">    Create a StructField for a Spark StructType schema based on column name and Pandas dtype.</span>
+
+<span class="sd">    This function determines the appropriate Spark `DataType` for a given column by utilizing </span>
+<span class="sd">    the `equivalent_type` function. It then constructs a `StructField` with the column name, </span>
+<span class="sd">    determined `DataType`, and sets it as nullable.</span>
+
 <span class="sd">    Args:</span>
-<span class="sd">        column_name (str): Name of the column.</span>
-<span class="sd">        pandas_dtype (str): Pandas dtype of the column.</span>
-<span class="sd">        column_mapping (Optional[Dict[str, str]]): Mapping from column names to type identifier keywords.</span>
-<span class="sd">    </span>
+<span class="sd">        column_name (str): </span>
+<span class="sd">            The name of the column.</span>
+<span class="sd">        pandas_dtype (str): </span>
+<span class="sd">            The Pandas dtype of the column.</span>
+<span class="sd">        column_mapping (Optional[Dict[str, str]], optional): </span>
+<span class="sd">            A dictionary mapping column names to Spark type identifier keywords for custom type mappings. </span>
+<span class="sd">            Defaults to None.</span>
+
 <span class="sd">    Returns:</span>
-<span class="sd">        StructField: StructField with column name and determined Spark DataType.</span>
+<span class="sd">        StructField: </span>
+<span class="sd">            A Spark `StructField` object with the column name, determined `DataType`, and nullable set to True.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; field = define_structure(&quot;age&quot;, &quot;int64&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; print(field)</span>
+<span class="sd">        StructField(&quot;age&quot;, LongType(), True)</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; custom_mapping = {&quot;price&quot;: &quot;float&quot;}</span>
+<span class="sd">        &gt;&gt;&gt; field = define_structure(&quot;price&quot;, &quot;int64&quot;, column_mapping=custom_mapping)</span>
+<span class="sd">        &gt;&gt;&gt; print(field)</span>
+<span class="sd">        StructField(&quot;price&quot;, FloatType(), True)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">spark_type</span> <span class="o">=</span> <span class="n">equivalent_type</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">pandas_dtype</span><span class="p">,</span> <span class="n">column_mapping</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">StructField</span><span class="p">(</span><span class="n">column_name</span><span class="p">,</span> <span class="n">spark_type</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="pandas_to_spark"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.pandas_to_spark">[docs]</a><span class="k">def</span> <span class="nf">pandas_to_spark</span><span class="p">(</span>
     <span class="n">pandas_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
-    <span class="n">spark</span><span class="p">:</span> <span class="n">SparkSession</span><span class="p">,</span>
     <span class="n">column_type_mapping</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">spark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SparkSession</span><span class="p">]</span> <span class="o">=</span>  <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a Pandas DataFrame to a Spark DataFrame with customizable type mappings.</span>
+<span class="sd">    Convert a Pandas DataFrame to a Spark DataFrame with customizable type mappings.</span>
 
-<span class="sd">    If a column name is present in the &#39;column_type_mapping&#39;, its Spark DataType will be determined</span>
-<span class="sd">    based on the provided type identifier keyword. If a column name is not present in the mapping,</span>
-<span class="sd">    its type will be determined based on the Pandas dtype using a predefined dtype mapping.</span>
+<span class="sd">    This function transforms a Pandas DataFrame into a Spark DataFrame by defining a Spark schema </span>
+<span class="sd">    based on the Pandas dtypes and any provided custom column type mappings. It ensures that each </span>
+<span class="sd">    column in the resulting Spark DataFrame has an appropriate `DataType`.</span>
 
 <span class="sd">    Predefined Pandas dtype to Spark DataType mapping:</span>
 <span class="sd">        - &#39;object&#39;            -&gt; StringType()</span>
@@ -453,33 +487,40 @@
 <span class="sd">        - &#39;bool&#39;              -&gt; BooleanType()</span>
 <span class="sd">        - &#39;datetime64[ns]&#39;    -&gt; TimestampType()</span>
 <span class="sd">        - &#39;timedelta[ns]&#39;     -&gt; StringType()  </span>
+<span class="sd">        - &#39;string&#39;            -&gt; StringType()</span>
+
+<span class="sd">    Custom keyword to Spark DataType mapping:</span>
+<span class="sd">        - &#39;arr[str]&#39;          -&gt; ArrayType(StringType())</span>
+<span class="sd">        - &#39;arr[int]&#39;          -&gt; ArrayType(IntegerType())</span>
+<span class="sd">        - &#39;arr[long]&#39;         -&gt; ArrayType(LongType())</span>
+<span class="sd">        - &#39;arr[float]&#39;        -&gt; ArrayType(FloatType())</span>
+<span class="sd">        - &#39;arr[double]&#39;       -&gt; ArrayType(DoubleType())</span>
+<span class="sd">        - &#39;arr[bool]&#39;         -&gt; ArrayType(BooleanType())</span>
+<span class="sd">        - &#39;map[str,int]&#39;      -&gt; MapType(StringType(), IntegerType())</span>
+<span class="sd">        - &#39;map[str,str]&#39;      -&gt; MapType(StringType(), StringType())</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        pandas_df (pd.DataFrame): The Pandas DataFrame to convert.</span>
-<span class="sd">        spark (SparkSession): The active SparkSession.</span>
-<span class="sd">        column_type_mapping (Optional[Dict[str, str]]): Optional mapping from column names to type identifier keywords.</span>
+<span class="sd">        pandas_df (pd.DataFrame): </span>
+<span class="sd">            The Pandas DataFrame to convert.</span>
+<span class="sd">        column_type_mapping (Optional[Dict[str, str]], optional): </span>
+<span class="sd">            Optional mapping from column names to type identifier keywords.</span>
 <span class="sd">            Example: {&#39;FILT_MD&#39;: &#39;arr_str&#39;, &#39;stats&#39;: &#39;map_str_int&#39;}</span>
-<span class="sd">            </span>
-<span class="sd">            custom keyword to Spark DataType mapping:</span>
-
-<span class="sd">            - &#39;arr[str]&#39;     -&gt; ArrayType(StringType())</span>
-<span class="sd">            - &#39;arr[int]&#39;     -&gt; ArrayType(IntegerType())</span>
-<span class="sd">            - &#39;arr[long]&#39;    -&gt; ArrayType(LongType())</span>
-<span class="sd">            - &#39;arr[float]&#39;   -&gt; ArrayType(FloatType())</span>
-<span class="sd">            - &#39;arr[double]&#39;  -&gt; ArrayType(DoubleType())</span>
-<span class="sd">            - &#39;arr[bool]&#39;    -&gt; ArrayType(BooleanType())</span>
-<span class="sd">            - &#39;map[str,int]&#39; -&gt; MapType(StringType(), IntegerType())</span>
-<span class="sd">            - &#39;map[str,str]&#39; -&gt; MapType(StringType(), StringType())</span>
-<span class="sd">            </span>
+<span class="sd">        spark (Optional[SparkSession], optional): </span>
+<span class="sd">            The active SparkSession. If None, a new SparkSession will be created. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        DataFrame: The resulting Spark DataFrame.</span>
-
+<span class="sd">        DataFrame: </span>
+<span class="sd">            The resulting Spark DataFrame with the defined schema.</span>
+<span class="sd">    </span>
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If there&#39;s an issue during the conversion process.</span>
+<span class="sd">        ValueError: </span>
+<span class="sd">            If there&#39;s an issue during the conversion process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting conversion from Pandas to Spark DataFrame.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting conversion from Pandas to Spark DataFrame.&quot;</span><span class="p">)</span>
     
+    <span class="k">if</span> <span class="n">spark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">spark</span> <span class="o">=</span> <span class="p">(</span><span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">())</span>
+
     <span class="n">columns</span> <span class="o">=</span> <span class="n">pandas_df</span><span class="o">.</span><span class="n">columns</span>
     <span class="n">dtypes</span> <span class="o">=</span> <span class="n">pandas_df</span><span class="o">.</span><span class="n">dtypes</span>
 
@@ -490,14 +531,14 @@
         <span class="n">struct_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
     
     <span class="n">schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">(</span><span class="n">struct_fields</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constructed Spark schema: </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constructed Spark schema: </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="k">try</span><span class="p">:</span>
         <span class="n">spark_df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">pandas_df</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully converted Pandas DataFrame to Spark DataFrame.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully converted Pandas DataFrame to Spark DataFrame.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">spark_df</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting Pandas DataFrame to Spark DataFrame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error converting Pandas DataFrame to Spark DataFrame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Conversion failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
 
@@ -507,35 +548,41 @@
     <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts specified columns in a Spark DataFrame to timestamp type using provided formats.</span>
+<span class="sd">    Convert specified columns in a Spark DataFrame to timestamp type using provided formats.</span>
 
-<span class="sd">    This function iterates over the provided dictionary of column names and their corresponding</span>
-<span class="sd">    timestamp formats, applying the &#39;to_timestamp&#39; transformation to each specified column.</span>
+<span class="sd">    This function applies the `to_timestamp` transformation to each column specified in the </span>
+<span class="sd">    `columns_formats` dictionary. It either overwrites the existing columns with the converted </span>
+<span class="sd">    timestamp values or creates new columns with a &#39;_ts&#39; suffix based on the `overwrite` parameter.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        df (DataFrame): The input Spark DataFrame.</span>
-<span class="sd">        columns_formats (Dict[str, str]): A dictionary where keys are column names to be converted,</span>
-<span class="sd">                                          and values are the corresponding timestamp formats.</span>
-<span class="sd">                                          Example:</span>
-<span class="sd">                                              {</span>
-<span class="sd">                                                  &quot;DATE&quot;: &quot;yyyy-MM-dd&quot;,</span>
-<span class="sd">                                                  &quot;REPORT_DATE&quot;: &quot;yyyy-MM-dd HH mm ss&quot;,</span>
-<span class="sd">                                                  &quot;EVENT_DATETIME_UTC&quot;: &quot;yyyy-MM-dd HH mm ss&quot;</span>
-<span class="sd">                                              }</span>
-<span class="sd">        overwrite (bool, optional): Whether to overwrite the existing column with the transformed column.</span>
-<span class="sd">                                    If &#39;False&#39;, a new column with a suffix (e.g., &#39;_ts&#39;) will be created.</span>
-<span class="sd">                                    Defaults to &#39;True&#39;.</span>
+<span class="sd">        df (DataFrame): </span>
+<span class="sd">            The input Spark DataFrame.</span>
+<span class="sd">        columns_formats (Dict[str, str]): </span>
+<span class="sd">            A dictionary where keys are column names to be converted, and values are the corresponding </span>
+<span class="sd">            timestamp formats.</span>
+<span class="sd">            Example:</span>
+<span class="sd">                {</span>
+<span class="sd">                    &quot;DATE&quot;: &quot;yyyy-MM-dd&quot;,</span>
+<span class="sd">                    &quot;REPORT_DATE&quot;: &quot;yyyy-MM-dd HH mm ss&quot;,</span>
+<span class="sd">                    &quot;EVENT_DATETIME_UTC&quot;: &quot;yyyy-MM-dd HH mm ss&quot;</span>
+<span class="sd">                }</span>
+<span class="sd">        overwrite (bool, optional): </span>
+<span class="sd">            Whether to overwrite the existing column with the transformed column. </span>
+<span class="sd">            If `False`, a new column with a &#39;_ts&#39; suffix will be created. Defaults to `True`.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        DataFrame: The Spark DataFrame with specified columns converted to timestamp type.</span>
+<span class="sd">        DataFrame: </span>
+<span class="sd">            The Spark DataFrame with specified columns converted to timestamp type.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If &#39;columns_formats&#39; is empty.</span>
-<span class="sd">        KeyError: If a specified column does not exist in the DataFrame.</span>
+<span class="sd">        ValueError: </span>
+<span class="sd">            If `columns_formats` is empty.</span>
+<span class="sd">        KeyError: </span>
+<span class="sd">            If a specified column does not exist in the DataFrame.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; from pyspark.sql import SparkSession</span>
-<span class="sd">        &gt;&gt;&gt; spark = SparkSession.builder.appName(&quot;ExampleApp&quot;).getOrCreate()</span>
+<span class="sd">        &gt;&gt;&gt; spark = SparkSession.builder.appName(&quot;TimestampConversion&quot;).getOrCreate()</span>
 <span class="sd">        &gt;&gt;&gt; data = [</span>
 <span class="sd">        ...     (&quot;2023-01-01&quot;, &quot;2023-01-01 12 00 00&quot;, &quot;2023-01-01 12 00 00&quot;),</span>
 <span class="sd">        ...     (&quot;2023-02-01&quot;, &quot;2023-02-01 13 30 45&quot;, &quot;2023-02-01 13 30 45&quot;)</span>
@@ -562,23 +609,23 @@
 <span class="sd">        +-------------------+-------------------+---------------------+</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">columns_formats</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No columns and formats provided for timestamp conversion.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No columns and formats provided for timestamp conversion.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The &#39;columns_formats&#39; dictionary cannot be empty.&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="n">columns_formats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; does not exist in the DataFrame.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; does not exist in the DataFrame.&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; not found in the DataFrame.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Overwriting existing column.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Overwriting existing column.&quot;</span><span class="p">)</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_timestamp</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">column</span><span class="p">),</span> <span class="n">fmt</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">new_column</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">_ts&quot;</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Creating new column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Converting column &#39;</span><span class="si">{</span><span class="n">column</span><span class="si">}</span><span class="s2">&#39; to timestamp with format &#39;</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">&#39;. Creating new column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
             <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">new_column</span><span class="p">,</span> <span class="n">F</span><span class="o">.</span><span class="n">to_timestamp</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">col</span><span class="p">(</span><span class="n">column</span><span class="p">),</span> <span class="n">fmt</span><span class="p">))</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Timestamp conversion completed successfully.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Timestamp conversion completed successfully.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">df</span></div>
 
 
@@ -590,7 +637,7 @@
     <span class="n">error_on_missing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a series of transformations to a PySpark DataFrame based on the provided specifications.</span>
+<span class="sd">    Apply a series of transformations to a PySpark DataFrame based on provided specifications.</span>
 
 <span class="sd">    Each transformation is defined by a tuple containing:</span>
 <span class="sd">        - The name of the new or existing column to be created or overwritten.</span>
@@ -667,12 +714,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">transformations</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Transformations should be provided as a list of tuples.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Transformations should be provided as a list of tuples.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Transformations should be a list of tuples.&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">transformation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">transformation</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Each transformation should be a tuple of (new_column_name, input_columns, transformation_function). &quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
@@ -687,10 +734,10 @@
             <span class="n">input_columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_columns</span><span class="p">]</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_columns</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">col_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">col_name</span> <span class="ow">in</span> <span class="n">input_columns</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All input column names must be strings. Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;All input column names must be strings. Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;All input column names must be strings.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="nb">print</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;input_columns must be either a string or a list of strings. Error at transformation index </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">transformation</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;input_columns must be either a string or a list of strings.&quot;</span><span class="p">)</span>
@@ -700,10 +747,10 @@
         <span class="k">if</span> <span class="n">missing_cols</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Missing input columns </span><span class="si">{</span><span class="n">missing_cols</span><span class="si">}</span><span class="s2"> for transformation &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
             <span class="k">if</span> <span class="n">error_on_missing</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
                 <span class="k">continue</span>  <span class="c1"># Skip this transformation</span>
 
         <span class="c1"># Prepare Column objects</span>
@@ -711,61 +758,49 @@
 
         <span class="c1"># Apply the transformation function</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; using columns </span><span class="si">{</span><span class="n">input_columns</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; using columns </span><span class="si">{</span><span class="n">input_columns</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
             <span class="n">transformed_column</span> <span class="o">=</span> <span class="n">transformation_func</span><span class="p">(</span><span class="o">*</span><span class="n">column_objs</span><span class="p">)</span>
             <span class="n">spark_df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="n">new_column</span><span class="p">,</span> <span class="n">transformed_column</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; applied successfully.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39; applied successfully.&quot;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error applying transformation for column &#39;</span><span class="si">{</span><span class="n">new_column</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">e</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;All transformations have been applied successfully.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All transformations have been applied successfully.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">spark_df</span></div>
-
-
-<div class="viewcode-block" id="create_spark_udf"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.create_spark_udf">[docs]</a><span class="k">def</span> <span class="nf">create_spark_udf</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">return_type_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;arr[str]&#39;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Creates a Spark User Defined Function (UDF) from a given Python function.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        function (callable): The Python function to be converted into a UDF.</span>
-<span class="sd">        return_type_key (str): The return type of the UDF, specified as a key.</span>
-<span class="sd">                                Default is &#39;arr[str]&#39; for an array of strings.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        pyspark.sql.functions.UserDefinedFunction: The created Spark UDF.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the return_type_key is not valid.</span>
-<span class="sd">        Exception: If the UDF creation fails for any other reason.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Validate the return_type_key</span>
-    <span class="k">if</span> <span class="n">return_type_key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid return type key: &#39;</span><span class="si">{</span><span class="n">return_type_key</span><span class="si">}</span><span class="s2">&#39;. Valid keys are: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid return type key: &#39;</span><span class="si">{</span><span class="n">return_type_key</span><span class="si">}</span><span class="s2">&#39;. Valid keys are: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">spark_udf</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">udf</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">KEYWORD_TO_SPARK_TYPE</span><span class="p">[</span><span class="n">return_type_key</span><span class="o">.</span><span class="n">lower</span><span class="p">()])</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully created Spark UDF with return type: </span><span class="si">{</span><span class="n">return_type_key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">spark_udf</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to create Spark UDF: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">e</span></div>
 
 
 <div class="viewcode-block" id="check_spark_dataframe_for_records"><a class="viewcode-back" href="../../../source/data_processing.html#centralized_nlp_package.data_processing.spark_utils.check_spark_dataframe_for_records">[docs]</a><span class="k">def</span> <span class="nf">check_spark_dataframe_for_records</span><span class="p">(</span><span class="n">spark_df</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span>
                                       <span class="n">datetime_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;PARSED_DATETIME_EASTERN_TZ&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks if the provided Spark DataFrame contains records.</span>
-<span class="sd">    If records are present, logs the minimum and maximum parsed date, </span>
-<span class="sd">    the row count, and the column count. If no records are found, </span>
-<span class="sd">    logs a warning and exits the notebook.</span>
+<span class="sd">    Check if the provided Spark DataFrame contains records and log relevant information.</span>
+
+<span class="sd">    This function verifies the presence of records in the Spark DataFrame. If records are present, it logs the minimum and maximum dates based on the specified datetime column, along with the row and column counts. If no records are found, it logs a warning and exits the notebook or process.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        spark_df (DataFrame): The Spark DataFrame to check.</span>
+<span class="sd">        spark_df (DataFrame): </span>
+<span class="sd">            The Spark DataFrame to check.</span>
+<span class="sd">        datetime_col (str, optional): </span>
+<span class="sd">            The name of the datetime column to use for calculating date ranges. </span>
+<span class="sd">            Defaults to &#39;PARSED_DATETIME_EASTERN_TZ&#39;.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        ValueError: If the input is not a valid Spark DataFrame.</span>
+<span class="sd">        ValueError: </span>
+<span class="sd">            If the input is not a valid Spark DataFrame.</span>
+<span class="sd">        KeyError: </span>
+<span class="sd">            If the specified `datetime_col` does not exist in the DataFrame.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; from pyspark.sql import SparkSession</span>
+<span class="sd">        &gt;&gt;&gt; spark = SparkSession.builder.appName(&quot;DataFrameCheckExample&quot;).getOrCreate()</span>
+<span class="sd">        &gt;&gt;&gt; data = [</span>
+<span class="sd">        ...     (&quot;2023-01-01 08:00:00&quot;),</span>
+<span class="sd">        ...     (&quot;2023-02-01 09:30:00&quot;)</span>
+<span class="sd">        ... ]</span>
+<span class="sd">        &gt;&gt;&gt; columns = [&quot;PARSED_DATETIME_EASTERN_TZ&quot;]</span>
+<span class="sd">        &gt;&gt;&gt; df = spark.createDataFrame(data, schema=columns)</span>
+<span class="sd">        &gt;&gt;&gt; check_spark_dataframe_for_records(df)</span>
+<span class="sd">        The data spans from 2023-01-01 08:00:00 to 2023-02-01 09:30:00 and has 2 rows and 1 columns.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spark_df</span><span class="p">,</span> <span class="n">DataFrame</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The provided input is not a valid Spark DataFrame.&quot;</span><span class="p">)</span>
@@ -778,10 +813,11 @@
         <span class="n">col_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">spark_df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
         <span class="c1"># Log the information</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The data spans from </span><span class="si">{</span><span class="n">min_parsed_date</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">max_parsed_date</span><span class="si">}</span><span class="s1"> &#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;The data spans from </span><span class="si">{</span><span class="n">min_parsed_date</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">max_parsed_date</span><span class="si">}</span><span class="s1"> &#39;</span>
                     <span class="sa">f</span><span class="s1">&#39;and has </span><span class="si">{</span><span class="n">row_count</span><span class="si">}</span><span class="s1"> rows and </span><span class="si">{</span><span class="n">col_count</span><span class="si">}</span><span class="s1"> columns.&#39;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;No new transcripts to parse.&#39;</span><span class="p">)</span>
+        <span class="kn">from</span> <span class="nn">databricks.sdk.runtime</span> <span class="kn">import</span> <span class="n">dbutils</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No new transcripts to parse.&#39;</span><span class="p">)</span>
         <span class="n">dbutils</span><span class="o">.</span><span class="n">notebook</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Exit the notebook with a non-zero status</span>
         <span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Terminate the process </span></div>
 </pre></div>

@@ -709,7 +709,7 @@ def calculate_sentence_score(
     logger.debug(f"Calculated sentence score: {score}")
     return score
 
-def netscore(
+def calculate_net_score(
     counts: List[int],
     indicators: List[int],
 ) -> Optional[float]:
@@ -724,10 +724,10 @@ def netscore(
         Optional[float]: Calculated net score or None.
 
     Example:
-        >>> from centralized_nlp_package.text_processing import netscore
+        >>> from centralized_nlp_package.text_processing import calculate_net_score
         >>> counts = [1, 2, 0]
         >>> indicators = [1, 0, 1]
-        >>> score = netscore(counts, indicators)
+        >>> score = calculate_net_score(counts, indicators)
         >>> print(score)
         1.0
     """
@@ -898,7 +898,7 @@ def generate_sentence_relevance_score(
             )
 
             df[f"{topic}_NET_SENT_{label}"] = df.apply(
-                lambda row: netscore(row[f"{topic}_TOTAL_{label}"], row[f"SENT_LABELS_{label}"]),
+                lambda row: calculate_net_score(row[f"{topic}_TOTAL_{label}"], row[f"SENT_LABELS_{label}"]),
                 axis=1
             )
     logger.info("Generated sentence relevance scores for all sections.")

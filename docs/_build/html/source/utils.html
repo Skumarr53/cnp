@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Common Utils" href="common_utils.html" /><link rel="prev" title="Text processing" href="text_processing.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Common Utils" href="common_utils.html" /><link rel="prev" title="NLI utilities" href="nli_utils.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
         <title>Utilities - Centralized NLP Package 0.1.0 documentation</title>
@@ -202,12 +202,13 @@
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="data_access.html">Data Access</a></li>
-<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="text_processing.html">Text processing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="embedding.html">Embedding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="model_utils.html">Model Utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Utilities</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common_utils.html">Common Utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data_processing.html">Data Processing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="nli_utils.html">NLI utilities</a></li>
 </ul>
 
 </div>
@@ -252,7 +253,7 @@
 <span id="utilities"></span><h1>Utilities<a class="headerlink" href="#module-centralized_nlp_package.utils.helper" title="Permalink to this heading">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="centralized_nlp_package.utils.helper.determine_environment">
-<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.utils.helper.</span></span><span class="sig-name descname"><span class="pre">determine_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">provided_env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/utils/helper.html#determine_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.utils.helper.determine_environment" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">centralized_nlp_package.utils.helper.</span></span><span class="sig-name descname"><span class="pre">determine_environment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">provided_env</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'quant'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/centralized_nlp_package/utils/helper.html#determine_environment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#centralized_nlp_package.utils.helper.determine_environment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines the environment based on the provided argument or auto-detects it using the DataBricks workspace name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -312,14 +313,14 @@ and filename, and uses Hydra to initialize and compose the configuration.</p>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="text_processing.html">
+          <a class="prev-page" href="nli_utils.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Text processing</div>
+                <div class="title">NLI utilities</div>
                 
               </div>
             </a>

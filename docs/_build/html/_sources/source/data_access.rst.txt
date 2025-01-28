@@ -5,3 +5,4 @@ Data Access
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: singleton, SparkSessionManager, with_spark_session, retrieve_snowflake_private_key, get_snowflake_connection_options

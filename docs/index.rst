@@ -11,12 +11,14 @@ Welcome to Centralized NLP Package's documentation!
    :caption: Contents:
 
    source/data_access
-   source/embedding
+   source/data_processing
    source/text_processing
+   source/embedding
+   source/model_utils
+   source/nli_utils
    source/utils
    source/common_utils
-   source/data_processing
-   source/nli_utils
+
 
 Indices and tables
 ==================
