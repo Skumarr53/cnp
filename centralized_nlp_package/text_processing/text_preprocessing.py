@@ -194,7 +194,7 @@ def tokenize_and_lemmatize_text(
             continue
         tokens.append(token.lemma_.lower())
 
-    logger.debug(f"Tokenized document into {len(tokens)} tokens.")
+    # logger.debug(f"Tokenized document into {len(tokens)} tokens.")
     return tokens
 
 

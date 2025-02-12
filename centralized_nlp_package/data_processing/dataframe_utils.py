@@ -108,7 +108,7 @@ def df_apply_transformations(
         try:
             if isinstance(columns_to_use, str):
                 # Single column transformation
-                logger.debug(f"Applying transformation on single column '{columns_to_use}' to create '{new_column}'.")
+                # logger.debug(f"Applying transformation on single column '{columns_to_use}' to create '{new_column}'.")
                 if isinstance(df, dd.DataFrame):
                     df[new_column] = df[columns_to_use].map(func, meta=(new_column, object))
                 else:
@@ -124,7 +124,7 @@ def df_apply_transformations(
                 logger.error(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
                 raise ValueError(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
 
-            logger.debug(f"Successfully applied transformation for '{new_column}'.")
+            # logger.debug(f"Successfully applied transformation for '{new_column}'.")
         except Exception as e:
             logger.error(f"Error applying transformation for column '{new_column}': {e}")
             raise

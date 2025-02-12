@@ -3,6 +3,7 @@ from typing import Dict, Optional, List, Tuple, Callable, Any, Union
 import pandas as pd
 from pyspark.sql import SparkSession, DataFrame
 import pyspark.sql.functions as F
+from pyspark.sql.functions import pandas_udf, PandasUDFType
 from pyspark.sql.types import (
     StructType,
     StructField,
@@ -20,6 +21,13 @@ from pyspark.sql.types import (
 from loguru import logger
 
 # Configure logging
+
+def pd_udf_wrapper(func, schema, udf_type=PandasUDFType.SCALAR):
+    @pandas_udf(schema, udf_type)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+    return wrapper
+  
 
 def initialize_spark_session(app_name="Optimized_NLI_Inference", 
                      shuffle_partitions=200, gpu_amount=1, 

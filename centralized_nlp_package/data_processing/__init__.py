@@ -16,6 +16,7 @@ from .spark_utils import (
     convert_columns_to_timestamp,
     check_spark_dataframe_for_records,
     sparkdf_apply_transformations,
+    pd_udf_wrapper
 )
 
 __all__ = [
@@ -30,5 +31,6 @@ __all__ = [
     "check_spark_dataframe_for_records",
     "sparkdf_apply_transformations",
     "convert_columns_to_timestamp",
-    "sparkdf_apply_transformations"
+    "sparkdf_apply_transformations",
+    "pd_udf_wrapper"
 ]
