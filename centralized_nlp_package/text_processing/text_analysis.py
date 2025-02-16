@@ -6,7 +6,7 @@ from typing import List, Tuple, Optional, Dict, Any
 import numpy as np
 import pandas as pd
 from collections import Counter
-from loguru import logger
+#from loguru import logger
 from centralized_nlp_package.text_processing.text_utils import (
     generate_ngrams,
     load_syllable_counts,
@@ -43,13 +43,13 @@ def load_word_set(filename: str) -> set:
     file_path = os.path.join(config.lib_config.model_artifacts_path, filename)
     try:
         word_set = load_set_from_txt(file_path)
-        logger.debug(f"Loaded word set from {file_path} with {len(word_set)} words.")
+        print("Loaded word set from {file_path} with {len(word_set)} words.")
         return word_set
     except FileNotFoundError:
-        logger.error(f"File not found: {file_path}")
+        print("File not found: {file_path}")
         raise FilesNotLoadedException(filename=filename)
     except Exception as e:
-        logger.error(f"Error loading word set from {file_path}: {e}")
+        print("Error loading word set from {file_path}: {e}")
         raise
 
 
@@ -123,15 +123,15 @@ def calculate_polarity_score(
         word_lower = word.lower()
         if word_lower in negative_words:
             negative_count += 1
-            logger.debug(f"Negative word found: {word} at position {i}.")
+            print("Negative word found: {word} at position {i}.")
 
         if word_lower in positive_words:
             if check_negation(input_words, i, negation_words):
                 negative_count += 1
-                logger.debug(f"Positive word '{word}' at position {i} negated.")
+                print("Positive word '{word}' at position {i} negated.")
             else:
                 positive_count += 1
-                logger.debug(f"Positive word found: {word} at position {i}.")
+                print("Positive word found: {word} at position {i}.")
 
     sum_negative = negative_count
     polarity_score = (
@@ -180,7 +180,7 @@ def polarity_score_per_section(
         )
         return polarity_score, word_count, sum_negative, positive_count, legacy_score
     else:
-        logger.warning("Insufficient data for polarity score calculation.")
+        print("Insufficient data for polarity score calculation.")
         return np.nan, np.nan, np.nan, np.nan, np.nan
 
 
@@ -225,10 +225,10 @@ def polarity_score_per_sentence(
             positive_counts.append(pos_count)
             negative_counts.append(sum_neg)
 
-        logger.info("Sentence-level polarity analysis completed.")
+        print("Sentence-level polarity analysis completed.")
         return word_counts, positive_counts, negative_counts
     else:
-        logger.warning("Insufficient data for sentence-level analysis.")
+        print("Insufficient data for sentence-level analysis.")
         return None, None, None
 
 
@@ -319,7 +319,7 @@ def fog_analysis_per_section(
         )
         return fog_index, complex_word_count, average_words_per_sentence, total_word_count
     else:
-        logger.warning("Insufficient data for Fog Analysis.")
+        print("Insufficient data for Fog Analysis.")
         return np.nan, np.nan, np.nan, np.nan
 
 
@@ -368,10 +368,10 @@ def fog_analysis_per_sentence(
             fog_index_list.append(fog_index)
             complex_word_count_list.append(complex_count)
 
-        logger.info("Sentence-level Fog Analysis completed.")
+        print("Sentence-level Fog Analysis completed.")
         return fog_index_list, complex_word_count_list, total_word_count_list
     else:
-        logger.warning("Insufficient data for sentence-level Fog Analysis.")
+        print("Insufficient data for sentence-level Fog Analysis.")
         return None, None, None
 
 
@@ -632,7 +632,7 @@ def match_count(
     ret["raw_len"] = len(text.split(" "))
     ret["filt"] = text  # Optional: Remove if not necessary
 
-    logger.debug(f"Match counts: {ret}")
+    print("Match counts: {ret}")
 
     return ret
 
@@ -662,7 +662,7 @@ def merge_counts(counts: List[Dict[str, int]]) -> Dict[str, int]:
             return {"NO_MATCH": 1}
         return dict(merged)
     except Exception as e:
-        logger.error(f"Error merging counts: {e}")
+        print("Error merging counts: {e}")
         return {"ERROR": 1}
 
 
@@ -692,12 +692,12 @@ def calculate_sentence_score(
     """
     length = len(indicators)
     if length == 0 or length != len(weights):
-        logger.warning("Indicators and weights must be of the same non-zero length.")
+        print("Indicators and weights must be of the same non-zero length.")
         return None
 
     num_relevant = len([x for x in indicators if x > 0])
     if num_relevant == 0:
-        logger.warning("No relevant indicators found.")
+        print("No relevant indicators found.")
         return None
 
     if apply_weight:
@@ -706,7 +706,7 @@ def calculate_sentence_score(
         binary_indicators = [1 if x > 0 else 0 for x in indicators]
         score = np.dot(binary_indicators, weights) / num_relevant
 
-    logger.debug(f"Calculated sentence score: {score}")
+    print("Calculated sentence score: {score}")
     return score
 
 def calculate_net_score(
@@ -733,16 +733,16 @@ def calculate_net_score(
     """
     length = len(counts)
     if length == 0 or length != len(indicators):
-        logger.warning("Counts and indicators must be of the same non-zero length.")
+        print("Counts and indicators must be of the same non-zero length.")
         return None
 
     num_relevant = len([x for x in counts if x > 0])
     if num_relevant == 0:
-        logger.warning("No relevant counts found.")
+        print("No relevant counts found.")
         return None
 
     score = np.dot([1 if x > 0 else 0 for x in counts], indicators)
-    logger.debug(f"Calculated net score: {score}")
+    print("Calculated net score: {score}")
     return score
 
 
@@ -779,7 +779,7 @@ def generate_match_count(
             lambda x: [match_count(sent, match_set, phrases=False) for sent in x], 
             meta=(f"matches_{label}", "object")
         )
-    logger.info("Generated match counts for all sections.")
+    print("Generated match counts for all sections.")
     return df
 
 
@@ -829,7 +829,7 @@ def generate_topic_statistics(
         df[f"NUM_SENTS_{label}"] = df[f"LEN_{label}"].apply(lambda x: len(x))
 
         df.drop(columns=[f"matches_{label}"], inplace=True)
-    logger.info("Generated topic statistics for all sections.")
+    print("Generated topic statistics for all sections.")
     return df
 
 def generate_sentence_relevance_score(
@@ -901,5 +901,5 @@ def generate_sentence_relevance_score(
                 lambda row: calculate_net_score(row[f"{topic}_TOTAL_{label}"], row[f"SENT_LABELS_{label}"]),
                 axis=1
             )
-    logger.info("Generated sentence relevance scores for all sections.")
+    print("Generated sentence relevance scores for all sections.")
     return df

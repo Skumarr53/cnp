@@ -11,7 +11,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 import pandas as pd
 from snowflake.connector import connect
-from loguru import logger
+#from loguru import logger
 from pyspark.sql import SparkSession, DataFrame
 from functools import wraps
 
@@ -33,12 +33,12 @@ def singleton(cls):
     def get_instance(*args, **kwargs):
         global _spark_session, _sfUtils
         if cls not in instances:
-            #logger.info(f"Creating a new instance of {cls.__name__}")
+            #print("Creating a new instance of {cls.__name__}")
             instances[cls] = cls(*args, **kwargs)
             _spark_session = instances[cls].spark
             _sfUtils = instances[cls].sfUtils
         # else:
-            #logger.info(f"Using existing instance of {cls.__name__}")
+            #print("Using existing instance of {cls.__name__}")
         return instances[cls]
 
     return get_instance
@@ -68,7 +68,7 @@ class SparkSessionManager:
         Configures Spark session settings and Snowflake integration.
         """
         global _sfUtils
-        #logger.info("Configuring Spark session settings...")
+        #print("Configuring Spark session settings...")
 
         sc = self.spark.sparkContext
 
@@ -81,7 +81,7 @@ class SparkSessionManager:
         zone = sc._jvm.java.util.TimeZone
         zone.setDefault(sc._jvm.java.util.TimeZone.getTimeZone("UTC"))
 
-        #logger.info("Spark session configured and Snowflake integration enabled.")
+        #print("Spark session configured and Snowflake integration enabled.")
 
 
 def with_spark_session(func):
@@ -92,7 +92,7 @@ def with_spark_session(func):
     def wrapper(*args, **kwargs):
         global _spark_session
         if _spark_session is None:
-            #logger.info("Spark session not initialized. Initializing now...")
+            #print("Spark session not initialized. Initializing now...")
             SparkSessionManager(app_name="SnowflakeIntegration")
         else:
             print("Spark session already initialized; reusing existing session.")
@@ -121,9 +121,9 @@ def retrieve_snowflake_private_key(config) -> str:
 
         key_file = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.key)
         pwd = dbutils.secrets.get(scope="id-secretscope-dbk-pr4707-prod-work", key=config.password)
-        logger.debug("Retrieved secrets from AKV successfully.")
+        print("Retrieved secrets from AKV successfully.")
     except Exception as e:
-        logger.error(f"Error retrieving secrets from AKV: {e}")
+        print("Error retrieving secrets from AKV: {e}")
         raise
 
     # Load the private key using the retrieved password
@@ -133,9 +133,9 @@ def retrieve_snowflake_private_key(config) -> str:
             password=pwd.encode(),
             backend=default_backend()
         )
-        logger.debug("Private key loaded successfully.")
+        print("Private key loaded successfully.")
     except Exception as e:
-        logger.error(f"Error loading private key: {e}")
+        print("Error loading private key: {e}")
         raise
 
     # Serialize the private key to PEM format without encryption
@@ -145,15 +145,15 @@ def retrieve_snowflake_private_key(config) -> str:
             format=serialization.PrivateFormat.PKCS8,
             encryption_algorithm=serialization.NoEncryption()
         )
-        logger.debug("Private key serialized to PEM format.")
+        print("Private key serialized to PEM format.")
     except Exception as e:
-        logger.error(f"Error serializing private key: {e}")
+        print("Error serializing private key: {e}")
         raise
 
     # Decode and clean the private key string
     pkb = pkb.decode("UTF-8")
     pkb = re.sub("-*(BEGIN|END) PRIVATE KEY-*\n", "", pkb).replace("\n", "")
-    logger.debug("Private key decoded and cleaned.")
+    print("Private key decoded and cleaned.")
 
     return pkb
 
@@ -188,7 +188,7 @@ def get_snowflake_connection_options(database: str = 'EDS_PROD' , schema: str = 
         "sfTimezone": "spark",
         'sfRole': _config.role  # Optional if needed
     }
-    logger.debug("Snowflake connection options constructed.")
+    print("Snowflake connection options constructed.")
 
     return snowflake_options
 
@@ -224,19 +224,19 @@ def read_from_snowflake(query: str) -> DataFrame:
     """
     global _spark_session  # Access Spark session
 
-    logger.info("Reading data from Snowflake using Spark.")
+    print("Reading data from Snowflake using Spark.")
 
     snowflake_options = get_snowflake_connection_options()
 
     try:
-        logger.debug(f"Executing query: {query}")
+        print("Executing query: {query}")
         df_spark = _spark_session.read.format("net.snowflake.spark.snowflake") \
             .options(**snowflake_options) \
             .option("query", query) \
             .load()
-        logger.info("Query executed successfully and Spark DataFrame created.")
+        print("Query executed successfully and Spark DataFrame created.")
     except Exception as e:
-        logger.error(f"Error executing query on Snowflake: {e}")
+        print("Error executing query on Snowflake: {e}")
         raise
 
     return df_spark
@@ -281,7 +281,7 @@ def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, tabl
     """
     global _spark_session  # Access Spark session
 
-    logger.info(f"Writing Spark DataFrame to Snowflake table: {table_name}.")
+    print("Writing Spark DataFrame to Snowflake table: {table_name}.")
     snowflake_options = get_snowflake_connection_options(database, schema)
 
     try:
@@ -290,9 +290,9 @@ def write_dataframe_to_snowflake(df: DataFrame, database: str, schema: str, tabl
             .option("dbtable", table_name) \
             .mode(mode) \
             .save()
-        logger.info(f"DataFrame written successfully to {table_name}.")
+        print("DataFrame written successfully to {table_name}.")
     except Exception as e:
-        logger.error(f"Error writing Spark DataFrame to Snowflake: {e}")
+        print("Error writing Spark DataFrame to Snowflake: {e}")
         raise
 
 
@@ -329,9 +329,9 @@ def execute_truncate_or_merge_query(query: str, database: str, schema: str) -> s
     snowflake_options = get_snowflake_connection_options(database, schema)
 
     try:
-        logger.debug(f"Executing TRUNCATE or MERGE query: {query}")
+        print("Executing TRUNCATE or MERGE query: {query}")
         _spark_session._jvm.net.snowflake.spark.snowflake.Utils.runQuery(snowflake_options, query)
-        logger.info("Truncate or Merge operation completed successfully.")
+        print("Truncate or Merge operation completed successfully.")
     except Exception as e:
-        logger.error(f"Error executing TRUNCATE or MERGE query on Snowflake: {e}")
+        print("Error executing TRUNCATE or MERGE query on Snowflake: {e}")
         raise

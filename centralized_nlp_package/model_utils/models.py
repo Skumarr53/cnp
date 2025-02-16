@@ -5,7 +5,7 @@ from transformers import AutoModel, pipeline, AutoModelForSequenceClassification
 from .base_model import BaseModel
 
 import torch
-from loguru import logger
+#from loguru import logger
 import subprocess
 
 class DeBERTaModel(BaseModel):
@@ -21,7 +21,7 @@ class DeBERTaModel(BaseModel):
             The device index to run the model on (e.g., 0 for GPU, -1 for CPU).
     """
     def load_model(self):
-        logger.info(f"Loading DeBERTa model from {self.model_path}")
+        print("Loading DeBERTa model from {self.model_path}")
         return pipeline("zero-shot-classification", model=self.model_path, device=self.device)
 
     def train(self, train_file: str, validation_file: str, param_dict: Dict[str, Any], output_dir: str, eval_entailment_thresold: float = 0.5) -> Tuple[AutoModelForSequenceClassification, Dict[str, float]]:
@@ -60,7 +60,7 @@ class DeBERTaModel(BaseModel):
                 - Tokenizer associated with the trained model.
                 - A dictionary of evaluation metrics (e.g., accuracy, F1 score).
         """
-        logger.info("Starting training for DeBERTa model")
+        print("Starting training for DeBERTa model")
 
         # Prepare ModelArguments
         model_args = ModelArguments(
@@ -105,7 +105,7 @@ class DeBERTaModel(BaseModel):
         # Call run_glue
         trained_model, tokenizer, eval_metrics = run_glue(model_args, data_args, training_args, eval_entailment_thresold=eval_entailment_thresold)
 
-        logger.info("Training completed for DeBERTa model")
+        print("Training completed for DeBERTa model")
         return trained_model, tokenizer, eval_metrics
 
     def evaluate(self, validation_file: str) -> Dict[str, float]:
@@ -135,10 +135,10 @@ class DeBERTaModel(BaseModel):
             >>> print(metrics)
             {'accuracy': 0.85}
         """
-        logger.info("Evaluating DeBERTa model")
+        print("Evaluating DeBERTa model")
         # Placeholder for actual evaluation logic
         accuracy = torch.rand(1).item()  # Replace with real evaluation
-        logger.info(f"Evaluation accuracy: {accuracy}")
+        print("Evaluation accuracy: {accuracy}")
         return {"accuracy": accuracy}
 
 class FinBERTModel(BaseModel):
@@ -154,7 +154,7 @@ class FinBERTModel(BaseModel):
             The device index to run the model on (e.g., 0 for GPU, -1 for CPU).
     """
     def load_model(self):
-        logger.info(f"Loading FinBERT model from {self.model_path}")
+        print("Loading FinBERT model from {self.model_path}")
         return pipeline("zero-shot-classification", model=self.model_path, device=self.device)
 
     def train(self, train_file: str, validation_file: str, hyperparameters: Dict[str, Any]):
@@ -206,7 +206,7 @@ class FinBERTModel(BaseModel):
             INFO - Starting training for FinBERT model
             INFO - Training completed for FinBERT model
         """
-        logger.info("Starting training for FinBERT model")
+        print("Starting training for FinBERT model")
         subprocess.run([
             "python", "run_glue.py",
             "--model_name_or_path", self.model_path,
@@ -223,13 +223,13 @@ class FinBERTModel(BaseModel):
             "--per_device_train_batch_size", str(hyperparameters.get("train_batch_size", 16)),
             "--per_device_eval_batch_size", str(hyperparameters.get("eval_batch_size", 16))
         ], check=True)
-        logger.info("Training completed for FinBERT model")
+        print("Training completed for FinBERT model")
 
     def evaluate(self, validation_file: str) -> Dict[str, float]:
-        logger.info("Evaluating FinBERT model")
+        print("Evaluating FinBERT model")
         # Placeholder for actual evaluation logic
         accuracy = torch.rand(1).item()  # Replace with real evaluation
-        logger.info(f"Evaluation accuracy: {accuracy}")
+        print("Evaluation accuracy: {accuracy}")
         return {"accuracy": accuracy}
 
 def get_model(model_path: str, device: int = 0, **kwargs) -> BaseModel:
@@ -278,5 +278,5 @@ def get_model(model_path: str, device: int = 0, **kwargs) -> BaseModel:
     elif model_name.startswith("finbert"):
         return FinBERTModel(model_name, model_path, device)
     else:
-        logger.error(f"Model {model_name} is not supported.")
+        print("Model {model_name} is not supported.")
         raise ValueError(f"Model {model_name} is not supported.")

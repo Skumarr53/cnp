@@ -4,7 +4,7 @@ from dask.distributed import Client
 from dask.diagnostics import ProgressBar
 from typing import Any, Optional
 import pandas as pd
-from loguru import logger
+#from loguru import logger
 from centralized_nlp_package import config
 
 
@@ -32,10 +32,10 @@ def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> 
             f"{threads_per_worker} threads per worker."
         )
         client = Client(n_workers=n_workers, threads_per_worker=threads_per_worker)
-        logger.info("Dask client initialized successfully.")
+        print("Dask client initialized successfully.")
         return client
     except Exception as e:
-        logger.error(f"Failed to initialize Dask client: {e}")
+        print("Failed to initialize Dask client: {e}")
         raise
 
 
@@ -63,14 +63,14 @@ def dask_compute_with_progress(dask_dataframe: Any, use_progress: bool = True) -
     """
     try:
         if use_progress:
-            logger.info("Starting computation with progress bar.")
+            print("Starting computation with progress bar.")
             with ProgressBar():
                 result = dask_dataframe.compute()
         else:
-            logger.info("Starting computation without progress bar.")
+            print("Starting computation without progress bar.")
             result = dask_dataframe.compute()
-        logger.info("Dask DataFrame computed successfully.")
+        print("Dask DataFrame computed successfully.")
         return result
     except Exception as e:
-        logger.error(f"Failed to compute Dask DataFrame: {e}")
+        print("Failed to compute Dask DataFrame: {e}")
         raise

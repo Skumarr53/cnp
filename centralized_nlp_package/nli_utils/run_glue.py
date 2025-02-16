@@ -8,7 +8,7 @@ import os
 import sys
 import time
 from typing import Optional, Dict, Any, Tuple
-from loguru import logger
+#from loguru import logger
 import transformers
 from transformers import (
     AutoConfig,
@@ -78,8 +78,8 @@ def run_glue(
 
     setup_logging(training_args)
 
-    logger.info("Starting GLUE task...")
-    logger.info(f"Training/evaluation parameters: {training_args}")
+    print("Starting GLUE task...")
+    print("Training/evaluation parameters: {training_args}")
 
     last_checkpoint = None
     if os.path.isdir(training_args.output_dir) and training_args.do_train and not training_args.overwrite_output_dir:
@@ -257,7 +257,7 @@ def run_finetune(
     if param_dict is None:
         param_dict = {}
 
-    logger.info("Starting fine-tuning process for the model.")
+    print("Starting fine-tuning process for the model.")
 
     try:
         # Prepare ModelArguments
@@ -265,7 +265,7 @@ def run_finetune(
             model_name_or_path=base_model_path,
             cache_dir=param_dict.get("cache_dir")
         )
-        logger.debug(f"ModelArguments: {model_args}")
+        print("ModelArguments: {model_args}")
 
         # Prepare DataTrainingArguments
         data_args = DataTrainingArguments(
@@ -279,7 +279,7 @@ def run_finetune(
             max_eval_samples=param_dict.get("max_eval_samples"),
             max_predict_samples=param_dict.get("max_predict_samples")
         )
-        logger.debug(f"DataTrainingArguments: {data_args}")
+        print("DataTrainingArguments: {data_args}")
 
         # Prepare TrainingArguments
         training_args = TrainingArguments(
@@ -304,18 +304,18 @@ def run_finetune(
             load_best_model_at_end=param_dict.get("load_best_model_at_end", True),
             metric_for_best_model=param_dict.get("metric_for_best_model", "accuracy")
         )
-        logger.debug(f"TrainingArguments: {training_args}")
+        print("TrainingArguments: {training_args}")
 
         # Call run_glue (ensure that run_glue is correctly implemented)
         finetuned_model, tokenizer, eval_metrics = run_glue(model_args, data_args, training_args)
         
-        logger.info("Fine-tuning completed successfully.")
-        logger.info(f"Evaluation Metrics: {eval_metrics}")
+        print("Fine-tuning completed successfully.")
+        print("Evaluation Metrics: {eval_metrics}")
 
         return finetuned_model,tokenizer, eval_metrics
 
     except Exception as e:
-        logger.error(f"An error occurred during fine-tuning: {e}", exc_info=True)
+        print("An error occurred during fine-tuning: {e}", exc_info=True)
         raise
 
 def main():

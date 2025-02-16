@@ -1,6 +1,6 @@
 import torch
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
-from loguru import logger
+#from loguru import logger
 
 
 def initialize_nli_infer_pipeline(model_path: str, enable_quantization=False):
@@ -71,9 +71,9 @@ def initialize_nli_infer_pipeline(model_path: str, enable_quantization=False):
             model = torch.quantization.quantize_dynamic(
                 model, {torch.nn.Linear}, dtype=torch.qint8
             )
-            logger.debug("Model quantization enabled.")
+            print("Model quantization enabled.")
         else:
-            logger.debug("Model quantization disabled.")
+            print("Model quantization disabled.")
         
         device = 0 if torch.cuda.is_available() else -1
         nli_pipeline = pipeline(
@@ -82,9 +82,9 @@ def initialize_nli_infer_pipeline(model_path: str, enable_quantization=False):
             tokenizer=tokenizer,
             device=device
         )
-        logger.debug(f"NLI pipeline initialized on device: {'GPU' if device == 0 else 'CPU'}")
+        print("NLI pipeline initialized on device: {'GPU' if device == 0 else 'CPU'}")
         return nli_pipeline
     except Exception as e:
-        logger.error(f"Failed to initialize NLI pipeline: {e}")
+        print("Failed to initialize NLI pipeline: {e}")
         raise e
 

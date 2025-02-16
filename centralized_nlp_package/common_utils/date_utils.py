@@ -2,7 +2,7 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from typing import Tuple
-from loguru import logger
+#from loguru import logger
 
 def get_date_range(years_back: int = 0, months_back: int = 0) -> Tuple[str, str]:
     """
@@ -34,7 +34,7 @@ def get_date_range(years_back: int = 0, months_back: int = 0) -> Tuple[str, str]
     min_date = f"{start_date.year}-{start_date.month:02d}-01"
     max_date = f"{end_date.year}-{end_date.month:02d}-01"
 
-    logger.debug(f"Calculated date range from {min_date} to {max_date}.")
+    print("Calculated date range from {min_date} to {max_date}.")
     return min_date, max_date
 
 def format_date(date: datetime) -> str:
@@ -59,7 +59,7 @@ def format_date(date: datetime) -> str:
         '2023-09-15'
     """
     formatted_date = date.strftime('%Y-%m-%d')
-    logger.debug(f"Formatted date: {formatted_date}")
+    print("Formatted date: {formatted_date}")
     return formatted_date
 
 def get_current_date_str() -> str:

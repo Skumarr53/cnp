@@ -1,5 +1,5 @@
 from centralized_nlp_package.mlflow_utils import ExperimentManager, ModelSelector, ModelTransition, get_current_date
-from loguru import logger
+#from loguru import logger
 
 def main():
     # Define experiment parameters
@@ -45,7 +45,7 @@ def main():
         # Transition the best model to Production (or any other stage)
         model_transition.transition_model(stage="Production", experiment_name=experiment_manager.experiment_name)
     else:
-        logger.warning("No best model found to transition.")
+        print("No best model found to transition.")
 
 if __name__ == "__main__":
     main()

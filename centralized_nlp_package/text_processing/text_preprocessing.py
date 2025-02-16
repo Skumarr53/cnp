@@ -3,7 +3,7 @@
 import re
 from typing import List, Tuple, Optional, Union, Dict
 import spacy
-from loguru import logger
+#from loguru import logger
 from centralized_nlp_package import config
 from centralized_nlp_package.text_processing.text_utils import (
     validate_and_format_text,
@@ -52,22 +52,22 @@ def initialize_spacy(
         >>> print([token.text for token in doc])
         ['This', 'is', 'a', 'sample', 'sentence', 'for', 'testing', 'SpaCy', 'model', '.']
     """
-    logger.info(f"Loading SpaCy model: {model}")
+    print("Loading SpaCy model: {model}")
     try:
         nlp = spacy.load(
             model, disable=["parser"]
         )
         if exclude_stop_words:
             nlp.Defaults.stop_words -= set(exclude_stop_words)
-            logger.debug(f"Excluded stop words: {exclude_stop_words}")
+            print("Excluded stop words: {exclude_stop_words}")
         nlp.max_length = max_length
-        logger.info("SpaCy model initialized successfully.")
+        print("SpaCy model initialized successfully.")
         return nlp
     except FilesNotLoadedException as e:
-        logger.error(f"Failed to load additional stop words: {e}")
+        print("Failed to load additional stop words: {e}")
         raise e
     except Exception as e:
-        logger.error(f"Error initializing SpaCy model: {e}")
+        print("Error initializing SpaCy model: {e}")
         raise
 
 def remove_unwanted_phrases_and_validate(
@@ -112,16 +112,16 @@ def remove_unwanted_phrases_and_validate(
         >>> print(cleaned)
         None
     """
-    logger.debug("Cleaning sentence.")
+    print("Cleaning sentence.")
     
     # Assign default phrases from config if not provided
     if cleanup_phrases is None:
         cleanup_phrases = config.lib_config.text_processing.cleanup_phrases
-        logger.debug(f"Using default cleanup phrases: {cleanup_phrases}")
+        print("Using default cleanup phrases: {cleanup_phrases}")
     
     if greeting_phrases is None:
         greeting_phrases = config.lib_config.text_processing.greeting_phrases
-        logger.debug(f"Using default greeting phrases: {greeting_phrases}")
+        print("Using default greeting phrases: {greeting_phrases}")
     
     # Remove cleanup phrases
     for phrase in cleanup_phrases:
@@ -131,15 +131,15 @@ def remove_unwanted_phrases_and_validate(
     # Validate word count
     word_count = len(sentence.split())
     if word_count < min_word_length:
-        logger.debug("Sentence below minimum word length. Skipping.")
+        print("Sentence below minimum word length. Skipping.")
         return None
     
     # Check for greeting phrases
     if any(greet.lower() in sentence.lower() for greet in greeting_phrases):
-        logger.debug("Greeting phrase detected. Skipping.")
+        print("Greeting phrase detected. Skipping.")
         return None
     
-    logger.debug(f"Cleaned sentence: {sentence}")
+    print("Cleaned sentence: {sentence}")
     return sentence if sentence else None
 
 
@@ -194,7 +194,7 @@ def tokenize_and_lemmatize_text(
             continue
         tokens.append(token.lemma_.lower())
 
-    # logger.debug(f"Tokenized document into {len(tokens)} tokens.")
+    # print("Tokenized document into {len(tokens)} tokens.")
     return tokens
 
 
@@ -222,7 +222,7 @@ def tokenize_matched_words(doc: str, nlp: spacy.Language) -> List[str]:
             continue
         if not token.is_stop and not token.is_punct and token.pos_ != "NUM":
             ret.append(token.lemma_.lower())
-    logger.debug(f"Tokenized matched words into {len(ret)} tokens.")
+    print("Tokenized matched words into {len(ret)} tokens.")
     return ret
 
 
@@ -254,10 +254,10 @@ def preprocess_text(
         cleaned_text = clean_text(text)
         input_words = tokenize_text(cleaned_text, nlp)
         word_count = len(input_words)
-        logger.debug("Preprocessed single text input.")
+        print("Preprocessed single text input.")
         return cleaned_text, input_words, word_count
     else:
-        logger.warning("Preprocessing failed due to invalid input.")
+        print("Preprocessing failed due to invalid input.")
         return None, [], 0
 
 
@@ -285,7 +285,7 @@ def preprocess_text_list(
         >>> print(counts)
         [3, 0]
     """
-    logger.debug("Preprocessing list of texts.")
+    print("Preprocessing list of texts.")
     final_text_list = []
     input_word_list = []
     word_count_list = []
@@ -302,7 +302,7 @@ def preprocess_text_list(
             input_word_list.append([])
             word_count_list.append(0)
 
-    logger.debug(f"Preprocessed {len(text_list)} texts.")
+    print("Preprocessed {len(text_list)} texts.")
     return final_text_list, input_word_list, word_count_list
 
 def clean_text(text: str) -> str:
@@ -331,5 +331,5 @@ def clean_text(text: str) -> str:
     text = re.sub("\s+", " ", text)
     # Strip leading and trailing spaces
     text = text.strip().lower()
-    logger.debug("Cleaned the text.")
+    print("Cleaned the text.")
     return text

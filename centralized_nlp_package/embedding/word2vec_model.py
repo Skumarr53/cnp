@@ -2,7 +2,7 @@
 
 from gensim.models import Word2Vec, Phrases
 from typing import List, Dict, Any
-from loguru import logger
+#from loguru import logger
 from pathlib import Path
 
 
@@ -37,9 +37,9 @@ def train_word2vec_model(
         >>> model.wv['hello']
         array([ 0.0123, -0.0456, ...,  0.0789], dtype=float32)
     """    
-    logger.info("Starting Word2Vec model training.")
+    print("Starting Word2Vec model training.")
     model = Word2Vec(sentences=sentences, vector_size=vector_size, window=window, min_count=min_count, workers=workers, epochs=epochs,)
-    logger.info("Word2Vec model training completed.")
+    print("Word2Vec model training completed.")
     return model
 
 def save_word2vec_model(model: Word2Vec, path: str) -> None:
@@ -62,6 +62,6 @@ def save_word2vec_model(model: Word2Vec, path: str) -> None:
     """
     model_path = Path(path)
     model_path.parent.mkdir(parents=True, exist_ok=True)
-    logger.info(f"Saving Word2Vec model to {model_path}")
+    print("Saving Word2Vec model to {model_path}")
     model.save(str(model_path))
-    logger.info("Word2Vec model saved successfully.")
+    print("Word2Vec model saved successfully.")

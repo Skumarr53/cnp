@@ -5,7 +5,7 @@ from typing import Any, Dict
 import torch
 from transformers import pipeline
 import mlflow.pytorch
-from loguru import logger
+#from loguru import logger
 
 class BaseModel(ABC):
     def __init__(self, model_name: str, model_path: str, device: int = 0):
@@ -27,5 +27,5 @@ class BaseModel(ABC):
         pass
 
     def save_model(self, output_dir: str):
-        logger.info(f"Saving model to {output_dir}")
+        print("Saving model to {output_dir}")
         mlflow.pytorch.log_model(self.model, "model")

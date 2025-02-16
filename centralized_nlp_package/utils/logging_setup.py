@@ -1,6 +1,6 @@
 # centralized_nlp_package/utils/logging_setup.py
 
-from loguru import logger
+#from loguru import logger
 from pathlib import Path
 import os
 import sys
@@ -18,8 +18,8 @@ def setup_logging( env: str = "dev") -> None:
     Example:
         >>> from centralized_nlp_package.utils import setup_logging
         >>> setup_logging(log_file_path="app_logs/app.log", env="prod")
-        >>> logger.info("This is an info message.")
-        >>> logger.error("This is an error message.")
+        >>> print("This is an info message.")
+        >>> print("This is an error message.")
     """
     # Remove any existing handlers (useful when setting up logging multiple times in tests or notebooks)
     logger.remove()
@@ -59,4 +59,4 @@ def setup_logging( env: str = "dev") -> None:
     #     compression="zip",     # Compress rotated log files
     # )
 
-    logger.info("Logging setup completed.")
+    print("Logging setup completed.")

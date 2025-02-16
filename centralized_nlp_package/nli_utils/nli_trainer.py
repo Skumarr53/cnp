@@ -136,7 +136,7 @@ def evaluate(
     Returns:
         Dict[str, float]: Evaluation metrics.
     """
-    logger.info("*** Evaluate ***")
+    print("*** Evaluate ***")
     metrics = trainer.evaluate()
     metrics["eval_samples"] = len(trainer.eval_dataset) if data_args.max_eval_samples is None else min(data_args.max_eval_samples, len(trainer.eval_dataset))
     
@@ -163,7 +163,7 @@ def predict(trainer: Trainer, training_args, task_name: Optional[str] = None) ->
     Usage Example:
         >>> predict(trainer, data_args, model_args, task_name="mnli")
     """
-    logger.info("*** Predict ***")
+    print("*** Predict ***")
     predictions = trainer.predict(trainer.predict_dataset).predictions
     is_regression = task_name == "stsb" if task_name else False
     predictions = np.squeeze(predictions) if is_regression else np.argmax(predictions, axis=1)
@@ -171,7 +171,7 @@ def predict(trainer: Trainer, training_args, task_name: Optional[str] = None) ->
     output_predict_file = os.path.join(training_args.output_dir, f"predict_results_{task_name}.txt" if task_name else "predict_results.txt")
     if is_main_process(training_args.local_rank):
         with open(output_predict_file, "w") as writer:
-            logger.info(f"***** Predict results {task_name if task_name else ''} *****")
+            print("***** Predict results {task_name if task_name else ''} *****")
             writer.write("index\tprediction\n")
             for index, item in enumerate(predictions):
                 if is_regression:

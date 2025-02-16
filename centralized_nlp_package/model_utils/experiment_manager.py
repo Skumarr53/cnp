@@ -3,7 +3,7 @@ import os
 import gc
 import torch
 import pandas as pd
-from loguru import logger
+#from loguru import logger
 from sklearn.model_selection import KFold
 
 
@@ -139,7 +139,7 @@ class ExperimentManager:
         mlflow.set_experiment(self.experiment_name)
 
         self.runs_list = self.get_run_names()
-        logger.info(f"Experiment set to {self.experiment_name}")
+        print("Experiment set to {self.experiment_name}")
 
     def run_single_experiment(self, run_name, base_model, base_model_name, dataset_version, dataset_name, param_set):
         """
@@ -180,7 +180,7 @@ class ExperimentManager:
         torch.cuda.empty_cache()
 
         try:
-            logger.info(f"Starting finetuning run: {run_name}")
+            print("Starting finetuning run: {run_name}")
             mlflow.set_tag("run_date", self.run_date)
             mlflow.set_tag("base_model_name", base_model_name)
             mlflow.set_tag("dataset_version", dataset_name)
@@ -252,11 +252,11 @@ class ExperimentManager:
                 transformers_model=components,
                 task="zero-shot-classification",
                 artifact_path="model")
-            logger.info(f"Model Artifacts logged successfully")
+            print("Model Artifacts logged successfully")
             
-            logger.info(f"Run {run_name} completed with accuracy: {eval_metrics['eval_accuracy']}")
+            print("Run {run_name} completed with accuracy: {eval_metrics['eval_accuracy']}")
         except Exception as e:
-            logger.error(f"Failed during run {run_name}: {e}")
+            print("Failed during run {run_name}: {e}")
 
         finally:
             # Cleanup to free memory
@@ -301,7 +301,7 @@ class ExperimentManager:
 
                     run_name = f"{base_model_name}_{dataset_name}_{self.testset_name}_param_set{idx+1}"
                     if run_name in self.runs_list:
-                        logger.info(f"Skipping {run_name} as it already exists")
+                        print("Skipping {run_name} as it already exists")
                         continue
                     with mlflow.start_run(run_name=run_name) as run:
                         self.run_single_experiment(
@@ -341,7 +341,7 @@ class ExperimentManager:
         if pretrained_run_name not in self.runs_list: 
             with mlflow.start_run(run_name=pretrained_run_name) as pretrained_run:
             
-                logger.info(f"Starting pretrained evaluation run: {pretrained_run_name}")
+                print("Starting pretrained evaluation run: {pretrained_run_name}")
                 mlflow.set_tag("run_date", self.run_date)
                 mlflow.set_tag("base_model_name", base_model_name)
                 mlflow.set_tag("dataset_version", 'NA')
@@ -396,7 +396,7 @@ class ExperimentManager:
                                 })
                 mlflow.log_artifact(self.pred_path)
 
-                logger.info(f"Run {pretrained_run_name} completed with metrics: {metrics}")
+                print("Run {pretrained_run_name} completed with metrics: {metrics}")
                 
                 del components
                 del nli_pipeline
@@ -498,7 +498,7 @@ def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hy
 
     # Initialize KFold
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=random_state)
-    logger.info(f"Initialized KFold with {n_splits} splits.")
+    print("Initialized KFold with {n_splits} splits.")
 
 
     # Get the directory of the input data
@@ -513,7 +513,7 @@ def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hy
         # Concatenate the pairs back into DataFrames
         train_data = pd.concat(train_pairs).reset_index(drop=True)
         test_data = pd.concat(test_pairs).reset_index(drop=True)
-        logger.info(f"Fold {fold}: Training and test data prepared.")
+        print("Fold {fold}: Training and test data prepared.")
 
 
         # Save the split data to temporary files in the same directory as the input data
@@ -541,4 +541,4 @@ def perform_kfold_training(data_path, base_exp_name, data_src, model_version, hy
 
         # Run the experiment for this fold
         experiment_manager.run_experiments()
-        logger.info(f"Fold {fold}: Experiment completed.")
+        print("Fold {fold}: Experiment completed.")

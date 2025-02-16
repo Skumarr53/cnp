@@ -4,7 +4,7 @@ import evaluate
 import numpy as np
 import pandas as pd
 import mlflow
-from loguru import logger
+#from loguru import logger
 from typing import List, Dict, Any, Callable, Optional
 
 import torch
@@ -287,7 +287,7 @@ def _evaluate_model(
         {'model_family_name': 'DeBERTa', 'entailment_threshold': 0.7, 'time_taken_seconds': 0.456, 'num_train_epochs': 3, 'learning_rate': 2e-05, 'weight_decay': 0.01, 'train_batch_size': 16, 'eval_batch_size': 16, 'accuracy': 1.0, 'precision': 1.0, 'recall': 1.0, 'f1_score': 1.0, 'roc_auc': 1.0}
     """
     try:
-        logger.info(f"Starting evaluation for Run ID={run_id}, Run Name={run_name}")
+        print("Starting evaluation for Run ID={run_id}, Run Name={run_name}")
 
         # Initialize the pipeline
         nli_pipeline = pipeline(
@@ -325,11 +325,11 @@ def _evaluate_model(
             roc_auc=metrics.get("roc_auc", float('nan'))
         )
 
-        logger.info(f"Completed evaluation for Run ID={run_id}")
+        print("Completed evaluation for Run ID={run_id}")
         return asdict(result)
 
     except Exception as e:
-        logger.error(f"Error evaluating model Run ID={run_id}: {e}")
+        print("Error evaluating model Run ID={run_id}: {e}")
         return {}
 
 def evaluate_nli_models_from_path(
@@ -377,7 +377,7 @@ def evaluate_nli_models_from_path(
     eval_df['label_GT'] = eval_df['label'].apply(lambda x: 1 if x == 'entailment' else 0)
 
     for model_path in model_paths:
-        logger.info(f"Evaluating model at path: {model_path}")
+        print("Evaluating model at path: {model_path}")
 
         try:
             # Load the model and tokenizer
@@ -414,7 +414,7 @@ def evaluate_nli_models_from_path(
                 results.append(result)
 
         except Exception as e:
-            logger.error(f"Failed to evaluate model at path {model_path}: {e}")
+            print("Failed to evaluate model at path {model_path}: {e}")
             continue  # Proceed to the next model
 
     # Convert results to DataFrame
@@ -479,13 +479,13 @@ def evaluate_nli_models_mlflow(
     # Retrieve available models from MLflow experiment
     available_models = list_available_models(experiment_name, metric=metric)
     if not available_models:
-        logger.warning("No models found to evaluate.")
+        print("No models found to evaluate.")
         return pd.DataFrame()  # Return empty DataFrame if no models are found
 
     for model_info in available_models:
         run_id = model_info['run_id']
         run_name = model_info['run_name']
-        logger.info(f"Evaluating model: Run ID={run_id}, Run Name={run_name}")
+        print("Evaluating model: Run ID={run_id}, Run Name={run_name}")
 
         try:
             # Load the model from MLflow
@@ -529,7 +529,7 @@ def evaluate_nli_models_mlflow(
                 results.append(result)
 
         except Exception as e:
-            logger.error(f"Failed to evaluate model with Run ID={run_id}: {e}")
+            print("Failed to evaluate model with Run ID={run_id}: {e}")
             continue  # Proceed to the next model
 
     # Convert results to DataFrame

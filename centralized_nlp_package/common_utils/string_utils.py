@@ -2,7 +2,7 @@
 import os
 import re
 from typing import Union
-from loguru import logger
+#from loguru import logger
 from centralized_nlp_package.common_utils import load_content_from_txt
 
 
@@ -31,18 +31,18 @@ def format_string_template(template: str, **kwargs) -> str:
 
     missing_keys = [key for key in placeholders if key not in kwargs]
     if missing_keys:
-        logger.error(f"Missing keys for placeholders: {missing_keys}")
+        print("Missing keys for placeholders: {missing_keys}")
         raise ValueError(f"Missing keys for placeholders: {missing_keys}")
 
     try:
         format_string = template.format(**kwargs)
-        logger.debug(f"Formatted string: {format_string}")
+        print("Formatted string: {format_string}")
         return format_string
     except KeyError as e:
-        logger.error(f"Missing key during string formatting: {e}")
+        print("Missing key during string formatting: {e}")
         raise ValueError(f"Missing key during string formatting: {e}") from e
     except Exception as e:
-        logger.error(f"Error formatting string: {e}")
+        print("Error formatting string: {e}")
         raise ValueError(f"Error formatting string: {e}") from e
 
 
@@ -70,10 +70,10 @@ def query_constructor(query_input: Union[str, os.PathLike], **kwargs) -> str:
     """
     if os.path.isfile(query_input):
         base_query = load_content_from_txt(query_input)
-        logger.debug(f"Loaded query from file: {query_input}")
+        print("Loaded query from file: {query_input}")
     else:
         base_query = str(query_input)
-        logger.debug("Using provided query string.")
+        print("Using provided query string.")
 
     final_query = format_string_template(base_query, **kwargs)
 

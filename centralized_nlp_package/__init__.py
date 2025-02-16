@@ -10,7 +10,7 @@ config = get_config()
 from centralized_nlp_package.utils import setup_logging
 
 
-setup_logging()
+#setup_logging()
 
 # Expose submodules
 from . import data_access

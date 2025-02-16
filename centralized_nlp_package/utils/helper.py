@@ -1,5 +1,5 @@
 
-from loguru import logger
+#from loguru import logger
 import os
 from omegaconf import DictConfig
 import hydra
@@ -22,17 +22,17 @@ def determine_environment(provided_env: Optional[str] = 'quant') -> str:
     if provided_env:
         env = provided_env.lower()
         if env not in ['quant', 'quant_stg', 'quant_live']:
-            logger.error(f"Invalid environment provided: {provided_env}. Must be one of 'quant', 'quant_stg', 'quant_live'.")
+            print("Invalid environment provided: {provided_env}. Must be one of 'quant', 'quant_stg', 'quant_live'.")
             raise ValueError(f"Invalid environment: {provided_env}. Choose from 'quant', 'quant_stg', 'quant_live'.")
-        logger.info(f"Environment provided by user: {env}")
+        print("Environment provided by user: {env}")
         return env
     
     try:
         # Retrieve the notebook path using dbutils (Databricks)
         workspace_name = dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()
-        logger.debug(f"Retrieved workspace name from notebook path: {workspace_name}")
+        print("Retrieved workspace name from notebook path: {workspace_name}")
     except Exception as e:
-        logger.error(f"Error retrieving workspace name: {e}")
+        print("Error retrieving workspace name: {e}")
         raise ValueError("Unable to determine the workspace name for environment detection.") from e
     
     #TODO: replace with actual 
@@ -48,10 +48,10 @@ def determine_environment(provided_env: Optional[str] = 'quant') -> str:
     elif workspace_name.startswith(prod_workspace_name):
         env = 'quant_live'
     else:
-        logger.error(f"Workspace name '{workspace_name}' does not match any known environments.")
+        print("Workspace name '{workspace_name}' does not match any known environments.")
         raise ValueError(f"Unknown workspace name: {workspace_name}. Cannot determine environment.")
     
-    logger.info(f"Environment auto-detected based on workspace name: {env}")
+    print("Environment auto-detected based on workspace name: {env}")
     return env
 
 

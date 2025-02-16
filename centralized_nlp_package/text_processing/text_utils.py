@@ -7,7 +7,7 @@ from pathlib import Path
 
 import spacy
 import numpy as np
-from loguru import logger
+#from loguru import logger
 
 from centralized_nlp_package import config
 from centralized_nlp_package.common_utils import load_content_from_txt
@@ -42,10 +42,10 @@ def validate_and_format_text(text_input: Optional[Union[str, List[str]]]) -> Opt
         joined_text = None
 
     if joined_text:
-        logger.debug("Input text is valid and formatted.")
+        print("Input text is valid and formatted.")
         return joined_text
     else:
-        logger.warning("Input text is invalid or empty.")
+        print("Input text is invalid or empty.")
         return None
 
 ## def generate_ngrams()
@@ -66,7 +66,7 @@ def generate_ngrams(input_list: List[str], n: int) -> Iterator[Tuple[str, ...]]:
         [('I', 'love'), ('love', 'coding')]
     """
     if n < 1:
-        logger.warning("n must be at least 1.")
+        print("n must be at least 1.")
         return
     return zip(*[input_list[i:] for i in range(n)])
 
@@ -97,10 +97,10 @@ def load_set_from_txt(file_path: str, is_lower: bool = True) -> set:
         if is_lower:
             content = content.lower()
         words_set = set(filter(None, (line.strip() for line in content.split('\n'))))
-        logger.debug(f"Loaded set from {file_path} with {len(words_set)} entries.")
+        print("Loaded set from {file_path} with {len(words_set)} entries.")
         return words_set
     except Exception as e:
-        logger.error(f"Error loading set from {file_path}: {e}")
+        print("Error loading set from {file_path}: {e}")
         raise FilesNotLoadedException(f"Error loading set from {file_path}: {e}") from e
 
 
@@ -150,13 +150,13 @@ def tokenize_text(text: str, spacy_tokenizer: spacy.Language) -> List[str]:
     try:
         stop_words_set = load_set_from_txt(str(stop_words_path), is_lower=True)
     except FilesNotLoadedException as e:
-        logger.error(f"Stop words could not be loaded: {e}")
+        print("Stop words could not be loaded: {e}")
         raise e
 
     doc = spacy_tokenizer(text.lower())
     token_lemmatized = [token.lemma_ for token in doc]
     filtered_words = [word for word in token_lemmatized if word not in stop_words_set and word.isalpha()]
-    logger.debug(f"Tokenized and filtered words. {len(filtered_words)} words remaining.")
+    print("Tokenized and filtered words. {len(filtered_words)} words remaining.")
     return filtered_words
 
 # def combine_sent
@@ -181,7 +181,7 @@ def combine_sentiment_scores(positive_count: int, negative_count: int) -> float:
     if (positive_count + negative_count) == 0:
         return 0.0
     combined_score = (positive_count - negative_count) / (positive_count + negative_count)
-    logger.debug(f"Combined sentiment score: {combined_score}")
+    print("Combined sentiment score: {combined_score}")
     return combined_score
 
 
@@ -213,12 +213,12 @@ def load_syllable_counts(file_path: str) -> Dict[str, int]:
                     word, count = parts
                     syllables[word.lower()] = int(count)
                 else:
-                    logger.warning(f"Ignoring invalid line in syllable count file: {line.strip()}")
-        logger.debug(f"Loaded syllable counts from {file_path} with {len(syllables)} entries.")
+                    print("Ignoring invalid line in syllable count file: {line.strip()}")
+        print("Loaded syllable counts from {file_path} with {len(syllables)} entries.")
         return syllables
     except FileNotFoundError as ex:
-        logger.error(f"File not found: {file_path}")
+        print("File not found: {file_path}")
         raise FilesNotLoadedException(f"File not found: {file_path}") from ex
     except ValueError as ve:
-        logger.error(f"Value error in syllable count file: {ve}")
+        print("Value error in syllable count file: {ve}")
         raise FilesNotLoadedException(f"Invalid format in syllable count file: {ve}") from ve

@@ -3,7 +3,7 @@ import os
 from typing import Any, Callable, List, Tuple, Union
 import pandas as pd
 import dask.dataframe as dd
-from loguru import logger
+#from loguru import logger
 
 def df_remove_rows_with_keywords(
     df: pd.DataFrame, column_name: str, keywords: List[str]
@@ -39,16 +39,16 @@ def df_remove_rows_with_keywords(
     # Check if all keywords are present in the column
     missing_keywords = [keyword for keyword in keywords if not df[column_name].str.contains(keyword, na=False).any()]
     if missing_keywords:
-        logger.warning(f"The following keywords were not found in the column '{column_name}': {missing_keywords}")
+        print("The following keywords were not found in the column '{column_name}': {missing_keywords}")
 
     # Filter out rows containing any of the keywords
     try:
         mask = df[column_name].apply(lambda x: not any(keyword == str(x) for keyword in keywords))
         filtered_df = df[mask]
-        logger.info(f"Filtered DataFrame to remove rows containing keywords. Remaining rows: {len(filtered_df)}.")
+        print("Filtered DataFrame to remove rows containing keywords. Remaining rows: {len(filtered_df)}.")
         return filtered_df
     except Exception as e:
-        logger.error(f"An error occurred while filtering the DataFrame: {e}")
+        print("An error occurred while filtering the DataFrame: {e}")
         raise
 
 
@@ -96,40 +96,40 @@ def df_apply_transformations(
     """
     for transformation in transformations:
         if len(transformation) != 3:
-            logger.error(f"Invalid transformation tuple: {transformation}. Expected 3 elements.")
+            print("Invalid transformation tuple: {transformation}. Expected 3 elements.")
             raise ValueError(f"Invalid transformation tuple: {transformation}. Expected 3 elements.")
 
         new_column, columns_to_use, func = transformation
 
         if not callable(func):
-            logger.error(f"Transformation function for column '{new_column}' is not callable.")
+            print("Transformation function for column '{new_column}' is not callable.")
             raise ValueError(f"Transformation function for column '{new_column}' is not callable.")
 
         try:
             if isinstance(columns_to_use, str):
                 # Single column transformation
-                # logger.debug(f"Applying transformation on single column '{columns_to_use}' to create '{new_column}'.")
+                # print("Applying transformation on single column '{columns_to_use}' to create '{new_column}'.")
                 if isinstance(df, dd.DataFrame):
                     df[new_column] = df[columns_to_use].map(func, meta=(new_column, object))
                 else:
                     df[new_column] = df[columns_to_use].apply(func)
             elif isinstance(columns_to_use, list):
                 # Multiple columns transformation
-                logger.debug(f"Applying transformation on multiple columns {columns_to_use} to create '{new_column}'.")
+                print("Applying transformation on multiple columns {columns_to_use} to create '{new_column}'.")
                 if isinstance(df, dd.DataFrame):
                     df[new_column] = df.apply(lambda row: func(row), axis=1, meta=(new_column, object))
                 else:
                     df[new_column] = df.apply(lambda row: func(row), axis=1)
             else:
-                logger.error(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
+                print("Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
                 raise ValueError(f"Invalid type for columns_to_use: {columns_to_use}. Expected str or list of str.")
 
-            # logger.debug(f"Successfully applied transformation for '{new_column}'.")
+            # print("Successfully applied transformation for '{new_column}'.")
         except Exception as e:
-            logger.error(f"Error applying transformation for column '{new_column}': {e}")
+            print("Error applying transformation for column '{new_column}': {e}")
             raise
 
-    logger.info("All transformations applied successfully.")
+    print("All transformations applied successfully.")
     return df
 
 
@@ -169,23 +169,23 @@ def concatenate_and_reset_index(dataframes: List[pd.DataFrame], drop_column: str
         5  10  12
     """
     if not dataframes:
-        logger.error("No DataFrames provided for concatenation.")
+        print("No DataFrames provided for concatenation.")
         raise ValueError("The list of DataFrames to concatenate is empty.")
 
     # Concatenate the DataFrames along the rows (default axis=0)
     concatenated_df = pd.concat(dataframes, ignore_index=True)
-    logger.debug(f"Concatenated DataFrame shape: {concatenated_df.shape}")
+    print("Concatenated DataFrame shape: {concatenated_df.shape}")
 
     # Reset the index (though ignore_index=True already does this)
     concatenated_df.reset_index(inplace=True)
-    logger.debug("Index has been reset.")
+    print("Index has been reset.")
 
     # Attempt to drop the specified column
     try:
         concatenated_df.drop(columns=[drop_column], inplace=True)
-        logger.debug(f"Dropped column '{drop_column}'.")
+        print("Dropped column '{drop_column}'.")
     except KeyError:
-        logger.error(f"Column '{drop_column}' does not exist in the DataFrame.")
+        print("Column '{drop_column}' does not exist in the DataFrame.")
         raise KeyError(f"Column '{drop_column}' not found in the DataFrame.")
 
     return concatenated_df
@@ -231,7 +231,7 @@ def check_pd_dataframe_for_records(
             f"The data spans from {start_date} to {end_date} and has {num_rows} rows and {num_cols} columns."
         )
     else:
-        logger.info("Exiting due to empty DataFrame. No new records to process")
+        print("Exiting due to empty DataFrame. No new records to process")
         if exit_on_empty:
             if exit_method.lower() in ['dbutils', 'both']:
                 try:

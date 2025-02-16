@@ -47,7 +47,7 @@ def prepare_datasets(
     """
     if data_args.task_name is not None:
         # Load a dataset from the GLUE benchmark
-        logger.info(f"Loading GLUE task '{data_args.task_name}'")
+        print("Loading GLUE task '{data_args.task_name}'")
         raw_datasets = load_dataset(
             "nyu-mll/glue",
             data_args.task_name,
@@ -56,7 +56,7 @@ def prepare_datasets(
         )
     elif data_args.dataset_name is not None:
         # Load a dataset from the Hugging Face Hub
-        logger.info(f"Loading dataset '{data_args.dataset_name}' with config '{data_args.dataset_config_name}'")
+        print("Loading dataset '{data_args.dataset_name}' with config '{data_args.dataset_config_name}'")
         raw_datasets = load_dataset(
             data_args.dataset_name,
             data_args.dataset_config_name,
@@ -81,7 +81,7 @@ def prepare_datasets(
                 raise ValueError("Need either a GLUE task or a test file for `do_predict`.")
 
         for key in data_files.keys():
-            logger.info(f"load a local file for {key}: {data_files[key]}")
+            print("load a local file for {key}: {data_files[key]}")
 
         if data_args.train_file.endswith(".csv"):
             # Loading a dataset from local csv files
@@ -100,7 +100,7 @@ def prepare_datasets(
                 token=model_args.token,
             )
     
-    logger.info("Datasets loaded successfully.")
+    print("Datasets loaded successfully.")
     return raw_datasets
 
 def preprocess_datasets(
@@ -200,5 +200,5 @@ def preprocess_datasets(
             desc="Running tokenizer on dataset",
         )
 
-    logger.info("Datasets tokenized successfully.")
+    print("Datasets tokenized successfully.")
     return tokenized_datasets

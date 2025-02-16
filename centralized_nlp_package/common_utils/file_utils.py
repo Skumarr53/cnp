@@ -1,6 +1,6 @@
 # centralized_nlp_package/common_utils/file_utils.py
 import os
-from loguru import logger
+#from loguru import logger
 from centralized_nlp_package.utils import FilesNotLoadedException
 
 def load_content_from_txt(file_path: str) -> str:
@@ -25,13 +25,13 @@ def load_content_from_txt(file_path: str) -> str:
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             content = file.read()
-        logger.debug(f"Loaded content from {file_path}.")
+        print("Loaded content from {file_path}.")
         return content
     except FileNotFoundError as e:
-        logger.error(f"File not found: {file_path}")
+        print("File not found: {file_path}")
         raise FilesNotLoadedException(f"File not found: {file_path}") from e
     except Exception as e:
-        logger.error(f"Error loading file {file_path}: {e}")
+        print("Error loading file {file_path}: {e}")
         raise FilesNotLoadedException(f"Error loading file {file_path}: {e}") from e
 
 
