@@ -227,7 +227,7 @@ def check_pd_dataframe_for_records(
             raise ValueError(f"Error processing datetime column '{datetime_col}': {e}")
         
         num_rows, num_cols = df.shape
-        logger.info(
+        print(
             f"The data spans from {start_date} to {end_date} and has {num_rows} rows and {num_cols} columns."
         )
     else:

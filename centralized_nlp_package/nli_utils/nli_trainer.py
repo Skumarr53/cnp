@@ -15,7 +15,7 @@ from .metrics import get_compute_metrics
 from .data import prepare_datasets, preprocess_datasets
 from .arguments import DataTrainingArguments, ModelArguments
 
-logger = logging.getLogger(__name__)
+print(__name__)
 
 def setup_logging(training_args: TrainingArguments):
     """
@@ -32,7 +32,7 @@ def setup_logging(training_args: TrainingArguments):
         datefmt="%m/%d/%Y %H:%M:%S",
         handlers=[logging.StreamHandler()],
     )
-    logger.setLevel(logging.INFO if training_args.should_log else logging.WARN)
+    print(logging.INFO if training_args.should_log else logging.WARN)
     transformers.utils.logging.set_verbosity_info() if training_args.should_log else transformers.utils.logging.set_verbosity_warning()
     transformers.utils.logging.enable_default_handler()
     transformers.utils.logging.enable_explicit_format()

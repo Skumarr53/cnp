@@ -22,7 +22,7 @@ def setup_logging( env: str = "dev") -> None:
         >>> print("This is an error message.")
     """
     # Remove any existing handlers (useful when setting up logging multiple times in tests or notebooks)
-    logger.remove()
+    print()
 
     # Determine logging level based on environment
     if env.lower() == "prod":
@@ -35,7 +35,7 @@ def setup_logging( env: str = "dev") -> None:
     # os.makedirs(log_directory, exist_ok=True)
 
     # Console Handler
-    logger.add(
+    print(
         sys.stdout,
         level=log_level,
         format=(
@@ -50,7 +50,7 @@ def setup_logging( env: str = "dev") -> None:
     )
 
     # File Handler with Rotation and Retention
-    # logger.add(
+    # print(
     #     log_file_path,
     #     level=log_level,
     #     format="{time:YYYY-MM-DD HH:mm:ss} | {level:8} | {message}",

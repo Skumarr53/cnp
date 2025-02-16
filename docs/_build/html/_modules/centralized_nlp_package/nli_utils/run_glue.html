@@ -323,8 +323,8 @@
 
     <span class="n">setup_logging</span><span class="p">(</span><span class="n">training_args</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting GLUE task...&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training/evaluation parameters: </span><span class="si">{</span><span class="n">training_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Starting GLUE task...&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Training/evaluation parameters: </span><span class="si">{</span><span class="n">training_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="n">last_checkpoint</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">training_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">training_args</span><span class="o">.</span><span class="n">do_train</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">training_args</span><span class="o">.</span><span class="n">overwrite_output_dir</span><span class="p">:</span>
@@ -335,7 +335,7 @@
                 <span class="s2">&quot;Use &#39;overwrite_output_dir&#39; to overcome.&quot;</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="n">last_checkpoint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">training_args</span><span class="o">.</span><span class="n">resume_from_checkpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="n">print(</span>
                 <span class="sa">f</span><span class="s2">&quot;Checkpoint detected at </span><span class="si">{</span><span class="n">last_checkpoint</span><span class="si">}</span><span class="s2">. Resuming training from checkpoint.&quot;</span>
             <span class="p">)</span>
 
@@ -502,7 +502,7 @@
     <span class="k">if</span> <span class="n">param_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">param_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting fine-tuning process for the model.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Starting fine-tuning process for the model.&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Prepare ModelArguments</span>
@@ -510,7 +510,7 @@
             <span class="n">model_name_or_path</span><span class="o">=</span><span class="n">base_model_path</span><span class="p">,</span>
             <span class="n">cache_dir</span><span class="o">=</span><span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cache_dir&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ModelArguments: </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;ModelArguments: </span><span class="si">{</span><span class="n">model_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Prepare DataTrainingArguments</span>
         <span class="n">data_args</span> <span class="o">=</span> <span class="n">DataTrainingArguments</span><span class="p">(</span>
@@ -524,7 +524,7 @@
             <span class="n">max_eval_samples</span><span class="o">=</span><span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_eval_samples&quot;</span><span class="p">),</span>
             <span class="n">max_predict_samples</span><span class="o">=</span><span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;max_predict_samples&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataTrainingArguments: </span><span class="si">{</span><span class="n">data_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;DataTrainingArguments: </span><span class="si">{</span><span class="n">data_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Prepare TrainingArguments</span>
         <span class="n">training_args</span> <span class="o">=</span> <span class="n">TrainingArguments</span><span class="p">(</span>
@@ -549,18 +549,18 @@
             <span class="n">load_best_model_at_end</span><span class="o">=</span><span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;load_best_model_at_end&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="n">metric_for_best_model</span><span class="o">=</span><span class="n">param_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metric_for_best_model&quot;</span><span class="p">,</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;TrainingArguments: </span><span class="si">{</span><span class="n">training_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;TrainingArguments: </span><span class="si">{</span><span class="n">training_args</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Call run_glue (ensure that run_glue is correctly implemented)</span>
         <span class="n">finetuned_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">eval_metrics</span> <span class="o">=</span> <span class="n">run_glue</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">training_args</span><span class="p">)</span>
         
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fine-tuning completed successfully.&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluation Metrics: </span><span class="si">{</span><span class="n">eval_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Fine-tuning completed successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Evaluation Metrics: </span><span class="si">{</span><span class="n">eval_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">finetuned_model</span><span class="p">,</span><span class="n">tokenizer</span><span class="p">,</span> <span class="n">eval_metrics</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;An error occurred during fine-tuning: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;An error occurred during fine-tuning: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">raise</span></div>
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>

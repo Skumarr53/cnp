@@ -27,7 +27,7 @@ def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> 
     """
     # load default config for yaml
     try:
-        logger.info(
+        print(
             f"Initializing Dask client with {n_workers} workers and "
             f"{threads_per_worker} threads per worker."
         )

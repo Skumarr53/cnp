@@ -76,7 +76,7 @@ def check_negation(input_words: List[str], index: int, negation_words: set) -> b
     start = max(0, index - negation_window)
     for i in range(start, index):
         if input_words[i].lower() in negation_words:
-            logger.debug(
+            print(
                 f"Negation found before word '{input_words[index]}' at position {i}."
             )
             return True
@@ -138,7 +138,7 @@ def calculate_polarity_score(
         (positive_count - sum_negative) / word_count if word_count > 0 else np.nan
     )
     legacy_score = combine_sentiment_scores(positive_count, sum_negative)
-    logger.debug(
+    print(
         f"Polarity Score: {polarity_score}, Word Count: {word_count}, "
         f"Sum Negative: {sum_negative}, Positive Count: {positive_count}, Legacy Score: {legacy_score}"
     )
@@ -313,7 +313,7 @@ def fog_analysis_per_section(
         fog_index = 0.4 * (
             average_words_per_sentence + 100 * (complex_word_count / total_word_count)
         )
-        logger.info(
+        print(
             f"Fog Analysis - Fog Index: {fog_index}, Complex Words: {complex_word_count}, "
             f"Average Words/Sentence: {average_words_per_sentence}, Total Words: {total_word_count}"
         )
@@ -526,7 +526,7 @@ def get_match_set(matches: List[str]) -> Dict[str, set]:
 
     phrases = {phrase.lower() for phrase in matches if len(phrase.split(" ")) > 2}
 
-    logger.debug(
+    print(
         f"Generated match sets: {len(unigrams)} unigrams, {len(bigrams)} bigrams, {len(phrases)} phrases."
     )
     return {

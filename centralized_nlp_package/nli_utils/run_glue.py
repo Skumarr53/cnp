@@ -90,7 +90,7 @@ def run_glue(
                 "Use 'overwrite_output_dir' to overcome."
             )
         elif last_checkpoint is not None and training_args.resume_from_checkpoint is None:
-            logger.info(
+            print(
                 f"Checkpoint detected at {last_checkpoint}. Resuming training from checkpoint."
             )
 

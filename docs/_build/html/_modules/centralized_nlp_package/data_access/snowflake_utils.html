@@ -278,12 +278,12 @@
     <span class="k">def</span> <span class="nf">get_instance</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">_spark_session</span><span class="p">,</span> <span class="n">_sfUtils</span>
         <span class="k">if</span> <span class="bp">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
-            <span class="c1">#logger.info(f&quot;Creating a new instance of {cls.__name__}&quot;)</span>
+            <span class="c1">#print(f&quot;Creating a new instance of {cls.__name__}&quot;)</span>
             <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="n">_spark_session</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">spark</span>
             <span class="n">_sfUtils</span> <span class="o">=</span> <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span><span class="o">.</span><span class="n">sfUtils</span>
         <span class="c1"># else:</span>
-            <span class="c1">#logger.info(f&quot;Using existing instance of {cls.__name__}&quot;)</span>
+            <span class="c1">#print(f&quot;Using existing instance of {cls.__name__}&quot;)</span>
         <span class="k">return</span> <span class="n">instances</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">get_instance</span>
@@ -313,7 +313,7 @@
 <span class="sd">        Configures Spark session settings and Snowflake integration.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">global</span> <span class="n">_sfUtils</span>
-        <span class="c1">#logger.info(&quot;Configuring Spark session settings...&quot;)</span>
+        <span class="c1">#print(&quot;Configuring Spark session settings...&quot;)</span>
 
         <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span>
 
@@ -326,7 +326,7 @@
         <span class="n">zone</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">_jvm</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">TimeZone</span>
         <span class="n">zone</span><span class="o">.</span><span class="n">setDefault</span><span class="p">(</span><span class="n">sc</span><span class="o">.</span><span class="n">_jvm</span><span class="o">.</span><span class="n">java</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">TimeZone</span><span class="o">.</span><span class="n">getTimeZone</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">))</span>
 
-        <span class="c1">#logger.info(&quot;Spark session configured and Snowflake integration enabled.&quot;)</span>
+        <span class="c1">#print(&quot;Spark session configured and Snowflake integration enabled.&quot;)</span>
 
 
 <span class="k">def</span> <span class="nf">with_spark_session</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -337,7 +337,7 @@
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">_spark_session</span>
         <span class="k">if</span> <span class="n">_spark_session</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1">#logger.info(&quot;Spark session not initialized. Initializing now...&quot;)</span>
+            <span class="c1">#print(&quot;Spark session not initialized. Initializing now...&quot;)</span>
             <span class="n">SparkSessionManager</span><span class="p">(</span><span class="n">app_name</span><span class="o">=</span><span class="s2">&quot;SnowflakeIntegration&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Spark session already initialized; reusing existing session.&quot;</span><span class="p">)</span>
@@ -366,9 +366,9 @@
 
         <span class="n">key_file</span> <span class="o">=</span> <span class="n">dbutils</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;id-secretscope-dbk-pr4707-prod-work&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">key</span><span class="p">)</span>
         <span class="n">pwd</span> <span class="o">=</span> <span class="n">dbutils</span><span class="o">.</span><span class="n">secrets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;id-secretscope-dbk-pr4707-prod-work&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">password</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Retrieved secrets from AKV successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Retrieved secrets from AKV successfully.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error retrieving secrets from AKV: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error retrieving secrets from AKV: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span>
 
     <span class="c1"># Load the private key using the retrieved password</span>
@@ -378,9 +378,9 @@
             <span class="n">password</span><span class="o">=</span><span class="n">pwd</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
             <span class="n">backend</span><span class="o">=</span><span class="n">default_backend</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Private key loaded successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Private key loaded successfully.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading private key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error loading private key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span>
 
     <span class="c1"># Serialize the private key to PEM format without encryption</span>
@@ -390,15 +390,15 @@
             <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">PKCS8</span><span class="p">,</span>
             <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">NoEncryption</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Private key serialized to PEM format.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Private key serialized to PEM format.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error serializing private key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error serializing private key: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span>
 
     <span class="c1"># Decode and clean the private key string</span>
     <span class="n">pkb</span> <span class="o">=</span> <span class="n">pkb</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">)</span>
     <span class="n">pkb</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;-*(BEGIN|END) PRIVATE KEY-*</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pkb</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Private key decoded and cleaned.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Private key decoded and cleaned.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pkb</span>
 
@@ -433,7 +433,7 @@
         <span class="s2">&quot;sfTimezone&quot;</span><span class="p">:</span> <span class="s2">&quot;spark&quot;</span><span class="p">,</span>
         <span class="s1">&#39;sfRole&#39;</span><span class="p">:</span> <span class="n">_config</span><span class="o">.</span><span class="n">role</span>  <span class="c1"># Optional if needed</span>
     <span class="p">}</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Snowflake connection options constructed.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Snowflake connection options constructed.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">snowflake_options</span>
 
@@ -469,19 +469,19 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_spark_session</span>  <span class="c1"># Access Spark session</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading data from Snowflake using Spark.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Reading data from Snowflake using Spark.&quot;</span><span class="p">)</span>
 
     <span class="n">snowflake_options</span> <span class="o">=</span> <span class="n">get_snowflake_connection_options</span><span class="p">()</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Executing query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">df_spark</span> <span class="o">=</span> <span class="n">_spark_session</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;net.snowflake.spark.snowflake&quot;</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="o">**</span><span class="n">snowflake_options</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;query&quot;</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">load</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Query executed successfully and Spark DataFrame created.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Query executed successfully and Spark DataFrame created.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error executing query on Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error executing query on Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span>
 
     <span class="k">return</span> <span class="n">df_spark</span></div>
@@ -526,7 +526,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_spark_session</span>  <span class="c1"># Access Spark session</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Writing Spark DataFrame to Snowflake table: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Writing Spark DataFrame to Snowflake table: </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
     <span class="n">snowflake_options</span> <span class="o">=</span> <span class="n">get_snowflake_connection_options</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -535,9 +535,9 @@
             <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;dbtable&quot;</span><span class="p">,</span> <span class="n">table_name</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span> \
             <span class="o">.</span><span class="n">save</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataFrame written successfully to </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;DataFrame written successfully to </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error writing Spark DataFrame to Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error writing Spark DataFrame to Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span></div>
 
 
@@ -574,11 +574,11 @@
     <span class="n">snowflake_options</span> <span class="o">=</span> <span class="n">get_snowflake_connection_options</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Executing TRUNCATE or MERGE query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Executing TRUNCATE or MERGE query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">_spark_session</span><span class="o">.</span><span class="n">_jvm</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">snowflake</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">snowflake</span><span class="o">.</span><span class="n">Utils</span><span class="o">.</span><span class="n">runQuery</span><span class="p">(</span><span class="n">snowflake_options</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Truncate or Merge operation completed successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Truncate or Merge operation completed successfully.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error executing TRUNCATE or MERGE query on Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error executing TRUNCATE or MERGE query on Snowflake: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span></div>
 </pre></div>
         </article>

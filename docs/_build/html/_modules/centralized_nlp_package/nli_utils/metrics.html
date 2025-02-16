@@ -532,7 +532,7 @@
 <span class="sd">        {&#39;model_family_name&#39;: &#39;DeBERTa&#39;, &#39;entailment_threshold&#39;: 0.7, &#39;time_taken_seconds&#39;: 0.456, &#39;num_train_epochs&#39;: 3, &#39;learning_rate&#39;: 2e-05, &#39;weight_decay&#39;: 0.01, &#39;train_batch_size&#39;: 16, &#39;eval_batch_size&#39;: 16, &#39;accuracy&#39;: 1.0, &#39;precision&#39;: 1.0, &#39;recall&#39;: 1.0, &#39;f1_score&#39;: 1.0, &#39;roc_auc&#39;: 1.0}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting evaluation for Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">, Run Name=</span><span class="si">{</span><span class="n">run_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Starting evaluation for Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">, Run Name=</span><span class="si">{</span><span class="n">run_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Initialize the pipeline</span>
         <span class="n">nli_pipeline</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span>
@@ -570,11 +570,11 @@
             <span class="n">roc_auc</span><span class="o">=</span><span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;roc_auc&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;nan&#39;</span><span class="p">))</span>
         <span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Completed evaluation for Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Completed evaluation for Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error evaluating model Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error evaluating model Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="evaluate_nli_models_from_path"><a class="viewcode-back" href="../../../source/nli_utils.html#centralized_nlp_package.nli_utils.metrics.evaluate_nli_models_from_path">[docs]</a><span class="k">def</span> <span class="nf">evaluate_nli_models_from_path</span><span class="p">(</span>
@@ -622,7 +622,7 @@
     <span class="n">eval_df</span><span class="p">[</span><span class="s1">&#39;label_GT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eval_df</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s1">&#39;entailment&#39;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">model_path</span> <span class="ow">in</span> <span class="n">model_paths</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluating model at path: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Evaluating model at path: </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Load the model and tokenizer</span>
@@ -659,7 +659,7 @@
                 <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to evaluate model at path </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Failed to evaluate model at path </span><span class="si">{</span><span class="n">model_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>  <span class="c1"># Proceed to the next model</span>
 
     <span class="c1"># Convert results to DataFrame</span>
@@ -724,13 +724,13 @@
     <span class="c1"># Retrieve available models from MLflow experiment</span>
     <span class="n">available_models</span> <span class="o">=</span> <span class="n">list_available_models</span><span class="p">(</span><span class="n">experiment_name</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">available_models</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No models found to evaluate.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;No models found to evaluate.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>  <span class="c1"># Return empty DataFrame if no models are found</span>
 
     <span class="k">for</span> <span class="n">model_info</span> <span class="ow">in</span> <span class="n">available_models</span><span class="p">:</span>
         <span class="n">run_id</span> <span class="o">=</span> <span class="n">model_info</span><span class="p">[</span><span class="s1">&#39;run_id&#39;</span><span class="p">]</span>
         <span class="n">run_name</span> <span class="o">=</span> <span class="n">model_info</span><span class="p">[</span><span class="s1">&#39;run_name&#39;</span><span class="p">]</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluating model: Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">, Run Name=</span><span class="si">{</span><span class="n">run_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Evaluating model: Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">, Run Name=</span><span class="si">{</span><span class="n">run_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Load the model from MLflow</span>
@@ -774,7 +774,7 @@
                 <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to evaluate model with Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Failed to evaluate model with Run ID=</span><span class="si">{</span><span class="n">run_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>  <span class="c1"># Proceed to the next model</span>
 
     <span class="c1"># Convert results to DataFrame</span>

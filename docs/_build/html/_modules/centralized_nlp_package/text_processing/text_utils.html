@@ -287,10 +287,10 @@
         <span class="n">joined_text</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">if</span> <span class="n">joined_text</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Input text is valid and formatted.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Input text is valid and formatted.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">joined_text</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Input text is invalid or empty.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Input text is invalid or empty.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <span class="c1">## def generate_ngrams()</span>
@@ -311,7 +311,7 @@
 <span class="sd">        [(&#39;I&#39;, &#39;love&#39;), (&#39;love&#39;, &#39;coding&#39;)]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;n must be at least 1.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;n must be at least 1.&quot;</span><span class="p">)</span>
         <span class="k">return</span>
     <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span></div>
 
@@ -342,10 +342,10 @@
         <span class="k">if</span> <span class="n">is_lower</span><span class="p">:</span>
             <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="n">words_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">))))</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">words_set</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="n">words_set</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">words_set</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error loading set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error loading set from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
 
@@ -395,13 +395,13 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">stop_words_set</span> <span class="o">=</span> <span class="n">load_set_from_txt</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">stop_words_path</span><span class="p">),</span> <span class="n">is_lower</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">FilesNotLoadedException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stop words could not be loaded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Stop words could not be loaded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
 
     <span class="n">doc</span> <span class="o">=</span> <span class="n">spacy_tokenizer</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
     <span class="n">token_lemmatized</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">lemma_</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">]</span>
     <span class="n">filtered_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">token_lemmatized</span> <span class="k">if</span> <span class="n">word</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words_set</span> <span class="ow">and</span> <span class="n">word</span><span class="o">.</span><span class="n">isalpha</span><span class="p">()]</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokenized and filtered words. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_words</span><span class="p">)</span><span class="si">}</span><span class="s2"> words remaining.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="n">filtered_words</span><span class="p">)</span><span class="si">}</span><span class="s2"> words remaining.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filtered_words</span></div>
 
 <span class="c1"># def combine_sent</span>
@@ -426,7 +426,7 @@
     <span class="k">if</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">+</span> <span class="n">negative_count</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="mf">0.0</span>
     <span class="n">combined_score</span> <span class="o">=</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">-</span> <span class="n">negative_count</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">positive_count</span> <span class="o">+</span> <span class="n">negative_count</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Combined sentiment score: </span><span class="si">{</span><span class="n">combined_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Combined sentiment score: </span><span class="si">{</span><span class="n">combined_score</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">combined_score</span></div>
 
 
@@ -458,14 +458,14 @@
                     <span class="n">word</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">parts</span>
                     <span class="n">syllables</span><span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring invalid line in syllable count file: </span><span class="si">{</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded syllable counts from </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">syllables</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
+                    <span class="n">print()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="n">syllables</span><span class="p">)</span><span class="si">}</span><span class="s2"> entries.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">syllables</span>
     <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File not found: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value error in syllable count file: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Value error in syllable count file: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">FilesNotLoadedException</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid format in syllable count file: </span><span class="si">{</span><span class="n">ve</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ve</span></div>
 </pre></div>
         </article>

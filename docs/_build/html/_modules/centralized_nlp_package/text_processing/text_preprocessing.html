@@ -297,22 +297,22 @@
 <span class="sd">        &gt;&gt;&gt; print([token.text for token in doc])</span>
 <span class="sd">        [&#39;This&#39;, &#39;is&#39;, &#39;a&#39;, &#39;sample&#39;, &#39;sentence&#39;, &#39;for&#39;, &#39;testing&#39;, &#39;SpaCy&#39;, &#39;model&#39;, &#39;.&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading SpaCy model: </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Loading SpaCy model: </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
             <span class="n">model</span><span class="p">,</span> <span class="n">disable</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;parser&quot;</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">exclude_stop_words</span><span class="p">:</span>
             <span class="n">nlp</span><span class="o">.</span><span class="n">Defaults</span><span class="o">.</span><span class="n">stop_words</span> <span class="o">-=</span> <span class="nb">set</span><span class="p">(</span><span class="n">exclude_stop_words</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Excluded stop words: </span><span class="si">{</span><span class="n">exclude_stop_words</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Excluded stop words: </span><span class="si">{</span><span class="n">exclude_stop_words</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">nlp</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SpaCy model initialized successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;SpaCy model initialized successfully.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nlp</span>
     <span class="k">except</span> <span class="n">FilesNotLoadedException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to load additional stop words: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Failed to load additional stop words: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error initializing SpaCy model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Error initializing SpaCy model: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span></div>
 
 <div class="viewcode-block" id="remove_unwanted_phrases_and_validate"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_preprocessing.remove_unwanted_phrases_and_validate">[docs]</a><span class="k">def</span> <span class="nf">remove_unwanted_phrases_and_validate</span><span class="p">(</span>
@@ -357,16 +357,16 @@
 <span class="sd">        &gt;&gt;&gt; print(cleaned)</span>
 <span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cleaning sentence.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Cleaning sentence.&quot;</span><span class="p">)</span>
     
     <span class="c1"># Assign default phrases from config if not provided</span>
     <span class="k">if</span> <span class="n">cleanup_phrases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">cleanup_phrases</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">text_processing</span><span class="o">.</span><span class="n">cleanup_phrases</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default cleanup phrases: </span><span class="si">{</span><span class="n">cleanup_phrases</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Using default cleanup phrases: </span><span class="si">{</span><span class="n">cleanup_phrases</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">greeting_phrases</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">greeting_phrases</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">lib_config</span><span class="o">.</span><span class="n">text_processing</span><span class="o">.</span><span class="n">greeting_phrases</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using default greeting phrases: </span><span class="si">{</span><span class="n">greeting_phrases</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Using default greeting phrases: </span><span class="si">{</span><span class="n">greeting_phrases</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     
     <span class="c1"># Remove cleanup phrases</span>
     <span class="k">for</span> <span class="n">phrase</span> <span class="ow">in</span> <span class="n">cleanup_phrases</span><span class="p">:</span>
@@ -376,15 +376,15 @@
     <span class="c1"># Validate word count</span>
     <span class="n">word_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">word_count</span> <span class="o">&lt;</span> <span class="n">min_word_length</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Sentence below minimum word length. Skipping.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Sentence below minimum word length. Skipping.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     
     <span class="c1"># Check for greeting phrases</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">greet</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">sentence</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">greet</span> <span class="ow">in</span> <span class="n">greeting_phrases</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Greeting phrase detected. Skipping.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Greeting phrase detected. Skipping.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span>
     
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleaned sentence: </span><span class="si">{</span><span class="n">sentence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Cleaned sentence: </span><span class="si">{</span><span class="n">sentence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sentence</span> <span class="k">if</span> <span class="n">sentence</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 
@@ -439,7 +439,7 @@
             <span class="k">continue</span>
         <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokenized document into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="si">}</span><span class="s2"> tokens.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="n">tokens</span><span class="p">)</span><span class="si">}</span><span class="s2"> tokens.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tokens</span></div>
 
 
@@ -467,7 +467,7 @@
             <span class="k">continue</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_stop</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_punct</span> <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">pos_</span> <span class="o">!=</span> <span class="s2">&quot;NUM&quot;</span><span class="p">:</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">lemma_</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokenized matched words into </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span><span class="si">}</span><span class="s2"> tokens.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="n">ret</span><span class="p">)</span><span class="si">}</span><span class="s2"> tokens.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
@@ -499,10 +499,10 @@
         <span class="n">cleaned_text</span> <span class="o">=</span> <span class="n">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="n">input_words</span> <span class="o">=</span> <span class="n">tokenize_text</span><span class="p">(</span><span class="n">cleaned_text</span><span class="p">,</span> <span class="n">nlp</span><span class="p">)</span>
         <span class="n">word_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_words</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Preprocessed single text input.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Preprocessed single text input.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cleaned_text</span><span class="p">,</span> <span class="n">input_words</span><span class="p">,</span> <span class="n">word_count</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Preprocessing failed due to invalid input.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Preprocessing failed due to invalid input.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[],</span> <span class="mi">0</span></div>
 
 
@@ -530,7 +530,7 @@
 <span class="sd">        &gt;&gt;&gt; print(counts)</span>
 <span class="sd">        [3, 0]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Preprocessing list of texts.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Preprocessing list of texts.&quot;</span><span class="p">)</span>
     <span class="n">final_text_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">input_word_list</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">word_count_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -547,7 +547,7 @@
             <span class="n">input_word_list</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="n">word_count_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Preprocessed </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">text_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> texts.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="n">text_list</span><span class="p">)</span><span class="si">}</span><span class="s2"> texts.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">final_text_list</span><span class="p">,</span> <span class="n">input_word_list</span><span class="p">,</span> <span class="n">word_count_list</span></div>
 
 <div class="viewcode-block" id="clean_text"><a class="viewcode-back" href="../../../source/text_processing.html#centralized_nlp_package.text_processing.text_preprocessing.clean_text">[docs]</a><span class="k">def</span> <span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -576,7 +576,7 @@
     <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
     <span class="c1"># Strip leading and trailing spaces</span>
     <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Cleaned the text.&quot;</span><span class="p">)</span>
+    <span class="n">print(</span><span class="s2">&quot;Cleaned the text.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">text</span></div>
 </pre></div>
         </article>

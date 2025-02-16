@@ -266,7 +266,7 @@
 <span class="sd">            The device index to run the model on (e.g., 0 for GPU, -1 for CPU).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading DeBERTa model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Loading DeBERTa model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;zero-shot-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DeBERTaModel.train"><a class="viewcode-back" href="../../../source/model_utils.html#centralized_nlp_package.model_utils.models.DeBERTaModel.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">param_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">eval_entailment_thresold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">AutoModelForSequenceClassification</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]:</span>
@@ -305,7 +305,7 @@
 <span class="sd">                - Tokenizer associated with the trained model.</span>
 <span class="sd">                - A dictionary of evaluation metrics (e.g., accuracy, F1 score).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting training for DeBERTa model&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Starting training for DeBERTa model&quot;</span><span class="p">)</span>
 
         <span class="c1"># Prepare ModelArguments</span>
         <span class="n">model_args</span> <span class="o">=</span> <span class="n">ModelArguments</span><span class="p">(</span>
@@ -350,7 +350,7 @@
         <span class="c1"># Call run_glue</span>
         <span class="n">trained_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">eval_metrics</span> <span class="o">=</span> <span class="n">run_glue</span><span class="p">(</span><span class="n">model_args</span><span class="p">,</span> <span class="n">data_args</span><span class="p">,</span> <span class="n">training_args</span><span class="p">,</span> <span class="n">eval_entailment_thresold</span><span class="o">=</span><span class="n">eval_entailment_thresold</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Training completed for DeBERTa model&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Training completed for DeBERTa model&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">trained_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">eval_metrics</span></div>
 
 <div class="viewcode-block" id="DeBERTaModel.evaluate"><a class="viewcode-back" href="../../../source/model_utils.html#centralized_nlp_package.model_utils.models.DeBERTaModel.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
@@ -380,10 +380,10 @@
 <span class="sd">            &gt;&gt;&gt; print(metrics)</span>
 <span class="sd">            {&#39;accuracy&#39;: 0.85}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Evaluating DeBERTa model&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Evaluating DeBERTa model&quot;</span><span class="p">)</span>
         <span class="c1"># Placeholder for actual evaluation logic</span>
         <span class="n">accuracy</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>  <span class="c1"># Replace with real evaluation</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluation accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Evaluation accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">}</span></div></div>
 
 <div class="viewcode-block" id="FinBERTModel"><a class="viewcode-back" href="../../../source/model_utils.html#centralized_nlp_package.model_utils.models.FinBERTModel">[docs]</a><span class="k">class</span> <span class="nc">FinBERTModel</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
@@ -399,7 +399,7 @@
 <span class="sd">            The device index to run the model on (e.g., 0 for GPU, -1 for CPU).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading FinBERT model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Loading FinBERT model from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;zero-shot-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FinBERTModel.train"><a class="viewcode-back" href="../../../source/model_utils.html#centralized_nlp_package.model_utils.models.FinBERTModel.train">[docs]</a>    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">train_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">validation_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">hyperparameters</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
@@ -451,7 +451,7 @@
 <span class="sd">            INFO - Starting training for FinBERT model</span>
 <span class="sd">            INFO - Training completed for FinBERT model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting training for FinBERT model&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Starting training for FinBERT model&quot;</span><span class="p">)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span>
             <span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;run_glue.py&quot;</span><span class="p">,</span>
             <span class="s2">&quot;--model_name_or_path&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_path</span><span class="p">,</span>
@@ -468,13 +468,13 @@
             <span class="s2">&quot;--per_device_train_batch_size&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hyperparameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;train_batch_size&quot;</span><span class="p">,</span> <span class="mi">16</span><span class="p">)),</span>
             <span class="s2">&quot;--per_device_eval_batch_size&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">hyperparameters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eval_batch_size&quot;</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
         <span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Training completed for FinBERT model&quot;</span><span class="p">)</span></div>
+        <span class="n">print(</span><span class="s2">&quot;Training completed for FinBERT model&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validation_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Evaluating FinBERT model&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Evaluating FinBERT model&quot;</span><span class="p">)</span>
         <span class="c1"># Placeholder for actual evaluation logic</span>
         <span class="n">accuracy</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>  <span class="c1"># Replace with real evaluation</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evaluation accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Evaluation accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="get_model"><a class="viewcode-back" href="../../../source/model_utils.html#centralized_nlp_package.model_utils.models.get_model">[docs]</a><span class="k">def</span> <span class="nf">get_model</span><span class="p">(</span><span class="n">model_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">device</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
@@ -523,7 +523,7 @@
     <span class="k">elif</span> <span class="n">model_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;finbert&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">FinBERTModel</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">model_path</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> is not supported.&quot;</span><span class="p">)</span></div>
 </pre></div>
         </article>

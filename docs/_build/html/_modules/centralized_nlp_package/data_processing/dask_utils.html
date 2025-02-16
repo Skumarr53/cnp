@@ -272,15 +272,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># load default config for yaml</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="n">print(</span>
             <span class="sa">f</span><span class="s2">&quot;Initializing Dask client with </span><span class="si">{</span><span class="n">n_workers</span><span class="si">}</span><span class="s2"> workers and &quot;</span>
             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">threads_per_worker</span><span class="si">}</span><span class="s2"> threads per worker.&quot;</span>
         <span class="p">)</span>
         <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">n_workers</span><span class="o">=</span><span class="n">n_workers</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="n">threads_per_worker</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Dask client initialized successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Dask client initialized successfully.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">client</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to initialize Dask client: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Failed to initialize Dask client: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span></div>
 
 
@@ -308,16 +308,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">use_progress</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting computation with progress bar.&quot;</span><span class="p">)</span>
+            <span class="n">print(</span><span class="s2">&quot;Starting computation with progress bar.&quot;</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">ProgressBar</span><span class="p">():</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">dask_dataframe</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting computation without progress bar.&quot;</span><span class="p">)</span>
+            <span class="n">print(</span><span class="s2">&quot;Starting computation without progress bar.&quot;</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">dask_dataframe</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Dask DataFrame computed successfully.&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="s2">&quot;Dask DataFrame computed successfully.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to compute Dask DataFrame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">print(</span><span class="sa">f</span><span class="s2">&quot;Failed to compute Dask DataFrame: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">raise</span></div>
 </pre></div>
         </article>
