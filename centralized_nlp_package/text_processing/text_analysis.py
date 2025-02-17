@@ -19,7 +19,7 @@ from centralized_nlp_package.text_processing.text_preprocessing import (
     tokenize_matched_words,
     tokenize_and_lemmatize_text,
 )
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 from centralized_nlp_package.utils import FilesNotLoadedException
 
 

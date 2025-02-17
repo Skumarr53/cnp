@@ -5,7 +5,7 @@ from dask.diagnostics import ProgressBar
 from typing import Any, Optional
 import pandas as pd
 #from loguru import logger
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 
 
 def initialize_dask_client(n_workers: int = 32, threads_per_worker: int = 1) -> Client:

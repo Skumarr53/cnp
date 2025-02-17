@@ -4,7 +4,7 @@ import re
 from typing import List, Tuple, Optional, Union, Dict
 import spacy
 #from loguru import logger
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 from centralized_nlp_package.text_processing.text_utils import (
     validate_and_format_text,
     expand_contractions,

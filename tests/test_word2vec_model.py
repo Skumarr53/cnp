@@ -1,5 +1,5 @@
 import pytest
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 from gensim.models import Word2Vec
 from gensim.models.phrases import Phrases
 from centralized_nlp_package.embedding.word2vec_model import train_word2vec, save_model

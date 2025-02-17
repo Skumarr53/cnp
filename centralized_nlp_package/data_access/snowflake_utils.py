@@ -15,7 +15,7 @@ from snowflake.connector import connect
 from pyspark.sql import SparkSession, DataFrame
 from functools import wraps
 
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 from centralized_nlp_package.utils import determine_environment
 
 # Module-level variables to hold the Spark session and Snowflake utilities

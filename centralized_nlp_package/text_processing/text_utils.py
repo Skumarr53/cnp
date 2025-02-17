@@ -9,7 +9,7 @@ import spacy
 import numpy as np
 #from loguru import logger
 
-from centralized_nlp_package import config
+#from centralized_nlp_package import config
 from centralized_nlp_package.common_utils import load_content_from_txt
 from centralized_nlp_package.utils import FilesNotLoadedException
 
